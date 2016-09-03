@@ -1,47 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
 
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>Cort McGinty</title>
-  <meta name="description" content="Cort McGinty">
-  <meta name="author" content="Cort McGinty">
+    <!-- Basic Page Needs
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta charset="utf-8">
+    <title>Cort McGinty</title>
+    <meta name="description" content="Cort McGinty">
+    <meta name="author" content="Cort McGinty">
 
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Mobile Specific Metas
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href="//fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet" type="text/css">
+    <!-- JQUERY
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
-  <link rel="stylesheet" href="css/styles.css">
+    <!-- Font
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link href="https://fonts.googleapis.com/css?family=Varela" rel="stylesheet">
 
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="images/favicon.png">
+    <!-- CSS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/styles.css">
 
-</head>
-<body>
+    <!-- Favicon
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
 
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
-    <div class="row">
-      <div class="one-half column" style="margin-top: 25%">
-        <h4>Cort McGinty</h4>
-        <p>This is a placeholder. It's just waiting for me to add some content.</p>
-      </div>
+  </head>
+  <body>
+
+    <!-- Page
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <div class="container">
+        <div class="row">
+          <div class="one-half column" style="margin-top: 15%">
+            <h1 class="name">Cort <br>McGinty</h1>
+            <p>Product Designer at <a href="https://www.mx.com/">MX</a> 
+            <br>Creator of <a href="http://wereofficial.com/">wereofficial.com</a>
+            <div class="separator"></div>
+            <p><a href="https://dribbble.com/cortmcginty">Dribbble</a></p>
+            <p><a href="https://twitter.com/cortmcginty">Twitter</a></p>
+            <p><a href="https://www.facebook.com/cortmcginty">Facebook</a></p>
+            <p><a href="https://www.instagram.com/cortmcginty/">Instagram</a></p>
+            <p><a href="https://www.linkedin.com/in/cortmcginty">LinkedIn</a></p>
+          </div>
+        </div>
     </div>
-  </div>
 
-<!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-</body>
+    <!-- <div class="one-half column" style="margin-top: 25%">
+      <ul id="dribbble"></ul>
+    </div> -->
+
+    <!-- Dribbble
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script type='text/javascript'>
+        $(function() {
+          $.getJSON('https://api.dribbble.com/v1/users/cortmcginty/shots?access_token=0c853dce5b18de5eaa7f56da396814f58065ec32432fbea2324b0708f0196d8a&callback=?', function(resp) {
+            if (resp.data.length > 0) {             
+              $.each(resp.data.reverse(), function(i, val) {
+                $('#dribbble').prepend(
+                  '<li class="box"><a href="'+val.html_url+'"><img src="'+val.images.normal+'" /></a></li>'
+                );
+              });
+            }
+            else {
+              $('#dribbble').append('<li>No shots.</li>');
+            }
+          });                       
+        });
+      </script>
+
+  </body>
 </html>

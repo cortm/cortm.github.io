@@ -1,3 +1,23 @@
 body {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Varela', sans-serif;
+}
+
+h1.name {
+  font-size: 3.5rem;
+  margin-bottom: 30px;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+.separator {
+  background: #FFFFFF;
+  border: 1px solid #E3E6E7;
+  width: 50px;
+  margin-bottom: 25px;
 }
