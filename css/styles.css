@@ -1,5 +1,5 @@
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Inconsolata', monospace;
   background-color: #ffffff;
   margin: 30px;
   color: #222222;
@@ -7,7 +7,7 @@ body {
 
 h1 {
   font-family: 'Open Sans Condensed', sans-serif;
-  font-size: 7.25rem;
+  font-size: 6rem;
   text-transform: uppercase;
   font-weight: 700;
   margin-bottom: 20px;
@@ -17,53 +17,81 @@ h1 {
 a {
   text-decoration: none;
   color: #222222;
+  font-weight: bold;
+}
+
+a:hover {
+  color: #4B86D9;
 }
 
 ul {
   list-style: none;
 }
 
-li {
+ul.links li {
   display: inline-block;
   padding: 5px;
   margin-left: 30px;
-  font-size: 40px;
+  font-size: 35px;
 }
 
-li:first-child {
-  margin-left: 0;
+ul.links li:first-child {
+  margin-left: -4px;
 }
 
-.wrapper-left {
+.pages {
+  font-size: 20px;
+  text-align: right;
+}
+
+.header-pic {
   background-color: #EAEAEA;
   /*height: calc(100vh - 60px);*/
   height: 400px;
-  width: 50%;
+  width: 55%;
   float: left;
   position: relative;
-}
-
-.wrapper-right {
-  width: 45%;
-  float: left;
-  margin-left: 5%;
-  height: calc(100vh - 60px);
-  position: relative;
-  left: -9%;
-}
-
-.pic {
   background-repeat: no-repeat;
-  background-position: 60% 100%;
-  background-size: 120%;
+  background-position: 100% 60%;
+  background-size: 110%;
   position: relative;
   background-image: url("../images/cort-mcginty.png");
   /*-webkit-filter: grayscale(100%);
   filter: grayscale(100%);*/
 }
 
-.bio {
+.header-name {
+  width: 35%;
+  float: left;
+  margin-left: 5%;
+  /*height: calc(100vh - 60px);*/
+  height: 400px;
+  position: relative;
+  left: -9%;
+}
+
+.name {
   padding-top: 70px;
+}
+
+.about {
+  width: 55%;
+  position: relative;
+  top: 20px;
+}
+
+.links {
+  position: relative;
+  z-index: 50;
+}
+
+.pages {
+  position: absolute;
+  bottom: -20px;
+  right: 0;
+  transform: rotate(90deg);
+  transform-origin: left top 0;
+  letter-spacing: .5px;
 }
 
 .separator {
@@ -79,24 +107,35 @@ li:first-child {
 
 
 @media (max-width: 850px) {
+
   body {
     padding: 30px;
   }
 
-  .wrapper-left {
-    float: none;
-    display: none;
+  .header-pic {
+    height: 170px;
+    width: 100%;
   }
-  .wrapper-right {
+
+  .header-name {
     float: none;
-  }
-  li {
-    font-size: 40px;
-    display: list-item;
     margin-left: 0;
+    left: 0;
+    width: 100%;
+    top: -38px;
   }
-  .bio {
-    padding-top: 0;
+
+  ul.links li {
+    font-size: 25px;
+    margin-left: 10px;
+  }
+
+  .about {
+    width: 100%;
+  }
+
+  .pages {
+    display: none;
   }
 
 }
