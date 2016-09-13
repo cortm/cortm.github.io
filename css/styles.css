@@ -1,8 +1,14 @@
 body {
   font-family: 'Inconsolata', monospace;
   background-color: #ffffff;
-  margin: 30px;
+  padding: 30px;
   color: #222222;
+}
+
+.wrapper {
+  margin: 0 auto;
+  max-width: 1200px;
+  position: relative;
 }
 
 h1 {
@@ -52,7 +58,7 @@ ul.links li:first-child {
   float: left;
   position: relative;
   background-repeat: no-repeat;
-  background-position: 100% 60%;
+  background-position: 100% 100%;
   background-size: 110%;
   position: relative;
   background-image: url("../images/cort-mcginty.png");
@@ -87,10 +93,8 @@ ul.links li:first-child {
 
 .pages {
   position: absolute;
-  bottom: -20px;
   right: 0;
   transform: rotate(90deg);
-  transform-origin: left top 0;
   letter-spacing: .5px;
 }
 
@@ -105,6 +109,53 @@ ul.links li:first-child {
   background-color: #fafafa;
 }
 
+/*EXPERIENCE*/
+
+.back {
+  position: relative;
+  top: 10px;
+  color: #4B86D9;
+}
+
+.exp .row {
+  border-top: 1px solid #222222;
+  padding: 50px 0 25px;
+}
+
+.exp .row:first-child {
+  border: none;
+}
+
+/*.exp .row:last-child {
+  border-bottom: 1px solid #222222;
+}*/
+
+.exp.wrapper {
+  max-width: 800px;
+}
+
+.accolades h1 {
+  padding-top: 50px;
+}
+
+.accolades .row {
+  padding: 25px 0 0;
+}
+
+
+
+@media (max-width: 1032px) {
+
+  ul.links li {
+    margin-left: 14px;
+  }
+
+  .header-pic {
+    background-size: 160%;
+    background-position: 50% 100%;
+  }
+
+}
 
 @media (max-width: 850px) {
 
@@ -113,8 +164,9 @@ ul.links li:first-child {
   }
 
   .header-pic {
-    height: 170px;
+    height: 250px;
     width: 100%;
+    background-size: 130%;
   }
 
   .header-name {
@@ -126,16 +178,26 @@ ul.links li:first-child {
   }
 
   ul.links li {
-    font-size: 25px;
+    font-size: 30px;
     margin-left: 10px;
   }
 
   .about {
     width: 100%;
+    margin-top: 50px;
   }
 
   .pages {
     display: none;
+  }
+
+}
+
+@media (min-width: 480px) and (max-width: 850px) {
+
+  .header-pic {
+    background-position: 100% 50%;
+    background-size: 100%;
   }
 
 }
