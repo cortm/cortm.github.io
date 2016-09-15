@@ -139,7 +139,7 @@ a:hover {
 
 }
 
-@media (min-width: 700px) and (max-width: 1059px) {
+@media (min-width: 700px) and (max-width: 1099px) {
   .face {
     background-size: 120%;
     background-position: 30% 50%;
