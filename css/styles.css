@@ -34,14 +34,13 @@ a:hover {
 
 .face {
   background-color: #EAEAEA;
-  /*height: calc(100vh - 300px);*/
   height: 250px;
   width: 100%;
   float: left;
   position: relative;
   background-repeat: no-repeat;
-  background-position: 30% 60%;
-  background-size: 150%;
+  background-position: 20% 30%;
+  background-size: 130%;
   position: relative;
   background-image: url("../images/cort-mcginty.png");
 }
