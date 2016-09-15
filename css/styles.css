@@ -1,203 +1,164 @@
 body {
   font-family: 'Inconsolata', monospace;
   background-color: #ffffff;
-  padding: 30px;
   color: #222222;
-}
-
-.wrapper {
-  margin: 0 auto;
-  max-width: 1200px;
-  position: relative;
+  font-size: 14px;
+  line-height: 26px;
+  letter-spacing: .25px;
 }
 
 h1 {
-  font-family: 'Open Sans Condensed', sans-serif;
-  font-size: 6rem;
-  text-transform: uppercase;
   font-weight: 700;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 50px;
+  position: relative;
+  top: -35px;
+  left: -3px;
+  letter-spacing: 3px;
+  font-family: 'Oswald', sans-serif;
 }
 
 a {
-  text-decoration: none;
   color: #222222;
-  font-weight: bold;
+  text-decoration: none;
 }
 
 a:hover {
-  color: #4B86D9;
+  color: #4678B8;
 }
 
-ul {
-  list-style: none;
+.container {
+  max-width: calc(100% - 60px);
+  padding-top: 30px;
 }
 
-ul.links li {
-  display: inline-block;
-  padding: 5px;
-  margin-left: 30px;
-  font-size: 35px;
-}
-
-ul.links li:first-child {
-  margin-left: -4px;
-}
-
-.pages {
-  font-size: 20px;
-  text-align: right;
-}
-
-.header-pic {
+.face {
   background-color: #EAEAEA;
-  /*height: calc(100vh - 60px);*/
-  height: 400px;
-  width: 55%;
+  /*height: calc(100vh - 300px);*/
+  height: 250px;
+  width: 100%;
   float: left;
   position: relative;
   background-repeat: no-repeat;
-  background-position: 100% 100%;
-  background-size: 110%;
+  background-position: 30% 40%;
+  background-size: 150%;
   position: relative;
   background-image: url("../images/cort-mcginty.png");
-  /*-webkit-filter: grayscale(100%);
-  filter: grayscale(100%);*/
 }
 
-.header-name {
-  width: 35%;
-  float: left;
-  margin-left: 5%;
-  /*height: calc(100vh - 60px);*/
-  height: 400px;
+.hey p {
   position: relative;
-  left: -9%;
+  top: -30px;
 }
 
-.name {
-  padding-top: 70px;
-}
-
-.about {
-  width: 55%;
+.buttons {
   position: relative;
-  top: 20px;
+  top: -20px;
 }
 
-.links {
-  position: relative;
-  z-index: 50;
+.buttons a {
+  text-decoration: none;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border: 1px solid #B4C6CD;
+  text-transform: uppercase;
+  color: #4678B8;
+  width: calc(100% - 30px);
+  display: inline-block;
+  border-radius: 1px;
+  text-align: center;
+  letter-spacing: 2px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
-.pages {
-  position: absolute;
-  right: 0;
-  transform: rotate(90deg);
-  letter-spacing: .5px;
+.buttons a:hover {
+  color: #222222;
 }
 
-.separator {
-  background: #FFFFFF;
-  border: 1px solid #E3E6E7;
-  width: 50px;
-  margin-bottom: 25px;
+.connect {
+  text-align: center;
+  padding-top: 40px;
 }
 
-.left-side {
-  background-color: #fafafa;
+.connect p {
+  color: #88979D;
+  letter-spacing: 1px;
 }
 
-/*EXPERIENCE*/
-
-.back {
-  position: relative;
-  top: 10px;
-  color: #4B86D9;
+.connect ul {
+  margin-left: -20px;
 }
 
-.exp .row {
+.connect ul li {
+  list-style: none;
+  display: inline-block;
+  padding: 5px;
+  margin-left: 20px;
+  font-size: 25px;
+}
+
+.resume h1 {
+  top: 0;
+}
+
+.resume .row {
   border-top: 1px solid #222222;
   padding: 50px 0 25px;
 }
 
-.exp .row:first-child {
+.resume .row:first-child {
   border: none;
 }
-
-/*.exp .row:last-child {
-  border-bottom: 1px solid #222222;
-}*/
 
 .exp.wrapper {
   max-width: 800px;
 }
 
-.accolades h1 {
-  padding-top: 50px;
-}
+@media (min-width: 800px) {
 
-.accolades .row {
-  padding: 25px 0 0;
-}
-
-
-
-@media (max-width: 1032px) {
-
-  ul.links li {
-    margin-left: 14px;
+  .face {
+    height: 400px;
   }
 
-  .header-pic {
-    background-size: 160%;
-    background-position: 50% 100%;
+  .buttons a {
+    display: inline;
+    padding: 10px 50px;
   }
 
 }
 
-@media (max-width: 850px) {
+@media (min-width: 700px) and (max-width: 1100px) {
+  .face {
+    background-size: 120%;
+  }
+}
 
-  body {
-    padding: 30px;
+@media (min-width: 1100px) {
+  
+  .face {
+    height: 400px;
+    width: 50%;
+    background-position: 53% 100%;
   }
 
-  .header-pic {
-    height: 250px;
-    width: 100%;
-    background-size: 130%;
+  .words {
+    position: relative;
+    top: 157px;
+    left: -42px;
   }
 
-  .header-name {
-    float: none;
-    margin-left: 0;
-    left: 0;
-    width: 100%;
-    top: -38px;
-  }
-
-  ul.links li {
-    font-size: 30px;
-    margin-left: 10px;
-  }
-
-  .about {
-    width: 100%;
-    margin-top: 50px;
-  }
-
-  .pages {
-    display: none;
+  .connect {
+    position: relative;
+    top: 200px;
   }
 
 }
 
-@media (min-width: 480px) and (max-width: 850px) {
-
-  .header-pic {
-    background-position: 100% 50%;
-    background-size: 100%;
+@media (min-width: 1200px) {
+  
+  .container {
+    max-width: 1040px;
   }
 
 }
