@@ -40,7 +40,7 @@ a:hover {
   float: left;
   position: relative;
   background-repeat: no-repeat;
-  background-position: 30% 40%;
+  background-position: 30% 30%;
   background-size: 150%;
   position: relative;
   background-image: url("../images/cort-mcginty.png");
@@ -113,6 +113,12 @@ a:hover {
 
 .exp.wrapper {
   max-width: 800px;
+}
+
+@media (min-width: 700px) {
+  .container {
+    width: 80%
+  }
 }
 
 @media (min-width: 800px) {
