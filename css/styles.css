@@ -25,6 +25,7 @@ a {
 
 a:hover {
   color: #4678B8;
+  transition-duration: 0.3s;
 }
 
 .container {
@@ -69,10 +70,6 @@ a:hover {
   letter-spacing: 2px;
   font-size: 13px;
   font-weight: 700;
-}
-
-.buttons a:hover {
-  color: #222222;
 }
 
 .connect {
