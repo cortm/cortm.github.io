@@ -1,7 +1,7 @@
 body {
   font-family: 'Inconsolata', monospace;
   background-color: #ffffff;
-  color: #222222;
+  color: #2F363E;
   font-size: 14px;
   line-height: 26px;
   letter-spacing: .25px;
@@ -60,7 +60,7 @@ a:hover {
   text-decoration: none;
   padding: 10px 14px;
   margin-bottom: 10px;
-  border: 1px solid #B4C6CD;
+  border: 1px solid rgba(104,119,136,.2);
   text-transform: uppercase;
   color: #4678B8;
   width: calc(100% - 30px);
@@ -94,35 +94,65 @@ a:hover {
   font-size: 25px;
 }
 
-.resume h1 {
-  top: 0;
+.resume .row.resume-header {
+  border-bottom: 1px solid rgba(104,119,136,.2);
+  padding-bottom: 5px;
+  margin-bottom: 30px;
 }
 
-.resume .place-name strong {
-  font-size: 18px;
-  font-family: 'Oswald', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.resume .back {
+  position: relative;
+  top: -10px;
+  display: none;
+}
+
+.resume .download {
+  text-align: right;
+}
+
+.resume h1 {
+  top: 25px;
+}
+
+.resume .place {
+  text-align: right;
+}
+
+.resume .place-name, .place-title {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: -5px;
+}
+
+.place-date {
+  margin-bottom: 0;
+  color: #687788;
 }
 
 .resume .row {
-  border-top: 1px solid #222222;
-  padding: 35px 0 35px;
+  padding: 20px 0 25px;
 }
 
-.resume .row:first-child {
-  border: none;
+.resume .accolades {
+  font-size: 17px;
+  font-weight: bold;
+  padding-bottom: 100px;
 }
 
-.resume .first {
-  position: relative;
-  top: 15px;
-  padding-bottom: 15px;
+.resume .accolades .accolade-co {
+  color: #687788;
+  font-weight: normal;
+  display: block;
+  font-size: 14px;
 }
 
 @media (min-width: 600px) {
   .face {
     height: 400px;
+  }
+
+  .resume .back {
+    display: block;
   }
 }
 
@@ -141,6 +171,10 @@ a:hover {
   .buttons a {
     display: inline;
     padding: 10px 50px;
+  }
+
+  .resume .back {
+    top: -20px;
   }
 
 }
@@ -169,6 +203,10 @@ a:hover {
   .connect {
     position: relative;
     top: 200px;
+  }
+
+  .resume .accolades .accolade-co {
+    display: inline;
   }
 
 }
