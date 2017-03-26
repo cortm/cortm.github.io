@@ -18,6 +18,12 @@ h2 {
   text-align: center;
 }
 
+h5 {
+  padding-bottom: 20px;
+  letter-spacing: .5px;
+  font-size: 20px;
+}
+
 .buttons a {
   padding: 10px 20px;
   width: auto;
@@ -32,12 +38,12 @@ h2 {
   height: 1px;
   width: 100%;
   background-color: #C7CCD2;
-  margin-bottom: 120px;
+  margin-bottom: 100px;
 }
 
 .vert-name {
   position: fixed;
-  top: 500px;
+  top: 65%;
   left: -90px;
   z-index: 50;
   -webkit-transform: rotate(-90deg);
@@ -45,6 +51,20 @@ h2 {
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
   transform: rotate(-90deg);
+}
+
+.vert-dash {
+  position: fixed;
+  top: 47%;
+  left: 0;
+  height: 1px;
+  width: 65px;
+  background-color: #C7CCD2;
+  -webkit-transform: rotate(-35deg);
+  -moz-transform: rotate(-35deg);
+  -ms-transform: rotate(-35deg);
+  -o-transform: rotate(-35deg);
+  transform: rotate(-35deg);
 }
 
 .hey-google {
@@ -60,7 +80,7 @@ h2 {
   height: 32px;
   position: absolute;
   top: 25px;
-  left: 0;
+  left: -3px;
   background-position: 50% 50%;
   background-size: 100%;
   background-image: url("../images/google-logo.svg");
@@ -69,7 +89,7 @@ h2 {
 .header {
   max-width: 912px;
   margin: 0 auto;
-  margin-bottom: 150px;
+  margin-bottom: 120px;
 }
 
 .header-helper {
@@ -102,7 +122,7 @@ h2 {
   border: 1px solid #C7CCD2;
   max-width: 550px;
   padding: 135px 100px 65px;
-  margin: 0 auto 150px auto;
+  margin: 0 auto 120px auto;
   text-align: center;
 }
 
@@ -118,12 +138,12 @@ h2 {
 }
 
 .case {
-  margin: 0 auto 150px auto;
+  margin: 0 auto 100px auto;
   max-width: 600px;
 }
 
 .case-image {
-  margin-bottom: 150px;
+  margin-bottom: 100px;
   text-align: center;
 }
 
@@ -137,14 +157,12 @@ h2 {
 }
 
 .image-caption {
-  color: #959CA6;
   margin-top: 0;
 }
 
 .accomplishments {
   margin: 0 auto;
-  text-align: center;
-  padding-bottom: 150px;
+  padding-bottom: 120px;
   background: -moz-linear-gradient(top, #ffffff 40%, #f5f6f8 100%); 
   background: -webkit-linear-gradient(top, #ffffff 40%,#f5f6f8 100%);
   background: linear-gradient(to bottom, #ffffff 40%,#f5f6f8 100%);
@@ -157,6 +175,8 @@ h2 {
 
 .accomplishments .intro {
   margin-bottom: 50px;
+  max-width: 600px;
+  margin: 0 auto 50px auto;
 }
 
 .accomplishment {
@@ -166,6 +186,7 @@ h2 {
   border-radius: 4px;
   position: relative;
   margin-bottom: 50px;
+  text-align: center;
   /*-webkit-box-shadow: 0px 3px 10px 0px rgba(47,54,67,0.08);
   -moz-box-shadow: 0px 3px 10px 0px rgba(47,54,67,0.08);
   box-shadow: 0px 3px 10px 0px rgba(47,54,67,0.08);*/
@@ -206,7 +227,7 @@ h2 {
 }
 
 .mx-works {
-  margin: 100px auto 150px auto;
+  margin: 100px auto 120px auto;
 }
 
 .mx-work {
@@ -297,8 +318,8 @@ h2 {
     left: 30px;
   }
   .header-image {
-    width: 140%;
-    left: -20%;
+    width: 100%;
+    left: 0;
   }
   .case {
     margin: 0 auto 60px auto;
@@ -310,13 +331,16 @@ h2 {
     margin-bottom: 60px;
   }
   .mx-works {
-    margin: 100px auto 60px auto;
+    margin: 50px auto 60px auto;
   }
   .header {
     margin-bottom: 0;
   }
   .header .text {
     margin-top: 100px;
+  }
+  .accomplishments {
+    padding-bottom: 50px;
   }
 }
 
