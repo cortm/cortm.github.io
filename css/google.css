@@ -309,6 +309,9 @@ h5 {
 }
 
 @media (max-width: 600px) {
+  body {
+    cursor: pointer;
+  }
   .vert-name {
     display: none;
   }
