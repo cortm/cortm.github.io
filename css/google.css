@@ -304,6 +304,10 @@ h5 {
   color: #959CA6;
 }
 
+.connect {
+  top: 0;
+}
+
 @media (max-width: 600px) {
   .vert-name {
     display: none;
@@ -319,6 +323,7 @@ h5 {
   }
   .header-image {
     width: 100%;
+    height: 300px;
     left: 0;
   }
   .case {
@@ -344,6 +349,9 @@ h5 {
   }
   .case.feedback-footer h5 {
     padding: 0 40px 30px;
+  }
+  .connect {
+    padding-bottom: 80px;
   }
 }
 

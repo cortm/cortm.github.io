@@ -19,7 +19,7 @@ h1 {
 }
 
 a {
-  color: #222222;
+  color: #2f363e;
   text-decoration: none;
 }
 
@@ -77,7 +77,7 @@ a:hover {
 }
 
 .connect p {
-  color: #88979D;
+  color: #959ca6;
   letter-spacing: 1px;
 }
 
@@ -107,14 +107,24 @@ a:hover {
 
 .resume .download {
   text-align: right;
+  display: none;
 }
 
 .resume h1 {
   top: 25px;
 }
 
+.resume h2 {
+  font-size: 27px;
+  letter-spacing: 3px;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  margin-bottom: -15px;
+  padding-top: 20px;
+}
+
 .resume .place {
-  text-align: right;
+  text-align: left;
 }
 
 .resume .place-name, .place-title {
@@ -149,9 +159,11 @@ a:hover {
   .face {
     height: 400px;
   }
-
-  .resume .back {
+  .resume .download {
     display: block;
+  }
+  .resume .place {
+    text-align: right;
   }
 }
 
