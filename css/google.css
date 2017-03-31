@@ -285,8 +285,9 @@ h5 {
 }
 
 .case.feedback-footer .buttons a {
-  background-color: #4678B8;
+  background-color: #2f363e;
   color: #ffffff;
+  border-radius: 1px;
 }
 
 .case.feedback-footer .buttons a:hover {

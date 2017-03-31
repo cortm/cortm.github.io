@@ -14,3 +14,43 @@
 .link {
   color: #4678b8;
 }
+
+.header-image {
+  width: 575px;
+  height: 390px;
+  float: left;
+  position: relative;
+  left: -212px;
+  z-index: 0;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 100%;
+  background-image: url("../images/lifestyle-challenges.png");
+}
+
+.nf-mockups {
+  margin-bottom: 60px;
+}
+
+.nf-mockups img {
+  margin-top: 20px;
+  width: 320px;
+  border: 1px solid #DFE3E8;
+  -webkit-box-shadow: 0px 5px 20px 0px rgba(47,54,67,0.06);
+  -moz-box-shadow: 0px 5px 20px 0px rgba(47,54,67,0.06);
+  box-shadow: 0px 5px 20px 0px rgba(47,54,67,0.06); 
+}
+
+.view-description {
+  position: relative;
+  top: 100px;
+}
+
+@media (max-width: 600px) {
+  .nf-mockups img {
+    width: 100%;
+  }
+  .view-description {
+    top: 0;
+  }
+}
