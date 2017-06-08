@@ -50,6 +50,10 @@ a:hover {
   top: -30px;
 }
 
+.hey .home-link {
+  text-decoration: underline;
+}
+
 .buttons {
   position: relative;
   top: -20px;
@@ -125,6 +129,10 @@ a:hover {
 
 .resume .place {
   text-align: left;
+}
+
+.resume a .place-name {
+  text-decoration: underline;
 }
 
 .resume .place-name, .place-title {
