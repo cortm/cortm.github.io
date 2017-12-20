@@ -67,23 +67,23 @@ h5 {
   transform: rotate(-35deg);
 }*/
 
-.hey-google {
+.hey-visitor {
   position: relative;
   top: 30px;
   left: 50px;
   max-width: 120px;
 }
 
-.welcome-google:after {
+.welcome-visitor:after {
   content: "";
-  width: 97px;
-  height: 32px;
+  width: 122px;
+  height: 40px;
   position: absolute;
   top: 25px;
   left: -3px;
   background-position: 50% 50%;
   background-size: 100%;
-  background-image: url("../images/google-logo.svg");
+  background-image: url("../images/facebook-logo.svg");
 }
 
 .header {
