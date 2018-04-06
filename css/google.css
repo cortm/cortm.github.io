@@ -24,6 +24,10 @@ h5 {
   font-size: 20px;
 }
 
+.container {
+  padding-top: 60px;
+}
+
 .buttons a {
   padding: 10px 20px;
   width: auto;
@@ -110,7 +114,8 @@ h5 {
   height: 390px;
   float: left;
   position: relative;
-  left: -212px;
+  left: -215px;
+  top: -5px;
   z-index: 0;
   background-repeat: no-repeat;
   background-position: 50% 50%;
