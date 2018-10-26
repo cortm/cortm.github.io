@@ -14,7 +14,7 @@ h1 {
   position: relative;
   top: -35px;
   left: -3px;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   font-family: 'Oswald', sans-serif;
 }
 
@@ -50,7 +50,7 @@ a:hover {
   top: -30px;
 }
 
-.hey .home-link {
+.hey .strong-link {
   text-decoration: underline;
 }
 
@@ -97,10 +97,10 @@ a:hover {
   font-size: 25px;
 }
 
-.resume .row.resume-header {
+.resume .resume-header {
   border-bottom: 1px solid rgba(104,119,136,.2);
   padding-bottom: 5px;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
 }
 
 .resume .back {
@@ -111,7 +111,7 @@ a:hover {
 
 .resume .download {
   text-align: right;
-  display: none;
+  border-bottom: 1px solid rgba(104,119,136,.2);
 }
 
 .resume h1 {
@@ -120,11 +120,10 @@ a:hover {
 
 .resume h2 {
   font-size: 27px;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   font-family: 'Oswald', sans-serif;
   text-transform: uppercase;
   margin-bottom: -15px;
-  padding-top: 20px;
 }
 
 .resume .place {
@@ -194,6 +193,10 @@ a:hover {
 
   .resume .back {
     top: -20px;
+  }
+
+  .resume .download {
+    border: 0;
   }
 
 }
