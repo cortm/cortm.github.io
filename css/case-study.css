@@ -32,11 +32,11 @@
   margin-left: 0;
 }
 
-.top {
+.top-area {
   padding: 20px 0;
 }
 
-.top h1 {
+.top-area h1 {
   padding-bottom: 20px;
 }
 
@@ -208,6 +208,23 @@
 
   .example {
     min-height: 450px;
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  h1 {
+    font-size: 45px;
+  }
+
+  .example {
+    opacity: 1;
+    top: 0;
+  }
+
+  .preface {
+    padding: 45px 0;
   }
 
 }
