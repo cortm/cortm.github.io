@@ -132,11 +132,7 @@ a.inline-link:hover {
 }
 
 .nav a {
-  margin-left: 25px;
-}
-
-.nav a:first-child {
-  margin-left: 0;
+  margin-right: 25px;
 }
 
 .to-top {
