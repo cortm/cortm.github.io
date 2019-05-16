@@ -1,0 +1,256 @@
+/*
+--- GLobal ---------------
+*/
+
+.verticalName {
+  position: absolute;
+  top: 135px;
+  right: -70px;
+  -ms-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+  letter-spacing: 1px;
+  z-index: 1500;
+}
+
+.colorChange {
+  background: red;
+}
+
+.container {
+  padding: 100px 30px 0;
+  margin: 0 auto;
+  max-width: 1100px;
+}
+
+.nav {
+  top: 0;
+  width: 100%;
+}
+
+.nav a {
+  margin-left: 0;
+}
+
+.top {
+  padding: 20px 0;
+}
+
+.top h1 {
+  padding-bottom: 20px;
+}
+
+.to-top {
+  right: 0;
+}
+
+.preface {
+  padding: 100px 0;
+}
+
+.outcomes {
+  border-top: 1px solid rgba(57, 67, 73, .25);
+  margin-top: 40px;
+  padding: 30px 0;
+}
+
+.work {
+  padding: 0 0 80px;
+}
+
+.examples {
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.example {
+  min-height: 310px;
+  width: 100%;
+  background-color: rgba(247, 247, 247, .6);
+  border-radius: 4px;
+  margin-bottom: 30px;
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: 50% 50%;
+  opacity: 0;
+  top: 30px;
+  -webkit-transition: .3s;
+  -moz-transition: .3s;
+  transition: .3s;
+}
+
+.fadeIn {
+  top: 0;
+  -webkit-transition: .3s;
+  -moz-transition: .3s;
+  transition: .3s;
+  opacity: 1;
+}
+
+.mx .example.one {
+  background-image: url(../images/mx-example1.png);
+}
+
+.mx .example.two {
+  background-image: url(../images/mx-example2.png);
+}
+
+.mx .example.three {
+  background-image: url(../images/mx-example3.png);
+  background-size: 95%;
+}
+
+.mx .example.four {
+  background-image: url(../images/mx-example4.png);
+}
+
+.mx .example.five {
+  background-image: url(../images/mx-example5.png);
+}
+
+.mx .example.six {
+  background-image: url(../images/mx-example6.png);
+}
+
+.mx .example.seven {
+  background-image: url(../images/mx-example7.png);
+}
+
+.mx .example.eight {
+  background-image: url(../images/mx-example8.png);
+}
+
+.mx .example.nine {
+  background-image: url(../images/mx-example9.png);
+}
+
+.mx .example.ten {
+  background-image: url(../images/mx-example10.png);
+}
+
+.mx .example.eleven {
+  background-image: url(../images/mx-example11.png);
+  background-size: 95%;
+}
+
+.mx .example.twelve {
+  background-image: url(../images/mx-example12.png);
+  background-size: 95%;
+}
+
+.mx .example.thirteen {
+  background-image: url(../images/mx-example13.png);
+  background-size: 95%;
+}
+
+.mx .example.fourteen {
+  background-image: url(../images/mx-example14.png);
+}
+
+.mx .example.fifteen {
+  background-image: url(../images/mx-example15.png);
+}
+
+.mx .example.sixteen {
+  background-image: url(../images/mx-example16.png);
+}
+
+.mx .example.seventeen {
+  background-image: url(../images/mx-example17.png);
+}
+
+.mx .example.eighteen {
+  background-image: url(../images/mx-example18.png);
+}
+
+.mx .example.nineteen {
+  background-image: url(../images/mx-example19.png);
+}
+
+.mx .example.twenty {
+  background-image: url(../images/mx-example20.png);
+  background-size: 95%;
+}
+
+.mx .example.twenty-one {
+  background-image: url(../images/mx-example21.png);
+  background-size: 95%;
+}
+
+.mx .example.twenty-two {
+  background-image: url(../images/mx-example22.png);
+  background-size: 95%;
+}
+
+.caption {
+  position: absolute;
+  right: 12px;
+  bottom: 0;
+  font-size: 13px;
+  opacity: .5;
+  background-color: rgba(247, 247, 247, .3);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.footer {
+  margin-top: 100px;
+  height: 548px;
+}
+
+
+/*
+------ Viewports ------
+*/
+
+@media (min-width: 400px) {
+
+  .example {
+    min-height: 450px;
+  }
+
+}
+
+@media (min-width: 700px) {
+
+  .container {
+    padding: 100px 80px 0;
+  }
+
+  .verticalName {
+    top: 177px;
+    right: -52px;
+  }
+
+  .company-intro {
+    flex-wrap: wrap;
+    display: flex;
+  }
+
+  .ci-side {
+    width: 40%;
+    padding: 0 10% 0 0;
+  }
+
+  .halfer {
+    width: calc(50% - 15px);
+  }
+
+  .halfer.first {
+    margin-right: 30px;
+  }
+
+  .example {
+    min-height: 700px;
+  }
+
+}
+
+@media (min-width: 1350px) {
+
+  .verticalName {
+    position: fixed;
+  }
+
+}

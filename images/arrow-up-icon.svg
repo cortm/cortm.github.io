@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>icon_arrow-up</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Iteration-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon_arrow-up" transform="translate(-2.000000, -2.000000)">
+            <rect id="Rectangle" opacity="0.24" x="0" y="0" width="16" height="16"></rect>
+            <path d="M13.138,7.52866667 L8.47154,2.8622 C8.21061879,2.60294012 7.78934121,2.60294012 7.52842,2.8622 L2.862,7.52866667 C2.60569801,7.78965396 2.60759448,8.20842835 2.86624973,8.4670836 C3.12490498,8.72573885 3.54367937,8.72763532 3.80466667,8.47133333 L7.33333333,4.94270667 L7.33333333,12.6666667 C7.33333333,13.0348565 7.63181017,13.3333333 8,13.3333333 C8.36818983,13.3333333 8.66666667,13.0348565 8.66666667,12.6666667 L8.66666667,4.94270667 L12.1953333,8.47137333 C12.4561278,8.72889508 12.8759053,8.72756536 13.1350631,8.46839658 C13.3942209,8.2092278 13.3955328,7.78945023 13.138,7.52866667 L13.138,7.52866667 Z" id="Path" fill="#FFFFFF"></path>
+        </g>
+    </g>
+</svg>

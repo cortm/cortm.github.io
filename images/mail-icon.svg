@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="19px" height="15px" viewBox="0 0 19 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://wwws.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
+    <title>envelope-icon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Home" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linejoin="round">
+        <g id="home" transform="translate(-1372.000000, -402.000000)" stroke="#394349" stroke-width="1.575">
+            <g id="Group" transform="translate(1366.000000, 72.000000)">
+                <g id="envelope-icon" transform="translate(7.000000, 331.000000)">
+                    <polyline id="Path" points="0 0 8.66565 7.30700504 17.2242 0.163647059 0 -4.25754611e-17 1.00695 12.2715412 16.2171 12.0534471 17.2242 0.163647059"></polyline>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
