@@ -459,4 +459,8 @@ Figure Captions
     font-size: 25px;
   }
 
+  .pointer:after {
+    width: 100%;
+  }
+
 }
