@@ -10,7 +10,7 @@
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg);
   letter-spacing: 1px;
-  z-index: 1500;
+  z-index: 2000;
 }
 
 .colorChange {
