@@ -4,8 +4,8 @@
 
 .verticalName {
   position: absolute;
-  top: 135px;
-  right: -70px;
+  top: 120px;
+  right: -65px;
   -ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg);
@@ -216,6 +216,7 @@
 
   h1 {
     font-size: 45px;
+    max-width: 320px;
   }
 
   .example {
@@ -236,7 +237,7 @@
   }
 
   .verticalName {
-    top: 177px;
+    top: 140px;
     right: -52px;
   }
 
