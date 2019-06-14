@@ -166,7 +166,7 @@ a.inline-link:hover {
 */
 
 .figureOne {
-  background-image: url(../images/fig-me.png);
+  background-image: url(../images/fig-me.jpg);
   position: fixed;
   top: 0;
   right: 0;
@@ -197,19 +197,19 @@ a.inline-link:hover {
 }
 
 .figurenu {
-  background-image: url(../images/fig-nu.png);
+  background-image: url(../images/fig-nu.jpg);
 }
 
 .figuremx {
-  background-image: url(../images/fig-mx.png);
+  background-image: url(../images/fig-mx.jpg);
 }
 
 .figurewo {
-  background-image: url(../images/fig-wo.png);
+  background-image: url(../images/fig-wo.jpg);
 }
 
 .figuredrib {
-  background-image: url(../images/fig-drib.png);
+  background-image: url(../images/fig-drib.jpg);
 }
 
 /*
