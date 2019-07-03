@@ -166,34 +166,24 @@ a.inline-link:hover {
 */
 
 .figureOne {
-  background-image: url(../images/fig-me.jpg);
+  background-image: ;
   position: fixed;
   top: 0;
   right: 0;
-  background-color: #fafafa;
+  /*background-color: #fafafa;*/
   width: 50%;
   height: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 80%;
-  opacity: 0;
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
   transition: all .3s ease-in-out;
 }
 
-.figureOne:after {
-  color: #ffffff;
-  font-size: 13px;
-  text-align: center;
-  border-radius: 2px;
-  background-color: rgba(57, 67, 73, .3);
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  width: calc(100% - 40px);
-  padding: 10px 0;
+.figureabout {
+  background-image: url(../images/fig-me.jpg);
 }
 
 .figurenu {
@@ -214,6 +204,19 @@ a.inline-link:hover {
 
 /*
 Figure Captions
+.figureOne:after {
+  color: #ffffff;
+  font-size: 13px;
+  text-align: center;
+  border-radius: 2px;
+  background-color: rgba(57, 67, 73, .3);
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: calc(100% - 40px);
+  padding: 10px 0;
+}
+
 .figurenu:after {
   content: "Numetric's Network Screening app";
 }

@@ -45,7 +45,7 @@ $(window).scroll(function() {
 $(function(){
   $("#numetric").hover(
     function () {
-      $(".figureOne").toggleClass('figurenu');
+      $(".figureOne").addClass('figurenu');
     }, 
     function () {
       $(".figureOne").toggleClass('figurenu');
