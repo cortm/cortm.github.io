@@ -451,6 +451,10 @@ Figure Captions
     opacity: 0;
   }
 
+  #figureOne {
+    display: none;
+  }
+
 }
 
 @media (max-width: 700px) {
