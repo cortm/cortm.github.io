@@ -33,6 +33,11 @@
 
   </head>
   <body>
+
+    <script>
+      document.body.classList.add('fade');
+    </script>
+
     <div class="top"></div>
     <div class="top-border"></div>
 
@@ -113,6 +118,12 @@
       <p class="copyright">&copy; <script>document.write(new Date().getFullYear());</script> - Cort McGinty</p>
 
     </div> <!-- Container -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function(e) {
+        document.body.classList.remove('fade');
+      });
+    </script>
 
   </body>
 </html>
