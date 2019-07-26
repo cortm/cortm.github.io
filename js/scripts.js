@@ -42,6 +42,16 @@ $(window).scroll(function() {
 });
 
 // Figures
+// $(function(){
+//   $("#about").hover(
+//     function () {
+//       $(".figureOne").addClass('figureabout');
+//     }, 
+//     function () {
+//       $(".figureOne").toggleClass('figureabout');
+//     }
+//   );
+// });
 $(function(){
   $("#numetric").hover(
     function () {

@@ -157,6 +157,16 @@ a.inline-link:hover {
   right: 0;
   display: none;
   cursor: pointer;
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+}
+
+.to-top:hover {
+  background-color: rgba(57, 67, 73, .5);
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
 }
 
 .to-top-reveal {
@@ -175,7 +185,7 @@ a.inline-link:hover {
 */
 
 .figureOne {
-  background-image: ;
+  background-image: url(../images/fig-blank.jpg);
   position: fixed;
   top: 0;
   right: 0;
@@ -189,6 +199,7 @@ a.inline-link:hover {
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
   transition: all .3s ease-in-out;
+  opacity: 0;
 }
 
 .figureabout {
