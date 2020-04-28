@@ -352,15 +352,18 @@ Figure Captions
   opacity: 1;
 }
 
+/*
+For Case Studies that are coming soon...
+
 #numetric .hot-link {
   color: rgba(57, 67, 73, .5);
   cursor: default;
   font-style: italic;
-}
+}*/
 
-#numetric .pointer:after {
+/*#numetric .pointer:after {
   background-color: rgba(57, 67, 73, .25);
-}
+}*/
 
 /*
 --- Connect ---------------

@@ -1,5 +1,87 @@
 /*
---- GLobal ---------------
+--- Case Study Cards ---------------
+*/
+
+.case-study-card {
+  min-height: 420px;
+  width: 100%;
+  background-color: #fafafa;
+  margin-bottom: 30px;
+  border-radius: 2px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-image {
+  background-image: url(../images/nu-example1.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 0% -10%;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 2px;
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+  transition: .6s;
+}
+
+.color-overlay {
+  background-color: rgba(57,67,73,.3);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.bg-image.two {
+  background-image: url(../images/nu-example2.png);
+}
+
+.bg-image.three {
+  background-image: url(../images/nu-example3.png);
+}
+
+.card-content {
+  z-index: 2;
+  position: relative;
+  transition: .6s;
+  /*text-shadow: 0px 0px 60px rgba(57,67,73,.4);*/
+}
+
+.case-study-card:hover .bg-image {
+  filter: blur(0px);
+  -webkit-filter: blur(0px);
+  background-position: 0% -35%;
+  transition: .3s;
+}
+
+.case-study-card:hover .card-content {
+  margin-top: -260px;
+  transition: .3s;
+  color: rgba(57,67,73,.8);
+}
+
+.case-study-card:hover .color-overlay {
+  background-color: rgba(57,67,73,0);
+  transition: .3s;
+  z-index: 1;
+}
+
+.case-study-card p {
+  margin-top: -18px;
+  opacity: .8;
+}
+
+
+/*
+--- Global ---------------
 */
 
 .verticalName {
@@ -222,6 +304,10 @@
 
   .preface {
     padding: 45px 0;
+  }
+
+  .card-content {
+    max-width: 220px;
   }
 
 }
