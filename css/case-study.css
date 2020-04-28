@@ -55,25 +55,6 @@
   /*text-shadow: 0px 0px 60px rgba(57,67,73,.4);*/
 }
 
-.case-study-card:hover .bg-image {
-  filter: blur(0px);
-  -webkit-filter: blur(0px);
-  background-position: 0% -35%;
-  transition: .3s;
-}
-
-.case-study-card:hover .card-content {
-  margin-top: -260px;
-  transition: .3s;
-  color: rgba(57,67,73,.8);
-}
-
-.case-study-card:hover .color-overlay {
-  background-color: rgba(57,67,73,0);
-  transition: .3s;
-  z-index: 1;
-}
-
 .case-study-card p {
   margin-top: -18px;
   opacity: .8;
@@ -352,5 +333,24 @@
   .verticalName {
     position: fixed;
   }
+
+  .case-study-card:hover .bg-image {
+  filter: blur(0px);
+  -webkit-filter: blur(0px);
+  background-position: 0% -35%;
+  transition: .3s;
+}
+
+.case-study-card:hover .card-content {
+  margin-top: -260px;
+  transition: .3s;
+  color: rgba(57,67,73,.8);
+}
+
+.case-study-card:hover .color-overlay {
+  background-color: rgba(57,67,73,0);
+  transition: .3s;
+  z-index: 1;
+}
 
 }
