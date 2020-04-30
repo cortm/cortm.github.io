@@ -173,23 +173,23 @@ a.inline-link:hover {
   display: block;
 }
 
-.about:before, .works:before, .connect:before {
+/*.about:before, .works:before, .connect:before {
   content: "";
   display: block;
   height: 100px;
   margin: -100px 0 0;
-}
+}*/
 
 /*
 --- Figures ---------------
 */
 
 .figureOne {
-  background-image: url(../images/fig-blank.jpg);
+  background-image: url(../images/fig-logo.png);
   position: fixed;
   top: 0;
   right: 0;
-  /*background-color: #fafafa;*/
+  background-color: #fafafa;
   width: 50%;
   height: 100%;
   background-position: center;
@@ -203,7 +203,7 @@ a.inline-link:hover {
 }
 
 .figureabout {
-  background-image: url(../images/fig-me.jpg);
+  background-image: url(../images/fig-me.png);
 }
 
 .figurenu {
@@ -283,8 +283,7 @@ Figure Captions
 */
 
 .about {
-  margin-top: 200px;
-  padding: 0 0 250px;
+  padding: 200px 0 250px;
 }
 
 .about p {

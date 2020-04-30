@@ -53,6 +53,16 @@ $(window).scroll(function() {
 //   );
 // });
 $(function(){
+  $("#about").hover(
+    function () {
+      $(".figureOne").addClass('figureabout');
+    }, 
+    function () {
+      $(".figureOne").toggleClass('figureabout');
+    }
+  );
+});
+$(function(){
   $("#numetric").hover(
     function () {
       $(".figureOne").addClass('figurenu');
