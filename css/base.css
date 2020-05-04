@@ -173,12 +173,12 @@ a.inline-link:hover {
   display: block;
 }
 
-/*.about:before, .works:before, .connect:before {
+.about:before, .works:before, .connect:before {
   content: "";
   display: block;
   height: 100px;
   margin: -100px 0 0;
-}*/
+}
 
 /*
 --- Figures ---------------
