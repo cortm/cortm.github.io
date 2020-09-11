@@ -17,6 +17,16 @@
   overflow: hidden;
 }
 
+.case-study-card.active p {
+  color: #0176FF;
+  /*background-color: #fff;
+  border-radius: 2px;
+  max-width: 180px;
+  padding: 4px;
+  margin: -12px auto 0;
+  box-shadow: 0px 0px 60px rgba(57,67,73,.4);*/
+}
+
 .bg-image {
   background-image: url(../images/nu-example1.png);
   background-size: cover;
@@ -114,7 +124,7 @@
 }
 
 .work {
-  padding: 0 0 80px;
+  padding: 0 0 100px;
 }
 
 .examples {
@@ -335,11 +345,11 @@
   }
 
   .case-study-card:hover .bg-image {
-  filter: blur(0px);
-  -webkit-filter: blur(0px);
-  background-position: 0% -35%;
-  transition: .3s;
-}
+    filter: blur(0px);
+    -webkit-filter: blur(0px);
+    background-position: 0% -35%;
+    transition: .3s;
+  }
 
 .case-study-card:hover .card-content {
   margin-top: -260px;

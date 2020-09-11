@@ -1,0 +1,133 @@
+.top-area {
+  padding: 20px 0 100px;
+}
+
+p.content {
+  max-width: 800px;
+}
+
+.study-section.lg {
+  padding-bottom: 100px;
+}
+
+.study-section.sm {
+  padding-bottom: 40px;
+}
+
+.comparisons {
+  margin-bottom: 100px;
+}
+
+ .comparison-row {
+  margin: 40px 0 140px;
+  border-bottom: 1px solid rgba(57, 67, 73, .25)
+}
+
+.comparison-row.last {
+  border-bottom: 0;
+}
+
+.comparison-row p.title {
+  font-weight: 500;
+}
+
+.col {
+  margin: 20px 0 40px;
+}
+
+.ba-label {
+  /*background-color: #394349;
+  color: #ffffff;*/
+  border-radius: 2px;
+  /*padding: 1px 2px;*/
+  font-size: 11px;
+  text-transform: uppercase;
+  position: relative;
+  top: -1px;
+  display: block;
+  max-width: 60px;
+  /*margin-bottom: 20px;*/
+  opacity: .8; 
+  /*text-align: center;*/
+}
+
+/*-------------------Before and after slider-------------------*/
+.ba-slider {
+  position: relative;
+  overflow: hidden;
+}
+ 
+.ba-slider img {
+  width: 100%;
+  display: block;
+}
+ 
+.resize {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 50%;
+  overflow: hidden;
+}
+
+.handle { /* Thin line seperator */
+  position: absolute; 
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+ 
+  background: #DADCDE;
+  cursor: ew-resize;
+  opacity: .9;
+}
+ 
+.handle:after {  /* Big knob  */
+  position: absolute;
+  top: 50%;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  z-index: 10000;
+
+  content: '\2237';
+  color: #ffffff;
+  font-size: 17px;
+  text-align: center;
+  line-height: 28px;
+
+  background: #394349;
+  border: 1px solid #2A3236;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow:
+    0 2px 6px rgba(0,0,0,.5),
+    inset 0 2px 0 rgba(255,255,255,.4),
+    /*inset 0 60px 50px -30px #48555D;*/
+}
+
+/*.draggable:after {
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  line-height: 24px;
+  font-size: 16px;
+}*/
+/*-------------------Before and after slider-------------------*/
+
+.outcome {
+  margin-bottom: 180px;
+}
+
+@media (min-width: 800px) {
+
+  .comparison-row {
+    margin: 0 0 140px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 80px;
+  }
+
+}
