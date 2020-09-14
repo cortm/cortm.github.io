@@ -82,9 +82,9 @@ p.content {
   width: 2px;
   margin-left: -1px;
  
-  background: #DADCDE;
+  background: #dadcde;
   cursor: ew-resize;
-  opacity: .9;
+  /*opacity: .9;*/
 }
  
 .handle:after {  /* Big knob  */
@@ -101,14 +101,20 @@ p.content {
   text-align: center;
   line-height: 28px;
 
-  background: #394349;
-  border: 1px solid #2A3236;
+  /*background: #0476FF;*/
+  border: .5px solid rgba(255,255,255,1);
   border-radius: 50%;
   transition: all 0.3s ease;
-  box-shadow:
+  /*box-shadow:
     0 2px 6px rgba(0,0,0,.5),
     inset 0 2px 0 rgba(255,255,255,.4),
-    /*inset 0 60px 50px -30px #48555D;*/
+    inset 0 60px 50px -30px #48555D;*/
+  background-image: linear-gradient(#39ADE2, #0476FF );
+  box-shadow: 0 2px 4px 1px rgba(57,67,73,0.30);
+}
+
+.draggable:after {
+  opacity: 0;
 }
 
 /*.draggable:after {
@@ -117,7 +123,7 @@ p.content {
   margin: -12px 0 0 -12px;
   line-height: 24px;
   font-size: 16px;
-}*/
+}
 /*-------------------Before and after slider-------------------*/
 
 .outcome {
