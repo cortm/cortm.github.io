@@ -31,6 +31,14 @@ $(document).ready(function () {
   })
 });
 
+$(document).ready(function () {
+  $('a.to-invention').click(function (){
+    $('html, body').animate({
+      scrollTop: $("div.invention").offset().top
+    }, 1000)
+  })
+});
+
 // Back to Top Button ----------------------------
 $(window).scroll(function() {    
   var scroll = $(window).scrollTop();

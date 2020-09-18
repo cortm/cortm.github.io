@@ -16,6 +16,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,800" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@600&display=swap" rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/normalize.css">
@@ -51,18 +52,20 @@
         <br><strong>Team:</strong> 1 Designer (me), 1 PM, 6 Engineers</p>
       </div>
 
-      <div class="study-section lg">
+      <div class="study-section">
         <p class="primer">About Numetric</p>
-        <div class="company-intro">
-          <p class="ci-side content">A few civil engineers at the Utah Department of Transportation recognized that turning data into decisions was cumbersome and time-consuming. They figured an automation-driven approach could fix this problem. It could enable anyone — regardless of skill level — to perform data-driven safety analysis. With that realization, Numetric was born.<p class="ci-side content">One of the first tools they created was an application called Crash Query which allowed people to explore crash data in a more familiar dashboard-like interface. The first version of Crash Query was a big step forward for safety professionals and began to uncover an underserved market that could benefit greatly from some well-designed software.</p>
-        </div>
+        <div class="split">
+        <p class="content">A few civil engineers at the Utah Department of Transportation recognized that turning data into decisions was cumbersome and time-consuming. They figured an automation-driven approach could fix this problem. It could enable anyone — regardless of skill level — to perform data-driven safety analysis. After that, Numetric was born.<p class="content">One of the first tools they created was an application called Crash Query which allowed people to explore crash data in a more familiar dashboard-like interface. The first version of Crash Query was a big step forward for safety professionals and began to uncover an underserved market that could benefit greatly from some well-designed software.</p></div>
       </div>
 
-      <div class="study-section lg">
+      <div class="study-section">
         <p class="primer">Understanding Through Discovery</p>
-        <p class="content">I’m a firm believer that a well designed product is only as good as the discovery and user understanding that goes into it. I had almost zero knowledge about traffic safety prior to joining Numetric. Our Product Manager and I realized quickly that in order to design a useful product we had to dive in and understand the users, their needs, and their processes.</p>
-        <p class="content">After extensive research of white papers, documented workflows, and several conversations with safety professionals from DOTs (Dept. of Transportation) across the U.S. we began to understand which of their current problems could be solved within our product. We also began to realize some of the pain points within the Crash Query app were closely tied with some of the features we had began to ideate on based on our findings.</p>
-        <p class="content">These findings led to prioritization of product improvements that ultimately resulted in a completely new Crash Query application.</p>
+        <p class="content">I’m a firm believer that a well designed product is only as good as the discovery and understanding that precedes it. I had almost zero knowledge about traffic safety prior to joining Numetric. Our Product Manager and I realized quickly that in order to design a useful product we had to dive in and understand the users, their needs, and their processes.</p>
+        <p class="content">After extensive research of white papers, documented workflows, and several conversations with safety professionals from DOTs (Dept. of Transportation) across the U.S. we began to understand which of their current problems could be solved within our product. We also began to realize some of the pain points within the Crash Query app were closely tied with some of the features we had began to ideate on based on our findings. These findings led to prioritization of product improvements that ultimately resulted in a completely new Crash Query application.</p>
+      </div>
+
+      <div class="quote">
+        <p>... a well designed product is only as good as the discovery and understanding that precedes it.</p>
       </div>
 
       <div class="study-section sm">
@@ -104,7 +107,7 @@
         </div>
         <div class="col">
           <p class="title"><span class="ba-label">After</span> ii. Invention of a new chart type</p>
-          <p>Instead of attempting to bank on another third party charting library I set out to solve this issue in a different way by creating an all new data visualization.</p>
+          <p>Instead of trying to rely on another third party library I set out to solve this by creating an all new data visualization. <a class="hot-link to-invention">More on that below.</a></p>
         </div>
       </div>
 
@@ -138,7 +141,7 @@
       <div class="comparison-row last">
         <div class="col">
           <p class="title"><span class="ba-label">Before</span> iv. Gaps in processes</p>
-          <p>Having access to all this data was nice but there was a big need for users to export or share their studies. We were forcing our users out of our apps in order to complete their work. </p>
+          <p>Having access to all this data was nice but there was a big need for users to export or share their studies. We were forcing our users out of our apps in order to complete their work.</p>
         </div>
         <div class="col">
           <p class="title"><span class="ba-label">After</span> iv. Always offer an output</p>
@@ -146,7 +149,97 @@
         </div>
       </div>
 
-      <div class="outcome">
+      <div class="study-section invention">
+        <p class="primer">Iteration Leads to Innovation</p>
+        <p class="content">When it comes to major redesigns I think we often have the urge to attempt to solve something too quickly. I think good product teams are patient and invest time in extensive and ongoing understanding. In this example, a more patient approach has not only proven to be simpler technically but has allowed us flexibility to solve a much broader range of use cases. Less is more, or so they say :).</p>
+      </div>
+
+      <!-- <div class="quote">
+        <p>... good product teams are patient and invest time in extensive and ongoing understanding.</p>
+      </div> -->
+
+      <div class="img-text-splits">
+        <p class="content">It didn't take long to identify a few areas our charts were falling short. Below are some of the more obvious things we knew we wanted to solve for:</p>
+        <div class="split">
+          <div class="left-img">
+            <video autoplay muted loop class="vid">
+              <source src="images/case-studies/olmetrics1.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div>
+            <ol>
+              <li>Overwhelming information.
+              <p>Too much data displayed at once especially in a dashboard context lead to cognitive overload.</p>
+              </li>
+              <li>Reliant on hover interactions.
+              <p>Data rendered useless when printed, shared, or displayed on touch devices.</p>
+              </li>
+              <li>Not accessible.
+              <p>Improperly truncated, overlapping, or hidden labels made it impossible to fully understand.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="img-text-splits">
+        <p class="content">Here are some of the less obvious issues we uncovered as we pushed to iterate further and dig into understanding our users’ needs more broadly:</p>
+        <div class="split">
+          <div class="left-img">
+            <video autoplay muted loop class="vid">
+              <source src="images/case-studies/olmetrics2.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div>
+            <ol>
+              <li>Not conducive to comparisons.
+              <p>For some chart types, the only way to compare two things was by showing multiple charts. </p>
+              </li>
+              <li>Lost context when filtered.
+              <p>A chart with one bar is not very useful.</p>
+              </li>
+              <li>Cumbersome to create and maintain.
+              <p>Each chart has lot of moving pieces: titles, labels, colors, sorting, legends, etc.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="img-text-splits vid">
+        <p class="content">And here is a look at the solution we came up with:</p>
+        <div class="vidwrapper">
+          <video autoplay muted loop class="vid2">
+            <source src="images/case-studies/numetrics2.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="split">
+          <ul>
+            <li>Ensured readability.
+            <p>Considers and supports lengthy value strings AND includes counts as well as percentages.</p>
+            </li>
+            <li>Fully responsive.
+            <p>Works at very narrow or wide widths and performs well on touch devices.</p>
+            </li>
+            <li>One size fits all.
+            <p>Can collapse to show the top values or expand to get the full context.</p>
+            </li>
+          </ul>
+          <ul>
+            <li>Allows multiple comparisons.
+            <p>One metric can easily compare four sets of data without sacrificing screen space.</p>
+            </li>
+            <li>Safe for printing.
+            <p>Optimized to print using less ink, less paper, and improve readbility.</p>
+            </li>
+            <li>Optimized for filtering
+            <p>Values filtered out collapse but are always still accessible.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="study-section outcome">
         <p class="primer">Outcomes Over Outputs</p>
         <p class="content">I find tremendous joy in designing and building products. Beyond that though, the cherry on top is hearing how the tools you build make a difference in other people's lives. Since we first began researching how to improve processes for traffic safety professionals we have seen a <strong>700% increase in customer growth</strong> (as of July 2020) and now <strong>power AASHTOWare's Safety Platform</strong> (one of the most trusted organizations in traffic safety).</p>
         <p class="content">This is not the end of the road (pun intended), however. Another part of product design I love so much is it never ends... there is always room to iterate and improve.</p>
@@ -154,7 +247,7 @@
 
       <div id="connect" class="connect">
         <p class="primer">Want to Hear More?</p>
-        <p class="words">I really enjoy getting to know new people. I’d love to meet up and hear about the projects you’re working on. You can reach me by any of the methods below.</p>
+        <p class="content">I really enjoy getting to know new people. I’d love to meet up and hear about the projects you’re working on. You can reach me by any of the methods below.</p>
         <div class="links">
           <a href="mailto:cortmcginty@gmail.com?subject=Hey%20Cort&body=Hey I was checking out your website and..." class="hot-link email">• Send me an email</a>
           <a href="https://twitter.com/cortmcginty" target="_blank" class="hot-link twitter">• DM me on Twitter</a>
@@ -174,15 +267,10 @@
     </div><!-- container -->
 
     <script>
-initComparisons();
-</script>
-
-    <script>
       document.addEventListener("DOMContentLoaded", function(e) {
         document.body.classList.remove('fade');
       });
     </script>
-
 
   </body>
 </html>
