@@ -220,6 +220,30 @@ p.content {
   padding-top: 200px;
 }
 
+.viz .content {
+  margin-bottom: 40px;
+}
+
+.example.one {
+  background-image: url(../images/case-studies/nu-example4.png);
+}
+
+.example.two {
+  background-image: url(../images/case-studies/nu-example5.png);
+}
+
+.example.three {
+  background-image: url(../images/case-studies/nu-example6.png);
+}
+
+.example.four {
+  background-image: url(../images/case-studies/nu-example7.png);
+}
+
+.example.five {
+  background-image: url(../images/case-studies/nu-example8.png);
+}
+
 @media (min-width: 800px) {
 
   .comparison-row {
