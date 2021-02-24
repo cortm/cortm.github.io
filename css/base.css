@@ -202,9 +202,9 @@ a.inline-link:hover {
   opacity: 0;
 }
 
-.figureabout {
-  background-image: url(../images/fig-me.png);
-}
+/*.figureabout {
+  background-image: url(../images/fig-me3.png);
+}*/
 
 .figurenu {
   background-image: url(../images/fig-nu.jpg);
@@ -216,6 +216,10 @@ a.inline-link:hover {
 
 .figurewo {
   background-image: url(../images/fig-wo.jpg);
+}
+
+.figurelogos {
+  background-image: url(../images/fig-logos.png);
 }
 
 .figuredrib {

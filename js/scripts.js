@@ -91,6 +91,16 @@ $(function(){
   );
 });
 $(function(){
+  $("#logos").hover(
+    function () {
+      $(".figureOne").toggleClass('figurelogos');
+    }, 
+    function () {
+      $(".figureOne").toggleClass('figurelogos');
+    }
+  );
+});
+$(function(){
   $("#dribbble").hover(
     function () {
       $(".figureOne").toggleClass('figuredrib');

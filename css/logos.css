@@ -1,0 +1,112 @@
+.examples {
+  margin-bottom: 100px;
+}
+
+.example {
+  min-height: 340px;
+  background-repeat: no-repeat;
+  background-size: 80%;
+  background-position: 50% 50%;
+}
+
+.example.one {
+  background-image: url(../images/logos/logo_my-cookbook.png);
+}
+
+.example.two {
+  background-image: url(../images/logos/logo_inspire.png);
+}
+
+.example.three {
+  background-image: url(../images/logos/logo_ignite.png);
+}
+
+.example.four {
+  background-image: url(../images/logos/logo_acme.png);
+}
+
+.example.five {
+  background-image: url(../images/logos/logo_mx.png);
+}
+
+.example.six {
+  background-image: url(../images/logos/logo_idea-academy.png);
+}
+
+.example.seven {
+  background-image: url(../images/logos/logo_money-sense.png);
+}
+
+.example.eight {
+  background-image: url(../images/logos/logo_good-guys-with-guns.png);
+}
+
+.example.nine {
+  background-image: url(../images/logos/logo_jay-hollis.png);
+}
+
+.example.ten {
+  background-image: url(../images/logos/logo_focus.png);
+}
+
+.example.eleven {
+  background-image: url(../images/logos/logo_cashflow.png);
+}
+
+.example.twelve {
+  background-image: url(../images/logos/logo_figures.png);
+}
+
+.example.thirteen {
+  background-image: url(../images/logos/logo_synchronicity.png);
+}
+
+.example.fourteen {
+  background-image: url(../images/logos/logo_md-softball.png);
+}
+
+.example.fifteen {
+  background-image: url(../images/logos/logo_hydra.png);
+}
+
+.example.sixteen {
+  background-image: url(../images/logos/logo_seed.png);
+}
+
+.example.seventeen {
+  background-image: url(../images/logos/logo_acquire.png);
+}
+
+.example.eighteen {
+  background-image: url(../images/logos/logo_finder.png);
+}
+
+.example.nineteen {
+  background-image: url(../images/logos/logo_maxwell-services.png);
+}
+
+.example.twenty {
+  background-image: url(../images/logos/logo_were-official.png);
+}
+
+.example.twentyone {
+  background-image: url(../images/logos/logo_hot-chocolate.png);
+}
+
+.example.twentytwo {
+  background-image: url(../images/logos/logo_cortlin-j.png);
+}
+
+@media (min-width: 800px) {
+
+
+}
+
+
+
+
+
+
+
+
+
