@@ -2,6 +2,10 @@
 --- GLobal ---------------
 */
 
+html {
+  background: #394349;
+}
+
 body {
   background-color: #ffffff;
   color: #394349;
@@ -425,7 +429,8 @@ For Case Studies that are coming soon...
 
 .copyright {
   color: rgba(57, 67, 73, .5);
-  margin-bottom: 40px;
+  margin-bottom: -40px;
+  padding-bottom: 40px;
 }
 
 /*
