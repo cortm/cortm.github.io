@@ -290,8 +290,9 @@ Figure Captions
 --- About ---------------
 */
 
+
 .about {
-  padding: 200px 0 250px;
+  padding: 100px 0 250px;
 }
 
 .about p {
@@ -361,16 +362,18 @@ Figure Captions
 
 /*
 For Case Studies that are coming soon...
+*/
 
-#numetric .hot-link {
+#notable .hot-link {
   color: rgba(57, 67, 73, .5);
   cursor: default;
   font-style: italic;
-}*/
+}
 
-/*#numetric .pointer:after {
+#notable .pointer:after {
   background-color: rgba(57, 67, 73, .25);
-}*/
+  display: none;
+}
 
 /*
 --- Connect ---------------
