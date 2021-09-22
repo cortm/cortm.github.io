@@ -104,13 +104,6 @@ a.inline-link:hover {
   color: rgba(1, 118, 255, .5);
 }
 
-.top-border {
-  border-top: 6px solid #394349;
-  position: fixed;
-  width: 100%;
-  z-index: 1000;
-}
-
 .container {
   padding: 250px 30px 0;
 }
@@ -140,7 +133,6 @@ a.inline-link:hover {
   padding: 20px 0;
   position: -webkit-sticky; /* Safari & IE */
   position: sticky;
-  top: 6px;
   z-index: 1000;
 }
 
@@ -434,6 +426,14 @@ For Case Studies that are coming soon...
   color: rgba(57, 67, 73, .5);
   margin-bottom: -40px;
   padding-bottom: 40px;
+}
+
+/*
+--- 404 ---------------
+*/
+
+.error404 {
+  min-height: 500px;
 }
 
 /*
