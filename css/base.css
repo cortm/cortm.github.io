@@ -133,6 +133,7 @@ a.inline-link:hover {
   padding: 20px 0;
   position: -webkit-sticky; /* Safari & IE */
   position: sticky;
+  top: 0;
   z-index: 1000;
 }
 
