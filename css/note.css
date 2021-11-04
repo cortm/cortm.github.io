@@ -1,0 +1,12 @@
+html {
+	background: #ffffff;
+}
+
+textarea {
+	padding: 100px 100px 0;
+	width: calc(100% - 200px);
+	height: calc(100vh - 100px);
+	outline: none;
+	border: none;
+	resize: none;
+}
