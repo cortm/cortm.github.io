@@ -8,7 +8,6 @@ html {
 
 .container {
 	max-width: 800px;
-	margin-bottom: 300px;
 }
 
 h1 {
@@ -52,7 +51,6 @@ li {
 	list-style: none;
 }
 
-.fcopy {
-	max-width: 800px;
-	margin: 0 auto;
+.copyright {
+	margin-top: 300px;
 }
