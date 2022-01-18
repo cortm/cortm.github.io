@@ -1,0 +1,48 @@
+html {
+	background: #ffffff;
+}
+
+.nav {
+	background: none;
+}
+
+.container {
+	max-width: 800px;
+	margin-bottom: 300px;
+}
+
+h1 {
+	font-size: ;
+}
+
+.top-area {
+	margin-bottom: 100px;
+}
+
+.transition {
+	color: rgba(57, 67, 73, .25);
+	margin-top: 120px;
+	text-transform: uppercase;
+	letter-spacing: 3px;
+	font-weight: 600;
+}
+
+p {
+	margin-bottom: 40px;
+}
+
+em {
+	margin-top: 15px;
+	display: block;
+	color: rgba(57, 67, 73, .5);
+}
+
+ul {
+	margin-top: -20px;
+	padding-left: 0;
+}
+
+li {
+	margin-bottom: 10px;
+	list-style: none;
+}
