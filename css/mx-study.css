@@ -75,17 +75,6 @@
 --- Global ---------------
 */
 
-.verticalName {
-  position: absolute;
-  top: 120px;
-  right: -65px;
-  -ms-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
-  letter-spacing: 1px;
-  z-index: 2000;
-}
-
 .colorChange {
   background: red;
 }
@@ -111,6 +100,10 @@
 
 .to-top {
   right: 0;
+}
+
+.verticalName {
+  display: none;
 }
 
 .preface {
@@ -309,11 +302,6 @@
     padding: 100px 80px 0;
   }
 
-  .verticalName {
-    top: 140px;
-    right: -52px;
-  }
-
   .company-intro {
     flex-wrap: wrap;
     display: flex;
@@ -334,6 +322,22 @@
 
   .example {
     min-height: 700px;
+  }
+
+}
+
+@media (min-width: 1100px) {
+
+  .verticalName {
+    display: block;
+    position: absolute;
+    top: 140px;
+    right: -52px;
+    -ms-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+    letter-spacing: 1px;
+    z-index: 2000;
   }
 
 }
