@@ -25,12 +25,12 @@ body.fade {
 }
 
 h1 {
-  font-size: 70px;
+  font-size: 56px;
   font-weight: 800;
 }
 
 h2 {
-  font-size: 35px;
+  font-size: 28px;
 }
 
 strong {
@@ -128,7 +128,7 @@ a.inline-link:hover {
 
 .nav {
   background-color: #fff;
-  width: calc(100% + 80px);
+  width: 100%;
   padding: 20px 0;
   position: -webkit-sticky; /* Safari & IE */
   position: sticky;
@@ -137,7 +137,8 @@ a.inline-link:hover {
 }
 
 .nav a {
-  margin-right: 25px;
+  font-size: 14px;
+  margin-right: 12px;
 }
 
 .to-top {
@@ -333,21 +334,6 @@ Figure Captions
   position: relative;
 }
 
-.pointer:after {
-  content: "";
-  width: calc(100% + 120px);
-  height: 1px;
-  background-color: #0176FF;
-  position: absolute;
-  top: 10px;
-  left: 0;
-  z-index: 0;
-  opacity: 0;
-  -webkit-transition: .3s;
-  -moz-transition: .3s;
-  transition: .3s;
-}
-
 .work:hover > .pointer:after {
   opacity: 1;
 }
@@ -444,63 +430,14 @@ For Case Studies that are coming soon...
 ------ Viewports ------
 */
 
-@media (min-width: 150px) {
-
-  h1 {
-    font-size: 50px;
-  }
-
+@media (min-width: 450px) {
   .nav a {
-    margin-right: 15px;
-    display: block;
-    margin-bottom: 10px;
+    font-size: 16px;
+    margin-right: 24px;
   }
-
-}
-
-@media (min-width: 365px) {
-
-  .nav a {
-    margin-right: 15px;
-    display: inline-block;
-    margin-bottom: 0;
-  }
-
-}
-
-@media (min-width: 700px) {
-
-  body {
-    font-size: 15px;
-  }
-
-  .container {
-    padding: 250px 30px 0;
-  }
-
-  h2 {
-    font-size: 25px;
-  }
-
-  .pointer:after {
-    width: 100%;
-  }
-
-  .about {
-    margin-top: 60px;
-  }
-
-  .nav a {
-    margin-right: 25px;
-  }
-
 }
 
 @media (max-width: 999px) {
-
-  .nav {
-    width: 100%;
-  }
 
   .work:hover > .pointer:after {
     opacity: 0;
@@ -514,13 +451,13 @@ For Case Studies that are coming soon...
 
 @media (min-width: 1000px) {
 
+  h1 {
+    font-size: 65px;
+  }
+
   .container {
     padding: 250px 80px 0;
     max-width: calc(50% - 160px);
-  }
-
-  .figureOne {
-    opacity: 1;
   }
 
   .to-top {
@@ -528,21 +465,23 @@ For Case Studies that are coming soon...
     left: -52px;
   }
 
-  .social-icons a {
-    margin-right: 40px;
-  }
-
   .pointer:after {
-    width: calc(100% + 100px);
+    content: "";
+    width: calc(100% + 106px);
+    height: 1px;
+    background-color: #0176FF;
+    position: absolute;
+    top: 10px;
+    left: 0;
+    z-index: 0;
+    opacity: 0;
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    transition: .3s;
   }
 
-}
+  .figureOne {
+    opacity: 1;
+  }
 
-@media (min-width: 1200px) {
-  .pointer:after {
-    width: calc(100% + 120px);
-  }
-  #wereofficial.work h2 {
-    max-width: 480px;
-  }
 }
