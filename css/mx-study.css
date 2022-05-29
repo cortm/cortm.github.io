@@ -351,16 +351,16 @@
     transition: .3s;
   }
 
-.case-study-card:hover .card-content {
-  margin-top: -260px;
-  transition: .3s;
-  color: rgba(57,67,73,.8);
-}
+  .case-study-card:hover .card-content {
+    margin-top: -260px;
+    transition: .3s;
+    color: rgba(57,67,73,.8);
+  }
 
-.case-study-card:hover .color-overlay {
-  background-color: rgba(57,67,73,0);
-  transition: .3s;
-  z-index: 1;
-}
+  .case-study-card:hover .color-overlay {
+    background-color: rgba(57,67,73,0);
+    transition: .3s;
+    z-index: 1;
+  }
 
 }
