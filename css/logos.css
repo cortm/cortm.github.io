@@ -9,6 +9,14 @@
   background-position: 50% 50%;
 }
 
+.example.neg1 {
+  background-image: url(../images/logos/logo_athletify.png);
+}
+
+.example.zero {
+  background-image: url(../images/logos/logo_workout-now.png);
+}
+
 .example.one {
   background-image: url(../images/logos/logo_my-cookbook.png);
 }
