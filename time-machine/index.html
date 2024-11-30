@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Machine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: url("bg.png");
+            background-size: cover;
+        }
+
+        /* Time Machine Animation */
+        @keyframes timeMachine {
+            0% {
+                transform: scale(1);
+                opacity: 0.7;
+                box-shadow: 0 0 10px 5px rgba(59, 130, 246, 0.5);
+                background-color: rgba(59, 130, 246, 0.3); /* Start color */
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+                box-shadow: 0 0 30px 15px rgba(59, 130, 246, 0.7);
+                background-color: rgba(65, 241, 251, 0.5); /* Change to teal */
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.7;
+                box-shadow: 0 0 10px 5px rgba(59, 130, 246, 0.5);
+                background-color: rgba(59, 130, 246, 0.3); /* Return to blue */
+            }
+        }
+
+        /* Animated Background Layer */
+        .time-machine-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3), rgba(0, 0, 0, 0.9));
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, background-color 1s ease; /* Smooth transition for background color */
+            z-index: 0;
+        }
+
+        /* Active Animation */
+        .time-machine-effect.active {
+            opacity: 1;
+            animation: timeMachine 2s infinite;
+        }
+
+        /* Overlay for the main content */
+        .content-container {
+            position: relative;
+            z-index: 10;
+            width: 80%; /* Increase the overall width of the container */
+            max-width: 1200px; /* Make it wider */
+        }
+
+        /* Adjusted button to match the height of the inputs */
+        .launch-button {
+            width: 100%;
+            height: 100%; /* Same height as the inputs */
+            padding: 1rem 0; /* Remove side padding to ensure it stays consistent */
+        }
+
+        /* Flex adjustments */
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .input-box {
+            width: 22%;
+            background-color: rgba(40, 47, 63, 0.6);
+            border: 3px solid rgba(60, 244, 248, 0.4);
+            padding: 1.5rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%; /* Full width */
+            height: 10px; /* Adjust height of the track */
+            background: #ddd; /* Track color */
+            border-radius: 5px; /* Rounded track corners */
+            outline: none; /* Remove focus outline */
+        }
+
+        /* Style for the slider thumb (WebKit browsers like Chrome, Edge, Safari) */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; /* Override default appearance */
+            appearance: none; /* For modern browsers */
+            width: 30px; /* Width of the thumb */
+            height: 30px; /* Height of the thumb */
+            background: #3466f7; /* Thumb color */
+            border-radius: 50%; /* Make it circular */
+            cursor: pointer; /* Pointer cursor on hover */
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4); /* Optional shadow for style */
+/*            box-shadow: 0 0px 20px rgba(65, 255, 255, 0.4); /* Optional shadow for style */*/
+            border: 1px solid rgba(0, 0, 0, 0.3);
+        }
+
+    </style>
+</head>
+<body class="bg-gray-800 text-white min-h-screen flex justify-center items-center overflow-hidden">
+    <!-- Animated Background -->
+    <div class="time-machine-effect" id="animation-layer"></div>
+
+    <div class="content-container p-12 rounded-lg text-center">
+        <!-- Days Difference -->
+        <div class="text-1xl font-bold mb-6" id="days-difference">
+            0 Days Away
+        </div>
+
+        <!-- Inputs Container -->
+        <div class="input-container mb-6">
+            <!-- Month Container -->
+            <div class="input-box">
+                <div class="text-3xl font-bold mb-2" id="month-display">Jan</div>
+                <input type="range" id="month" min="1" max="12" value="1" class="w-full">
+                <label for="month" class="block mt-2 text-sm text-gray-400">Month</label>
+            </div>
+
+            <!-- Day Container -->
+            <div class="input-box">
+                <div class="text-3xl font-bold mb-2" id="day-display">1</div>
+                <input type="range" id="day" min="1" max="31" value="1" class="w-full">
+                <label for="day" class="block mt-2 text-sm text-gray-400">Day</label>
+            </div>
+
+            <!-- Year Container -->
+            <div class="input-box">
+                <div class="text-3xl font-bold mb-2" id="year-display">2025</div>
+                <input type="range" id="year" min="2020" max="2025" value="2025" class="w-full">
+                <label for="year" class="block mt-2 text-sm text-gray-400">Year</label>
+            </div>
+
+            <!-- Launch Button Container -->
+            <div class="input-box">
+                <button
+                    id="launch-button"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg shadow-md transition duration-200 launch-button"
+                >
+                    Launch
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="time-machine-audio" src="song.mp3"></audio>
+
+    <script>
+        // Map months to abbreviated names
+        const months = [
+            "Jan", "Feb", "Mar", "Apr", "May",
+            "Jun", "Jul", "Aug", "Sep", "Oct",
+            "Nov", "Dec"
+        ];
+
+        // DOM Elements
+        const yearSlider = document.getElementById('year');
+        const monthSlider = document.getElementById('month');
+        const daySlider = document.getElementById('day');
+        const yearDisplay = document.getElementById('year-display');
+        const monthDisplay = document.getElementById('month-display');
+        const dayDisplay = document.getElementById('day-display');
+        const daysDifferenceDisplay = document.getElementById('days-difference');
+        const launchButton = document.getElementById('launch-button');
+        const audio = document.getElementById('time-machine-audio');
+        const animationLayer = document.getElementById('animation-layer');
+
+        let isPlaying = false; // State variable to track if the audio is playing
+
+        // Function to update the display
+        function updateDisplay() {
+            const year = parseInt(yearSlider.value, 10);
+            const month = parseInt(monthSlider.value, 10);
+            const day = parseInt(daySlider.value, 10);
+
+            // Update displayed values
+            yearDisplay.textContent = year;
+            monthDisplay.textContent = months[month - 1];
+            dayDisplay.textContent = day;
+
+            // Calculate days difference
+            const selectedDate = new Date(year, month - 1, day);
+            const today = new Date();
+            const differenceInMilliseconds = selectedDate - today;
+            const differenceInDays = Math.round(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+
+            // Update days difference text
+            daysDifferenceDisplay.textContent = `${Math.abs(differenceInDays)} Days ${
+                differenceInDays < 0 ? "Ago" : "Away"
+            }`;
+        }
+
+        // Attach event listeners
+        yearSlider.addEventListener('input', updateDisplay);
+        monthSlider.addEventListener('input', updateDisplay);
+        daySlider.addEventListener('input', updateDisplay);
+
+        // Initialize display
+        updateDisplay();
+
+        // Launch button click event
+        launchButton.addEventListener('click', () => {
+            if (!isPlaying) {
+                // Play audio
+                audio.currentTime = 0; // Restart audio from the beginning
+                audio.play();
+                isPlaying = true;
+
+                // Trigger animation
+                animationLayer.classList.add('active');
+
+                // Update button text to indicate "Launch"
+                launchButton.textContent = "Launch";
+            } else {
+                // Pause audio
+                audio.pause();
+                isPlaying = false;
+
+                // Stop animation
+                animationLayer.classList.remove('active');
+
+                // Update button text back to "Launch"
+                launchButton.textContent = "Launch";
+            }
+        });
+
+        // Automatically reset when the audio ends
+        audio.addEventListener('ended', () => {
+            isPlaying = false;
+            animationLayer.classList.remove('active');
+            launchButton.textContent = "Launch";
+        });
+    </script>
+</body>
+</html>
