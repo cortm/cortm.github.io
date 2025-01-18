@@ -7,13 +7,27 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-800 text-white font-sans h-screen">
+  <div id="multiplier-dialog" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-gray-700 rounded-lg p-4 w-64">
+      <h2 id="multiplier-title" class="text-xl font-bold text-center mb-4">
+        <!-- Title will be added dynamically -->
+      </h2>
+      <div id="multiplier-buttons" class="flex flex-col gap-3">
+        <!-- Buttons will be added dynamically -->
+      </div>
+      <button id="cancel-multiplier" class="w-full mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500">
+        Cancel
+      </button>
+    </div>
+  </div>
+
   <div class="flex flex-col h-full">
     <!-- Top Bar -->
     <div class="flex justify-between items-center p-4">
       <!-- Toggle for 301 and 501 -->
       <div class="flex gap-2">
-        <button id="toggle-301" class="px-4 py-2 bg-blue-600 text-white rounded focus:outline-none focus:ring focus:ring-blue-400">301</button>
-        <button id="toggle-501" class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-400">501</button>
+        <button id="toggle-301" class="px-4 py-2 bg-blue-600 text-white rounded focus:outline-none">301</button>
+        <button id="toggle-501" class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 focus:outline-none">501</button>
       </div>
       <!-- Action Buttons -->
       <div class="flex gap-4">
@@ -63,63 +77,89 @@
 
 <!-- Accordion Content -->
 <div id="ways-to-play-content" class="hidden p-4 text-white bg-gray-800">
-  <p class="mb-4">Here are a few simple and fun dart games that are easy to play:</p>
-  <ol class="list-decimal list-inside space-y-2">
-    <li>
-      <strong>501/301</strong><br>
-      <em>Objective:</em> Reduce your starting score (501 or 301) to exactly zero by subtracting points scored in each round.<br>
-      <em>Rules:</em><br>
-      - Players take turns throwing three darts per round.<br>
-      - Subtract the total score from your starting number.<br>
-      - To win, the final dart must land in a double or bullseye.
-    </li>
-    <li>
-      <strong>Around the Clock</strong><br>
-      <em>Objective:</em> Hit every number on the dartboard in order, starting from 1 and going up to 20.<br>
-      <em>Rules:</em><br>
-      - Players take turns throwing three darts each.<br>
-      - Progress to the next number only when the current one is hit.<br>
-      - The first player to hit all numbers (or reach an agreed number) wins.
-    </li>
-    <li>
-      <strong>High Score</strong><br>
-      <em>Objective:</em> Score the highest total in a set number of rounds.<br>
-      <em>Rules:</em><br>
-      - Decide on a fixed number of rounds (e.g., 5 rounds).<br>
-      - Players throw three darts each turn and tally their scores.<br>
-      - The player with the highest cumulative score at the end wins.
-    </li>
-    <li>
-      <strong>Killer</strong><br>
-      <em>Objective:</em> Eliminate other players by hitting their number while protecting your own.<br>
-      <em>Rules:</em><br>
-      - Each player chooses (or is assigned) a random number on the board.<br>
-      - Players must first hit their number three times to become a "killer."<br>
-      - Once a killer, aim for other players' numbers to reduce their "lives."<br>
-      - Last player standing wins.
-    </li>
-    <li>
-      <strong>Bullseye Challenge</strong><br>
-      <em>Objective:</em> Hit the bullseye as many times as possible.<br>
-      <em>Rules:</em><br>
-      - Each player gets three darts per turn.<br>
-      - Score one point for hitting the outer bullseye and two points for the inner bullseye.<br>
-      - The player with the most points after an agreed number of rounds wins.
-    </li>
-    <li>
-      <strong>Knockout</strong><br>
-      <em>Objective:</em> Score higher than the previous player's score to stay in the game.<br>
-      <em>Rules:</em><br>
-      - Players take turns throwing three darts each.<br>
-      - If you fail to beat the previous player’s score, you are eliminated.<br>
-      - The last remaining player wins.
-    </li>
-  </ol>
+  <p class="mb-6 text-lg">Here are a few simple and fun dart games that are easy to play:</p>
+  
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">301/501</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Reduce your starting score (301 or501) to exactly zero.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Players take turns throwing three darts per round</li>
+        <li>Subtract the total score from your starting number</li>
+        <li>To win, the final dart must land in a double or bullseye</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">Around the Clock</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Hit every number on the dartboard in order, from 1 to 20.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Players take turns throwing three darts each</li>
+        <li>Progress to the next number only when the current one is hit</li>
+        <li>First player to hit all numbers wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">High Score</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Score the highest total in a set number of rounds.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Decide on a fixed number of rounds (e.g., 5 rounds)</li>
+        <li>Players throw three darts each turn and tally their scores</li>
+        <li>Player with the highest cumulative score wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">Killer</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Eliminate other players by hitting their number while protecting your own.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Each player chooses (or is assigned) a random number</li>
+        <li>Players must hit their number three times to become a "killer"</li>
+        <li>Once a killer, aim for other players' numbers to reduce their "lives"</li>
+        <li>Last player standing wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">Bullseye Challenge</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Hit the bullseye as many times as possible.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Each player gets three darts per turn</li>
+        <li>Score one point for outer bullseye, two points for inner bullseye</li>
+        <li>Player with the most points after agreed rounds wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">Knockout</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Score higher than the previous player's score to stay in the game.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Players take turns throwing three darts each</li>
+        <li>If you fail to beat the previous player's score, you are eliminated</li>
+        <li>Last remaining player wins</li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 
   <script>
     let history = [];
+    let activeRow = null;
+    let activeScoreElement = null;
 
     const createDartRows = (container, scoreElement) => {
       const dartRowTemplate = document.querySelector('#dart-row-template');
@@ -133,30 +173,54 @@
         row.dataset.value = value === 'Bullseye' ? 25 : value;
 
         row.addEventListener('click', () => {
-          row.innerHTML = '<div class="flex w-full gap-2"></div>';
-          const buttonContainer = row.querySelector('.flex');
-          const multipliers = value === 'Bullseye' ? [1, 2] : [1, 2, 3];
-          multipliers.forEach(multiplier => {
-            const button = document.createElement('button');
-            button.className = 'bg-blue-600 text-white rounded p-1 flex-1 mx-1 text-center';
-            button.textContent = `x${multiplier}`;
-            button.addEventListener('click', () => {
-              const deduction = row.dataset.value * multiplier;
-              const currentScore = parseInt(scoreElement.textContent, 10);
-              history.push({ scoreElement, previousScore: currentScore });
-              scoreElement.textContent = Math.max(currentScore - deduction, 0);
-              row.innerHTML = '<span class="text-green-500 text-lg font-bold">✔</span>';
-              setTimeout(() => {
-                row.innerHTML = `<span class="text-lg">${span.textContent}</span>`;
-              }, 200);
-            });
-            buttonContainer.appendChild(button);
-          });
+          activeRow = row;
+          activeScoreElement = scoreElement;
+          showMultiplierDialog(value === 'Bullseye');
         });
 
         container.appendChild(row);
       });
     };
+
+    function showMultiplierDialog(isBullseye) {
+      const dialog = document.getElementById('multiplier-dialog');
+      const buttonContainer = document.getElementById('multiplier-buttons');
+      const titleElement = document.getElementById('multiplier-title');
+      
+      // Set the title based on the selected value
+      titleElement.textContent = activeRow.dataset.value === '25' ? 'Bullseye' : activeRow.dataset.value;
+      
+      buttonContainer.innerHTML = ''; // Clear existing buttons
+      
+      const multipliers = isBullseye ? [1, 2] : [1, 2, 3];
+      multipliers.forEach(multiplier => {
+        const button = document.createElement('button');
+        button.className = 'px-4 py-3 bg-blue-600 text-white rounded hover:bg-blue-500';
+        button.textContent = `×${multiplier}`;
+        button.addEventListener('click', () => handleMultiplierClick(multiplier));
+        buttonContainer.appendChild(button);
+      });
+      
+      dialog.classList.remove('hidden');
+    }
+
+    function handleMultiplierClick(multiplier) {
+      const deduction = activeRow.dataset.value * multiplier;
+      const currentScore = parseInt(activeScoreElement.textContent, 10);
+      history.push({ scoreElement: activeScoreElement, previousScore: currentScore });
+      activeScoreElement.textContent = Math.max(currentScore - deduction, 0);
+      
+      activeRow.innerHTML = `<span class="text-lg">${activeRow.dataset.value === '25' ? 'Bullseye' : activeRow.dataset.value}</span>`;
+      
+      hideMultiplierDialog();
+    }
+
+    function hideMultiplierDialog() {
+      const dialog = document.getElementById('multiplier-dialog');
+      dialog.classList.add('hidden');
+      activeRow = null;
+      activeScoreElement = null;
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
       const player1Container = document.querySelector('#player1 .grid');
@@ -212,6 +276,8 @@
         toggle301.classList.remove('bg-blue-600');
         handleModeSwitch('501');
       });
+
+      document.getElementById('cancel-multiplier').addEventListener('click', hideMultiplierDialog);
     });
 
     document.addEventListener('DOMContentLoaded', () => {
