@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick QR Code</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+</head>
+<body class="bg-gray-100">
+
+  <div class="p-6 rounded-lg w-96 mt-24 mx-auto">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">Quick QR Code</h1>
+
+    <!-- URL Input -->
+    <input 
+      type="text" 
+      id="urlInput" 
+      placeholder="Enter URL" 
+      class="w-full px-4 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+
+    <!-- Generate Button -->
+    <button 
+      id="generateBtn" 
+      class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition mb-6">
+      Generate
+    </button>
+
+    <div class="bg-white p-8 rounded-lg shadow-md hidden" id="qrCodeContainerWrapper">
+      <!-- QR Code Container -->
+      <div id="qrCodeContainer" class="flex flex-col items-center mb-8 hidden">
+        <span class="text-gray-500">QR code will appear here after generation.</span>
+      </div>
+
+      <!-- Download/Copy Buttons -->
+      <div id="actions" class="hidden flex gap-4">
+        <button id="downloadBtn" class="w-1/2 bg-gray-200 py-2 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300">
+          Download
+        </button>
+
+        <button id="copyBtn" class="w-1/2 bg-gray-200 py-2 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300">
+          Copy
+        </button>
+      </div>
+    </div>
+
+    <!-- Alerts Section (Both Download and Copy Alerts) -->
+    <div id="alertsContainer" class="mt-4">
+      <!-- Success Alert -->
+      <div id="successAlert" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <span>Copied to clipboard!</span>
+      </div>
+
+      <!-- Download Alert -->
+      <div id="downloadAlert" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+        <span>Download initiated!</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const urlInput = document.getElementById('urlInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const qrCodeContainerWrapper = document.getElementById('qrCodeContainerWrapper');
+    const qrCodeContainer = document.getElementById('qrCodeContainer');
+    const actions = document.getElementById('actions');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const successAlert = document.getElementById('successAlert');
+    const downloadAlert = document.getElementById('downloadAlert');
+
+    let qrSvg;
+
+    // Generate QR Code when the "Generate" button is clicked
+    generateBtn.addEventListener('click', generateQRCode);
+
+    // Generate QR Code when the "Enter" key is pressed
+    urlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        generateQRCode();
+      }
+    });
+
+    function generateQRCode() {
+      const url = urlInput.value.trim();
+      if (!url) return alert('Please enter a URL.');
+
+      QRCode.toString(
+        url, 
+        { type: 'svg', color: { dark: '#000000', light: '#ffffff' }, width: 200, margin: 0 }, 
+        (err, svg) => {
+          if (err) return console.error(err);
+          qrCodeContainer.innerHTML = svg;
+          qrSvg = svg;
+          qrCodeContainer.classList.remove('hidden'); // Show the QR code container
+          actions.classList.remove('hidden');
+          qrCodeContainerWrapper.classList.remove('hidden'); // Show the white background and shadow container
+        }
+      );
+    }
+
+    // Handle Download
+    downloadBtn.addEventListener('click', async () => {
+      const canvas = document.createElement('canvas');
+      const img = new Image();
+
+      img.src = 'data:image/svg+xml;base64,' + btoa(qrSvg);
+      img.onload = () => {
+        canvas.width = 400;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const link = document.createElement('a');
+        link.download = 'qrcode.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        showDownloadAlert();
+      };
+    });
+
+    // Handle Copy
+    copyBtn.addEventListener('click', async () => {
+      const canvas = document.createElement('canvas');
+      const img = new Image();
+
+      img.src = 'data:image/svg+xml;base64,' + btoa(qrSvg);
+      img.onload = async () => {
+        canvas.width = 400;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(async (blob) => {
+          const item = new ClipboardItem({ 'image/png': blob });
+          await navigator.clipboard.write([item]);
+          showSuccessAlert();
+        }, 'image/png');
+      };
+    });
+
+    // Show Success Alert
+    function showSuccessAlert() {
+      successAlert.classList.remove('hidden');
+      setTimeout(() => successAlert.classList.add('hidden'), 3000);
+    }
+
+    // Show Download Alert
+    function showDownloadAlert() {
+      downloadAlert.classList.remove('hidden');
+      setTimeout(() => downloadAlert.classList.add('hidden'), 3000);
+    }
+
+  </script>
+</body>
+</html>
