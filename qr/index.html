@@ -9,7 +9,7 @@
 </head>
 <body class="bg-gray-100">
 
-  <div class="p-6 rounded-lg w-96 mt-24 mx-auto">
+  <div class="p-6 rounded-lg w-[500px] mt-24 mx-auto">
     <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">Quick QR Code</h1>
 
     <!-- URL Input -->
@@ -34,14 +34,23 @@
       </div>
 
       <!-- Download/Copy Buttons -->
-      <div id="actions" class="hidden flex gap-4">
-        <button id="downloadBtn" class="w-1/2 bg-gray-200 py-2 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300">
-          Download
-        </button>
-
-        <button id="copyBtn" class="w-1/2 bg-gray-200 py-2 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300">
-          Copy
-        </button>
+      <div id="actions" class="hidden flex flex-col gap-2">
+        <div class="flex gap-4 mb-2">
+          <button id="downloadBtn" class="w-1/2 bg-gray-200 py-2 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300">
+            Download .png
+          </button>
+          <button id="copyBtn" class="w-1/2 bg-gray-200 py-2 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300">
+            Copy .png
+          </button>
+        </div>
+        <div class="flex gap-4">
+          <button id="downloadSvgBtn" class="w-1/2 bg-gray-200 py-2 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300">
+            Download .svg
+          </button>
+          <button id="copySvgBtn" class="w-1/2 bg-gray-200 py-2 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300">
+            Copy .svg
+          </button>
+        </div>
       </div>
     </div>
 
@@ -70,6 +79,8 @@
     const copyBtn = document.getElementById('copyBtn');
     const successAlert = document.getElementById('successAlert');
     const downloadAlert = document.getElementById('downloadAlert');
+    const downloadSvgBtn = document.getElementById('downloadSvgBtn');
+    const copySvgBtn = document.getElementById('copySvgBtn');
 
     let qrSvg;
 
@@ -144,6 +155,24 @@
           showSuccessAlert();
         }, 'image/png');
       };
+    });
+
+    // Handle Download SVG
+    downloadSvgBtn.addEventListener('click', async () => {
+      const blob = new Blob([qrSvg], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.download = 'qrcode.svg';
+      link.href = url;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+      showDownloadAlert();
+    });
+
+    // Handle Copy SVG
+    copySvgBtn.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(qrSvg);
+      showSuccessAlert();
     });
 
     // Show Success Alert
