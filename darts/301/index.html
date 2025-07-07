@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>301 Scorekeeper</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-800 text-white font-sans h-screen">
+  <div id="multiplier-dialog" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-gray-700 rounded-lg p-4 w-64">
+      <h2 id="multiplier-title" class="text-xl font-bold text-center mb-4">
+        <!-- Title will be added dynamically -->
+      </h2>
+      <div id="multiplier-buttons" class="flex flex-col gap-3">
+        <!-- Buttons will be added dynamically -->
+      </div>
+      <button id="cancel-multiplier" class="w-full mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-col h-full">
+    <!-- Top Bar -->
+    <div class="flex justify-between items-center p-4">
+      <!-- Toggle for 301 and 501 -->
+      <div class="flex gap-2">
+        <a href="https://cort.me/darts" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500 focus:outline-none flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </a>
+        <button id="toggle-301" class="px-4 py-2 bg-blue-600 text-white rounded focus:outline-none">301</button>
+        <button id="toggle-501" class="px-4 py-2 bg-gray-700 text-white rounded focus:outline-none">501</button>
+      </div>
+      <!-- Action Buttons -->
+      <div class="flex gap-4">
+        <button id="undo-btn" class="p-2 bg-gray-700 rounded hover:bg-gray-600">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-white">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
+        </button>
+        <button id="reset-btn" class="p-2 bg-gray-700 rounded hover:bg-gray-600">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-white">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Player 1 Section -->
+    <div id="player1" class="flex-1 border-b border-gray-600 p-4">
+      <div class="text-center text-2xl font-bold mb-4">Player 1: <span id="score1">301</span></div>
+      <div class="grid grid-cols-3 gap-2">
+        <!-- Dart rows -->
+        <template id="dart-row-template">
+          <div class="row flex items-center justify-center p-2 bg-gray-700 rounded cursor-pointer" data-value="">
+            <span class="text-lg"></span>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Player 2 Section -->
+<div id="player2" class="flex-1 p-4 border-b border-gray-600">
+  <div class="text-center text-2xl font-bold mb-4">Player 2: <span id="score2">301</span></div>
+  <div class="grid grid-cols-3 gap-2">
+    <!-- Dart rows -->
+  </div>
+</div>
+
+<!-- Divider Line and Accordion Button -->
+<div class="p-4">
+  <button id="ways-to-play-btn" class="flex items-center justify-center gap-2 p-3 bg-gray-700 text-white w-full rounded focus:outline-none">
+    <span>Ways to Play</span>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+    </svg>
+  </button>
+</div>
+
+<!-- Accordion Content -->
+<div id="ways-to-play-content" class="hidden p-4 text-white bg-gray-800">
+  <p class="mb-6 text-lg">Here are a few simple and fun dart games that are easy to play:</p>
+  
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">301/501</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Reduce your starting score (301 or501) to exactly zero.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Players take turns throwing three darts per round</li>
+        <li>Subtract the total score from your starting number</li>
+        <li>To win, the final dart must land in a double or bullseye</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">Around the Clock</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Hit every number on the dartboard in order, from 1 to 20.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Players take turns throwing three darts each</li>
+        <li>Progress to the next number only when the current one is hit</li>
+        <li>First player to hit all numbers wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">High Score</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Score the highest total in a set number of rounds.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Decide on a fixed number of rounds (e.g., 5 rounds)</li>
+        <li>Players throw three darts each turn and tally their scores</li>
+        <li>Player with the highest cumulative score wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">Killer</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Eliminate other players by hitting their number while protecting your own.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Each player chooses (or is assigned) a random number</li>
+        <li>Players must hit their number three times to become a "killer"</li>
+        <li>Once a killer, aim for other players' numbers to reduce their "lives"</li>
+        <li>Last player standing wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">Bullseye Challenge</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Hit the bullseye as many times as possible.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Each player gets three darts per turn</li>
+        <li>Score one point for outer bullseye, two points for inner bullseye</li>
+        <li>Player with the most points after agreed rounds wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">Knockout</h3>
+      <p class="font-medium mb-2">Objective:</p>
+      <p class="mb-3 pl-4">Score higher than the previous player's score to stay in the game.</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Players take turns throwing three darts each</li>
+        <li>If you fail to beat the previous player's score, you are eliminated</li>
+        <li>Last remaining player wins</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+  <script>
+    let history = [];
+    let activeRow = null;
+    let activeScoreElement = null;
+
+    const createDartRows = (container, scoreElement) => {
+      const dartRowTemplate = document.querySelector('#dart-row-template');
+      const dartValues = [...Array(20).keys()].map(i => i + 1).concat('Bullseye');
+      dartValues.forEach(value => {
+        const dartRow = dartRowTemplate.content.cloneNode(true);
+        const row = dartRow.querySelector('.row');
+        const span = dartRow.querySelector('span');
+
+        span.textContent = value === 'Bullseye' ? 'Bullseye' : value;
+        row.dataset.value = value === 'Bullseye' ? 25 : value;
+
+        row.addEventListener('click', () => {
+          activeRow = row;
+          activeScoreElement = scoreElement;
+          showMultiplierDialog(value === 'Bullseye');
+        });
+
+        container.appendChild(row);
+      });
+    };
+
+    function showMultiplierDialog(isBullseye) {
+      const dialog = document.getElementById('multiplier-dialog');
+      const buttonContainer = document.getElementById('multiplier-buttons');
+      const titleElement = document.getElementById('multiplier-title');
+      
+      // Set the title based on the selected value
+      titleElement.textContent = activeRow.dataset.value === '25' ? 'Bullseye' : activeRow.dataset.value;
+      
+      buttonContainer.innerHTML = ''; // Clear existing buttons
+      
+      const multipliers = isBullseye ? [1, 2] : [1, 2, 3];
+      multipliers.forEach(multiplier => {
+        const button = document.createElement('button');
+        button.className = 'px-4 py-3 bg-blue-600 text-white rounded hover:bg-blue-500';
+        button.textContent = `×${multiplier}`;
+        button.addEventListener('click', () => handleMultiplierClick(multiplier));
+        buttonContainer.appendChild(button);
+      });
+      
+      dialog.classList.remove('hidden');
+    }
+
+    function handleMultiplierClick(multiplier) {
+      const deduction = activeRow.dataset.value * multiplier;
+      const currentScore = parseInt(activeScoreElement.textContent, 10);
+      history.push({ scoreElement: activeScoreElement, previousScore: currentScore });
+      activeScoreElement.textContent = Math.max(currentScore - deduction, 0);
+      
+      activeRow.innerHTML = `<span class="text-lg">${activeRow.dataset.value === '25' ? 'Bullseye' : activeRow.dataset.value}</span>`;
+      
+      hideMultiplierDialog();
+    }
+
+    function hideMultiplierDialog() {
+      const dialog = document.getElementById('multiplier-dialog');
+      dialog.classList.add('hidden');
+      activeRow = null;
+      activeScoreElement = null;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const player1Container = document.querySelector('#player1 .grid');
+      const player2Container = document.querySelector('#player2 .grid');
+      const score1 = document.querySelector('#score1');
+      const score2 = document.querySelector('#score2');
+      const undoBtn = document.querySelector('#undo-btn');
+      const resetBtn = document.querySelector('#reset-btn');
+      const toggle301 = document.querySelector('#toggle-301');
+      const toggle501 = document.querySelector('#toggle-501');
+
+      createDartRows(player1Container, score1);
+      createDartRows(player2Container, score2);
+
+      undoBtn.addEventListener('click', () => {
+        const lastAction = history.pop();
+        if (lastAction) {
+          lastAction.scoreElement.textContent = lastAction.previousScore;
+        }
+      });
+
+      resetBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to reset the scores?')) {
+          score1.textContent = toggle301.classList.contains('bg-blue-600') ? '301' : '501';
+          score2.textContent = toggle301.classList.contains('bg-blue-600') ? '301' : '501';
+          history = [];
+        }
+      });
+
+      const handleModeSwitch = (newScore) => {
+        if (score1.textContent !== '301' && score1.textContent !== '501' || score2.textContent !== '301' && score2.textContent !== '501') {
+          if (!confirm('Are you sure you want to reset the scores?')) {
+            return;
+          }
+        }
+        score1.textContent = newScore;
+        score2.textContent = newScore;
+        history = [];
+      };
+
+      toggle301.addEventListener('click', () => {
+        toggle301.classList.add('bg-blue-600');
+        toggle301.classList.remove('bg-gray-700');
+        toggle501.classList.add('bg-gray-700');
+        toggle501.classList.remove('bg-blue-600');
+        handleModeSwitch('301');
+      });
+
+      toggle501.addEventListener('click', () => {
+        toggle501.classList.add('bg-blue-600');
+        toggle501.classList.remove('bg-gray-700');
+        toggle301.classList.add('bg-gray-700');
+        toggle301.classList.remove('bg-blue-600');
+        handleModeSwitch('501');
+      });
+
+      document.getElementById('cancel-multiplier').addEventListener('click', hideMultiplierDialog);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const waysToPlayBtn = document.querySelector('#ways-to-play-btn');
+      const waysToPlayContent = document.querySelector('#ways-to-play-content');
+
+      waysToPlayBtn.addEventListener('click', () => {
+        waysToPlayContent.classList.toggle('hidden');
+        waysToPlayBtn.querySelector('svg').classList.toggle('rotate-180');
+      });
+    });
+  </script>
+</body>
+</html>
+
+

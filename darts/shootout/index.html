@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basketball Shootout</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-800 text-white font-sans h-screen">
+  <div id="multiplier-dialog" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-gray-700 rounded-lg p-4 w-64">
+      <h2 id="multiplier-title" class="text-xl font-bold text-center mb-4">
+        <!-- Title will be added dynamically -->
+      </h2>
+      <div id="multiplier-buttons" class="flex flex-col gap-3">
+        <!-- Buttons will be added dynamically -->
+      </div>
+      <button id="cancel-multiplier" class="w-full mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-col h-full">
+    <!-- Top Bar -->
+    <div class="flex justify-between items-center p-4">
+      <!-- Toggle for 301 and 501 -->
+      <div class="flex gap-2">
+        <a href="https://cort.me/darts" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500 focus:outline-none flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </a>
+      </div>
+    </div>
+
+<!-- Ways to Play Section -->
+<div class="p-4 text-white bg-gray-800">
+  <p class="mb-6 text-lg">Here are the different game modes available:</p>
+  
+  <div class="space-y-8">
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">1. Beat the Clock</h3>
+      <p class="font-medium mb-2">Players:</p>
+      <p class="mb-3 pl-4">1P, 2P (single/double players mode)</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Select playing time: 30/45/60 seconds</li>
+        <li>All shots are worth 2 points until the final 10 seconds, when each shot is worth 3 points</li>
+        <li>See how many points you can get in the timing period</li>
+        <li>In 2-player mode, the player with the most points scored wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">2. 3-Point Beat the Clock</h3>
+      <p class="font-medium mb-2">Players:</p>
+      <p class="mb-3 pl-4">1P, 2P, or 4P (single/double players mode)</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>In 2P/4P case, two players shooting together</li>
+        <li>Select playing time: 30/45/60 seconds</li>
+        <li>All shots are worth 3 points</li>
+        <li>See how many points you can get in the timing period</li>
+        <li>In 2P/4P mode, the player with the most points wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">3. Battle Back</h3>
+      <p class="font-medium mb-2">Players:</p>
+      <p class="mb-3 pl-4">2P or 4P</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>The player who makes a shot will add 2 points to their score and subtract 2 points from their opponent's score</li>
+        <li>The first player to reach 10 points is the winner</li>
+        <li>2P: only one winner</li>
+        <li>4P: player 1 PK player 2 first, there will be a winner, then player 3 PK player 4, there will be a winner, finally, the two winners PK again to get the final winner</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">4. Horse</h3>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Only the left basket can score goals</li>
+        <li>The players are lined up in the left basket according to PLY1, PLY2, PLY3, PLY4 sequence</li>
+        <li>The left side shows the players, and the right side starts shooting to show the "PK stage" which is divided into five stages (1, 2, 3, 4, 5)</li>
+        <li>Each player has one shooting opportunity in each stage</li>
+        <li>After the shooting, the player will stand in line again to wait for the next shooting chance</li>
+        <li>After 5 stages, the player with the least score will be eliminated and the rest of the players will enter the next round of PK</li>
+        <li>The rule is the same as the previous round</li>
+        <li>There will be one winner in the end and then game over</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">5. Checkpoint</h3>
+      <p class="font-medium mb-2">Players:</p>
+      <p class="mb-3 pl-4">Select 1 to 4 players</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>The playing time is preset at 30 seconds</li>
+        <li>All shots are worth 2 points</li>
+        <li>The player's score will be displayed on the "HOME" side, while the "VISITOR" side will show the target score to be reached</li>
+        <li>If the player fails to reach the target score, the game will end</li>
+        <li>When the player's score reaches the "VISITOR" target score, the game time will be automatically lengthened, and the next target score will be automatically displayed on the "VISITOR" side</li>
+        <li>Target scores: 24 / 52 / 68 / 86</li>
+        <li>Corresponding time to be added: 20S / 10S / 10S / 10S</li>
+        <li>If a player scores 99 points, the game is over</li>
+        <li>The player with the most points scored wins</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">6. Around the World</h3>
+      <p class="font-medium mb-2">Players:</p>
+      <p class="mb-3 pl-4">Select 1 to 4 players</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>All shots are worth 2 points</li>
+        <li>After the number of players selected, the players can shoot one by one</li>
+        <li>The winner is the player who gets the 10 points in the shortest time</li>
+        <li>After the game is over, the LED will flash on the winner</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">7. Left & Right</h3>
+      <p class="font-medium mb-2">Players:</p>
+      <p class="mb-3 pl-4">Select 1 to 4 players</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>The game starts when the first ball goes into the blinking hoop</li>
+        <li>"HOME" shows the player and "VISITOR" shows the score</li>
+        <li>"HOME" and "VISITOR" will blink alternatively during the game</li>
+        <li>You can get 2 points after shooting into the blinking hoop</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold text-blue-500 mb-2">8. Record Breaker</h3>
+      <p class="font-medium mb-2">Players:</p>
+      <p class="mb-3 pl-4">Multi-player</p>
+      <p class="font-medium mb-2">Rules:</p>
+      <ul class="list-disc pl-8 space-y-1">
+        <li>Select playing time: 30/45/60 seconds</li>
+        <li>Only the left side can keep score, and the scores are displayed on the left LED</li>
+        <li>The countdown ends and the game is over</li>
+        <li>When the first player's game ends, his/her total score is displayed on the right</li>
+        <li>The next player can start the game by pressing the "PLAY" key, and so on in a similar fashion</li>
+        <li>At the end of each game, the highest score is displayed on the right</li>
+        <li>When a player's score exceeds the highest score shown on the right, the original score will be replaced</li>
+        <li>Exiting the game mode or powering off can clear the record</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+  <script>
+    let history = [];
+    let activeRow = null;
+    let activeScoreElement = null;
+
+    const createDartRows = (container, scoreElement) => {
+      const dartRowTemplate = document.querySelector('#dart-row-template');
+      const dartValues = [...Array(20).keys()].map(i => i + 1).concat('Bullseye');
+      dartValues.forEach(value => {
+        const dartRow = dartRowTemplate.content.cloneNode(true);
+        const row = dartRow.querySelector('.row');
+        const span = dartRow.querySelector('span');
+
+        span.textContent = value === 'Bullseye' ? 'Bullseye' : value;
+        row.dataset.value = value === 'Bullseye' ? 25 : value;
+
+        row.addEventListener('click', () => {
+          activeRow = row;
+          activeScoreElement = scoreElement;
+          showMultiplierDialog(value === 'Bullseye');
+        });
+
+        container.appendChild(row);
+      });
+    };
+
+    function showMultiplierDialog(isBullseye) {
+      const dialog = document.getElementById('multiplier-dialog');
+      const buttonContainer = document.getElementById('multiplier-buttons');
+      const titleElement = document.getElementById('multiplier-title');
+      
+      // Set the title based on the selected value
+      titleElement.textContent = activeRow.dataset.value === '25' ? 'Bullseye' : activeRow.dataset.value;
+      
+      buttonContainer.innerHTML = ''; // Clear existing buttons
+      
+      const multipliers = isBullseye ? [1, 2] : [1, 2, 3];
+      multipliers.forEach(multiplier => {
+        const button = document.createElement('button');
+        button.className = 'px-4 py-3 bg-blue-600 text-white rounded hover:bg-blue-500';
+        button.textContent = `×${multiplier}`;
+        button.addEventListener('click', () => handleMultiplierClick(multiplier));
+        buttonContainer.appendChild(button);
+      });
+      
+      dialog.classList.remove('hidden');
+    }
+
+    function handleMultiplierClick(multiplier) {
+      const deduction = activeRow.dataset.value * multiplier;
+      const currentScore = parseInt(activeScoreElement.textContent, 10);
+      history.push({ scoreElement: activeScoreElement, previousScore: currentScore });
+      activeScoreElement.textContent = Math.max(currentScore - deduction, 0);
+      
+      activeRow.innerHTML = `<span class="text-lg">${activeRow.dataset.value === '25' ? 'Bullseye' : activeRow.dataset.value}</span>`;
+      
+      hideMultiplierDialog();
+    }
+
+    function hideMultiplierDialog() {
+      const dialog = document.getElementById('multiplier-dialog');
+      dialog.classList.add('hidden');
+      activeRow = null;
+      activeScoreElement = null;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const player1Container = document.querySelector('#player1 .grid');
+      const player2Container = document.querySelector('#player2 .grid');
+      const score1 = document.querySelector('#score1');
+      const score2 = document.querySelector('#score2');
+      const undoBtn = document.querySelector('#undo-btn');
+      const resetBtn = document.querySelector('#reset-btn');
+      const toggle301 = document.querySelector('#toggle-301');
+      const toggle501 = document.querySelector('#toggle-501');
+
+      createDartRows(player1Container, score1);
+      createDartRows(player2Container, score2);
+
+      undoBtn.addEventListener('click', () => {
+        const lastAction = history.pop();
+        if (lastAction) {
+          lastAction.scoreElement.textContent = lastAction.previousScore;
+        }
+      });
+
+      resetBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to reset the scores?')) {
+          score1.textContent = toggle301.classList.contains('bg-blue-600') ? '301' : '501';
+          score2.textContent = toggle301.classList.contains('bg-blue-600') ? '301' : '501';
+          history = [];
+        }
+      });
+
+      const handleModeSwitch = (newScore) => {
+        if (score1.textContent !== '301' && score1.textContent !== '501' || score2.textContent !== '301' && score2.textContent !== '501') {
+          if (!confirm('Are you sure you want to reset the scores?')) {
+            return;
+          }
+        }
+        score1.textContent = newScore;
+        score2.textContent = newScore;
+        history = [];
+      };
+
+      toggle301.addEventListener('click', () => {
+        toggle301.classList.add('bg-blue-600');
+        toggle301.classList.remove('bg-gray-700');
+        toggle501.classList.add('bg-gray-700');
+        toggle501.classList.remove('bg-blue-600');
+        handleModeSwitch('301');
+      });
+
+      toggle501.addEventListener('click', () => {
+        toggle501.classList.add('bg-blue-600');
+        toggle501.classList.remove('bg-gray-700');
+        toggle301.classList.add('bg-gray-700');
+        toggle301.classList.remove('bg-blue-600');
+        handleModeSwitch('501');
+      });
+
+      document.getElementById('cancel-multiplier').addEventListener('click', hideMultiplierDialog);
+    });
+
+
+  </script>
+</body>
+</html>
+
+
