@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Za'culator — Design Preview</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ═══ DESIGN SWITCHER BAR ═══ */
+    .ds-bar {
+      flex-shrink: 0;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #111;
+      border-bottom: 1px solid #333;
+      padding: 0 12px;
+      z-index: 999;
+    }
+    .ds-label {
+      color: #666;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-right: 2px;
+    }
+    .ds-btn {
+      padding: 5px 13px;
+      border-radius: 20px;
+      border: 1px solid #444;
+      background: transparent;
+      color: #888;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ds-btn.active { background: #fff; color: #111; border-color: #fff; }
+
+    /* ═══ APP SHELL ═══ */
+    .app {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .screen { display: none; flex: 1; overflow-y: auto; flex-direction: column; }
+    .screen.active { display: flex; }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       DESIGN 1 — AIRY LIGHT
+       Clean cards · Indigo accent · Top pill tabs
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    body.d1 { background: #F2F2F7; }
+
+    .d1 .tab-bar {
+      order: -1;
+      display: flex;
+      gap: 4px;
+      padding: 8px 12px;
+      background: #fff;
+      border-bottom: 1px solid #E5E5EA;
+    }
+    .d1 .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 7px 4px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: #8E8E93;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .d1 .tab.active { background: #EEEEFF; color: #4F46E5; }
+    .d1 .tab-icon { font-size: 18px; line-height: 1; }
+
+    .d1 .header {
+      background: #fff;
+      padding: 14px 20px 12px;
+      border-bottom: 1px solid #E5E5EA;
+    }
+    .d1 .header h1 { font-size: 17px; font-weight: 700; color: #1C1C1E; text-align: center; }
+    .d1 .header .emoji { display: none; }
+    .d1 .screen { background: #F2F2F7; }
+
+    .d1 .section {
+      background: #fff;
+      margin: 10px 16px 0;
+      border-radius: 13px;
+      padding: 12px 16px;
+    }
+    .d1 .section:last-child { margin-bottom: 10px; }
+
+    .d1 .label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8E8E93;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .d1 .input-wrap { position: relative; }
+    .d1 input[type="number"] {
+      width: 100%;
+      background: #F2F2F7;
+      border: none;
+      border-radius: 8px;
+      color: #1C1C1E;
+      font-size: 20px;
+      font-weight: 700;
+      padding: 10px 48px 10px 12px;
+      outline: none;
+      -moz-appearance: textfield;
+      appearance: textfield;
+      font-family: inherit;
+    }
+    .d1 input[type="number"]::-webkit-outer-spin-button,
+    .d1 input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .d1 .stepper {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .d1 .stepper button {
+      width: 28px; height: 22px; border-radius: 6px; border: none;
+      background: #E5E5EA; color: #3C3C43; font-size: 11px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent; transition: all 0.1s;
+    }
+    .d1 .stepper button:active { background: #4F46E5; color: #fff; }
+
+    .d1 .value-lg { font-size: 40px; font-weight: 800; color: #4F46E5; letter-spacing: -1.5px; }
+    .d1 .value { font-size: 22px; font-weight: 700; color: #1C1C1E; }
+    .d1 .ingredient-row { display: flex; align-items: center; justify-content: space-between; }
+    .d1 .ingredient-pill {
+      font-size: 11px; font-weight: 600;
+      background: #EEEEFF; color: #4F46E5;
+      border-radius: 20px; padding: 3px 9px;
+    }
+    .d1 .maths-box {
+      background: #F2F2F7; border-radius: 8px; padding: 10px 12px;
+    }
+    .d1 .maths-box p { font-size: 13px; color: #8E8E93; line-height: 1.8; }
+    .d1 .maths-box p span { color: #1C1C1E; font-weight: 600; }
+
+    .d1 .instruction-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+    .d1 .instruction-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #fff; margin: 6px 16px 0; border-radius: 13px;
+      padding: 12px 14px;
+    }
+    .d1 .instruction-item:last-child { margin-bottom: 10px; }
+    .d1 .step-num {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+      background: #4F46E5; color: #fff; font-weight: 800; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .d1 .step-text { font-size: 15px; font-weight: 600; color: #1C1C1E; line-height: 1.4; padding-top: 4px; }
+
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       DESIGN 2 — NIGHT GLOW
+       Deep dark · Pink-orange gradient · Bottom blur nav
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    body.d2 { background: #07070F; }
+    .d2 .app { background: #07070F; }
+
+    .d2 .tab-bar {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      display: flex;
+      background: rgba(14,14,28,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      z-index: 50;
+    }
+    .d2 .screen { padding-bottom: 64px; }
+    .d2 .tab {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 3px; padding: 10px 4px 10px; border: none; background: none;
+      color: rgba(255,255,255,0.28); font-size: 10px; font-weight: 600;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: color 0.2s; font-family: inherit;
+    }
+    .d2 .tab.active { color: #FF6B9D; }
+    .d2 .tab-icon { font-size: 20px; line-height: 1; }
+
+    .d2 .header {
+      padding: 16px 20px 14px;
+      background: linear-gradient(180deg, rgba(18,18,32,1) 0%, transparent 100%);
+    }
+    .d2 .header h1 {
+      font-size: 20px; font-weight: 800; text-align: center; letter-spacing: -0.3px;
+      background: linear-gradient(120deg, #FF6B9D 0%, #FF9F43 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .d2 .header .emoji { display: none; }
+    .d2 .screen { background: #07070F; }
+
+    .d2 .section {
+      padding: 10px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .d2 .section:last-child { border-bottom: none; }
+    .d2 .label {
+      font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.3);
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;
+    }
+    .d2 .input-wrap { position: relative; }
+    .d2 input[type="number"] {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; color: #fff;
+      font-size: 20px; font-weight: 700;
+      padding: 10px 48px 10px 14px;
+      outline: none; -moz-appearance: textfield; appearance: textfield;
+      font-family: inherit; transition: border-color 0.2s;
+    }
+    .d2 input[type="number"]:focus { border-color: rgba(255,107,157,0.5); }
+    .d2 input[type="number"]::-webkit-outer-spin-button,
+    .d2 input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .d2 .stepper {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .d2 .stepper button {
+      width: 28px; height: 22px; border-radius: 6px; border: none;
+      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.45);
+      font-size: 11px; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; -webkit-tap-highlight-color: transparent; transition: all 0.1s;
+    }
+    .d2 .stepper button:active { background: #FF6B9D; color: #fff; }
+
+    .d2 .value-lg {
+      font-size: 52px; font-weight: 900; letter-spacing: -2px; line-height: 1;
+      background: linear-gradient(120deg, #FF6B9D 0%, #FF9F43 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .d2 .value { font-size: 22px; font-weight: 700; color: #fff; }
+    .d2 .ingredient-row { display: flex; align-items: center; justify-content: space-between; }
+    .d2 .ingredient-pill {
+      font-size: 11px; font-weight: 600;
+      background: rgba(255,107,157,0.14); color: #FF6B9D;
+      border-radius: 20px; padding: 3px 9px;
+    }
+    .d2 .maths-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px; padding: 10px 12px;
+    }
+    .d2 .maths-box p { font-size: 13px; color: rgba(255,255,255,0.35); line-height: 1.85; }
+    .d2 .maths-box p span { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+    .d2 .instruction-list { list-style: none; }
+    .d2 .instruction-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .d2 .instruction-item:last-child { border-bottom: none; }
+    .d2 .step-num {
+      flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #FF6B9D, #FF9F43);
+      color: #fff; font-weight: 800; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .d2 .step-text { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.85); line-height: 1.4; padding-top: 5px; }
+
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       DESIGN 3 — BAKERY BOLD
+       Warm cream · Red accent · Chunky borders · Top segmented nav
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    body.d3 { background: #FFF8F0; }
+    .d3 .app { background: #FFF8F0; }
+
+    .d3 .tab-bar {
+      order: -1;
+      display: flex;
+      gap: 6px;
+      padding: 10px 14px;
+      background: #FFF8F0;
+      border-bottom: 3px solid #111;
+    }
+    .d3 .tab {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 1px; padding: 7px 4px; border-radius: 7px;
+      border: 2.5px solid #111; background: transparent;
+      color: #111; font-size: 10px; font-weight: 800;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      text-transform: uppercase; letter-spacing: 0.3px;
+      transition: all 0.12s; font-family: inherit;
+    }
+    .d3 .tab.active { background: #D62828; border-color: #D62828; color: #fff; }
+    .d3 .tab-icon { font-size: 15px; line-height: 1; }
+
+    .d3 .header {
+      background: #D62828;
+      padding: 14px 20px 12px;
+    }
+    .d3 .header h1 {
+      font-size: 20px; font-weight: 900; color: #fff;
+      text-align: center; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .d3 .header .emoji { display: none; }
+    .d3 .screen { background: #FFF8F0; }
+
+    .d3 .section {
+      padding: 12px 16px;
+      border-bottom: 2px solid #111;
+    }
+    .d3 .section:last-child { border-bottom: none; }
+    .d3 .label {
+      font-size: 10px; font-weight: 800; color: #999;
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;
+    }
+    .d3 .input-wrap { position: relative; }
+    .d3 input[type="number"] {
+      width: 100%;
+      background: #fff;
+      border: 2.5px solid #111;
+      border-radius: 8px; color: #111;
+      font-size: 22px; font-weight: 800;
+      padding: 9px 48px 9px 12px;
+      outline: none; -moz-appearance: textfield; appearance: textfield;
+      font-family: inherit; transition: border-color 0.15s;
+    }
+    .d3 input[type="number"]:focus { border-color: #D62828; }
+    .d3 input[type="number"]::-webkit-outer-spin-button,
+    .d3 input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .d3 .stepper {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .d3 .stepper button {
+      width: 28px; height: 22px; border-radius: 5px;
+      border: 2px solid #111; background: #fff; color: #111;
+      font-size: 11px; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent; transition: all 0.1s;
+    }
+    .d3 .stepper button:active { background: #D62828; border-color: #D62828; color: #fff; }
+
+    .d3 .value-lg { font-size: 52px; font-weight: 900; color: #D62828; letter-spacing: -2px; line-height: 1; }
+    .d3 .value { font-size: 22px; font-weight: 800; color: #111; }
+    .d3 .ingredient-row { display: flex; align-items: center; justify-content: space-between; }
+    .d3 .ingredient-pill {
+      font-size: 10px; font-weight: 800; color: #999;
+      border: 2px solid #ddd; border-radius: 4px; padding: 2px 7px;
+      text-transform: uppercase; letter-spacing: 0.2px;
+    }
+    .d3 .maths-box {
+      background: #fff; border: 2.5px solid #111; border-radius: 8px; padding: 10px 12px;
+    }
+    .d3 .maths-box p { font-size: 13px; color: #999; line-height: 1.85; }
+    .d3 .maths-box p span { color: #111; font-weight: 800; }
+
+    .d3 .instruction-list { list-style: none; }
+    .d3 .instruction-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 16px; border-bottom: 2px solid #111;
+    }
+    .d3 .instruction-item:last-child { border-bottom: none; }
+    .d3 .step-num {
+      flex-shrink: 0; width: 30px; height: 30px; border-radius: 5px;
+      border: 2px solid #111; background: #D62828;
+      color: #fff; font-weight: 900; font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .d3 .step-text { font-size: 15px; font-weight: 700; color: #111; line-height: 1.4; padding-top: 4px; }
+  </style>
+</head>
+<body class="d1">
+
+  <!-- ═══ DESIGN SWITCHER ═══ -->
+  <div class="ds-bar">
+    <span class="ds-label">Design:</span>
+    <button class="ds-btn active" onclick="setDesign('d1',this)">Airy Light</button>
+    <button class="ds-btn" onclick="setDesign('d2',this)">Night Glow</button>
+    <button class="ds-btn" onclick="setDesign('d3',this)">Bakery Bold</button>
+  </div>
+
+  <!-- ═══ APP ═══ -->
+  <div class="app">
+
+    <!-- ── Screen 1: Za'culator ── -->
+    <div class="screen active" id="screen-zac">
+      <div class="header">
+        <span class="emoji">🍕</span>
+        <h1>Za'culator</h1>
+      </div>
+      <div class="section">
+        <div class="label">Adults / Teens</div>
+        <div class="input-wrap">
+          <input type="number" id="adults" value="8" min="0" oninput="calc()">
+          <div class="stepper">
+            <button onclick="step('adults',1)">▲</button>
+            <button onclick="step('adults',-1)">▼</button>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="label">Kids</div>
+        <div class="input-wrap">
+          <input type="number" id="kids" value="5" min="0" oninput="calc()">
+          <div class="stepper">
+            <button onclick="step('kids',1)">▲</button>
+            <button onclick="step('kids',-1)">▼</button>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="label">Pizzas needed</div>
+        <div class="value-lg" id="pizzas-out">8</div>
+      </div>
+      <div class="section">
+        <div class="label" style="margin-bottom:8px">Maths</div>
+        <div class="maths-box">
+          <p>🧑 <span>1 pizza</span> per <span>2 adults/teens</span></p>
+          <p>👧 <span>1 pizza</span> per <span>3 kids</span></p>
+          <p>➕ <span>+1.5</span> buffer · ⬆️ Rounded <span>up</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Screen 2: Ingredients ── -->
+    <div class="screen" id="screen-ing">
+      <div class="header">
+        <span class="emoji">🧪</span>
+        <h1>Ingredients</h1>
+      </div>
+      <div class="section">
+        <div class="label"># of Pizzas</div>
+        <div class="input-wrap">
+          <input type="number" id="ing-pizzas" value="8" min="1" oninput="updateIngredients()">
+          <div class="stepper">
+            <button onclick="step('ing-pizzas',1)">▲</button>
+            <button onclick="step('ing-pizzas',-1)">▼</button>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="label">Flour</div>
+        <div class="ingredient-row">
+          <div class="value" id="flour">1,200.0 g</div>
+          <div class="ingredient-pill">150 g / pizza</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="label">Water</div>
+        <div class="ingredient-row">
+          <div class="value" id="water">780.0 g</div>
+          <div class="ingredient-pill">97.5 g / pizza</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="label">Salt</div>
+        <div class="ingredient-row">
+          <div class="value" id="salt">36.0 g</div>
+          <div class="ingredient-pill">4.5 g / pizza</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="label">Yeast</div>
+        <div class="ingredient-row">
+          <div class="value" id="yeast">18.1 g</div>
+          <div class="ingredient-pill">2.26 g / pizza</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="label">Dough Ball Weight</div>
+        <div class="ingredient-row">
+          <div class="value" id="dough-balls">232.5 g each</div>
+          <div class="ingredient-pill">per ball</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Screen 3: Instructions ── -->
+    <div class="screen" id="screen-ins">
+      <div class="header">
+        <span class="emoji">📋</span>
+        <h1>Instructions</h1>
+      </div>
+      <ul class="instruction-list">
+        <li class="instruction-item">
+          <div class="step-num">1</div>
+          <div class="step-text">Mix all ingredients for 5–10 min</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">2</div>
+          <div class="step-text">Cover in bowl and rise for 1–2 hours</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">3</div>
+          <div class="step-text">Form into balls</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">4</div>
+          <div class="step-text">Cover and rise on sheet for 20 min</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">5</div>
+          <div class="step-text">Stretch → Bake → Enjoy 🎉</div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ── Tab Bar (order set by theme CSS) ── -->
+    <nav class="tab-bar">
+      <button class="tab active" onclick="switchTab('zac', this)">
+        <span class="tab-icon">🍕</span>
+        Za'culator
+      </button>
+      <button class="tab" onclick="switchTab('ing', this)">
+        <span class="tab-icon">🧪</span>
+        Ingredients
+      </button>
+      <button class="tab" onclick="switchTab('ins', this)">
+        <span class="tab-icon">📋</span>
+        Steps
+      </button>
+    </nav>
+
+  </div><!-- .app -->
+
+  <script>
+    const PER_PIZZA = { flour:150, water:97.5, salt:4.5, yeast:2.257143, doughBall:232.5 };
+
+    function setDesign(cls, btn) {
+      document.body.className = cls;
+      document.querySelectorAll('.ds-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function switchTab(name, btn) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('screen-' + name).classList.add('active');
+      btn.classList.add('active');
+      if (name === 'ing') {
+        document.getElementById('ing-pizzas').value =
+          parseInt(document.getElementById('pizzas-out').textContent) || 1;
+        updateIngredients();
+      }
+    }
+
+    function calc() {
+      const a = Math.max(0, parseInt(document.getElementById('adults').value) || 0);
+      const k = Math.max(0, parseInt(document.getElementById('kids').value) || 0);
+      document.getElementById('pizzas-out').textContent = Math.ceil((a/2) + (k/3) + 1.5);
+    }
+
+    function updateIngredients() {
+      const n = Math.max(1, parseInt(document.getElementById('ing-pizzas').value) || 1);
+      const fmt = (v, d=1) => v.toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d});
+      document.getElementById('flour').textContent      = fmt(n * PER_PIZZA.flour) + ' g';
+      document.getElementById('water').textContent      = fmt(n * PER_PIZZA.water) + ' g';
+      document.getElementById('salt').textContent       = fmt(n * PER_PIZZA.salt) + ' g';
+      document.getElementById('yeast').textContent      = fmt(n * PER_PIZZA.yeast) + ' g';
+      document.getElementById('dough-balls').textContent = fmt(PER_PIZZA.doughBall) + ' g each';
+    }
+
+    function step(id, delta) {
+      const el = document.getElementById(id);
+      el.value = Math.max(parseInt(el.min)||0, (parseInt(el.value)||0) + delta);
+      if (id==='adults' || id==='kids') calc();
+      if (id==='ing-pizzas') updateIngredients();
+    }
+
+    calc();
+    updateIngredients();
+  </script>
+</body>
+</html>
