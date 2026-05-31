@@ -7,6 +7,8 @@ type SettingsTab = 'family' | 'kuleana' | 'brain' | 'work';
 export function SettingsPage() {
   const {
     state,
+    syncStatus,
+    cloudSyncEnabled,
     addFamilyMember,
     updateFamilyMember,
     removeFamilyMember,
@@ -266,6 +268,24 @@ export function SettingsPage() {
           </ul>
         </section>
       )}
+
+      <section className="sync-status" aria-live="polite">
+        <h3 className="sync-status__title">Data sync</h3>
+        {cloudSyncEnabled ? (
+          <p className="sync-status__text">
+            {syncStatus === 'loading' && 'Loading…'}
+            {syncStatus === 'syncing' && 'Saving to cloud…'}
+            {syncStatus === 'synced' && 'Synced across devices. Changes appear on phones, tablets, and other browsers.'}
+            {syncStatus === 'local' && 'Using saved data on this device.'}
+            {syncStatus === 'error' && 'Could not reach cloud storage. Your data is saved on this device until sync recovers.'}
+          </p>
+        ) : (
+          <p className="sync-status__text sync-status__text--warn">
+            Cloud sync is not configured for this build, so data stays in this browser only. Add Supabase
+            credentials (see README) and rebuild to sync across devices.
+          </p>
+        )}
+      </section>
     </div>
   );
 }

@@ -4,13 +4,30 @@ Family responsibility & gig tracker — a warm, mobile-first web app for kids an
 
 ## Features
 
-- **Board** — Current week overview with Kuleana, active brain/work gigs, weekly totals, and close-out
+- **Board** — Current week brain/work gigs, weekly totals, and close-out
 - **Gig Browser** — Claim brain gigs (multi-kid) and work gigs (one per week)
 - **Kuleana** — Standing household values, manifesto-style
 - **Past Weeks** — Read-only history of closed weeks
-- **Parent Settings** — Manage family member names and gig catalog
+- **Parent Settings** — Manage family members and gig catalog
 
-Data persists in `localStorage` — no login required for v1.
+## Data & sync
+
+Edits save locally on every change. With **Supabase** configured, the same household data syncs across phones, tablets, and browsers (last update wins).
+
+### One-time Supabase setup
+
+1. Create a free project at [supabase.com](https://supabase.com).
+2. In **SQL Editor**, run [`supabase/schema.sql`](supabase/schema.sql).
+3. Copy **Project URL** and **anon public** key from **Settings → API**.
+4. Copy `.env.example` to `.env.local` and fill in the values:
+
+```bash
+cp .env.example .env.local
+```
+
+5. Rebuild and deploy. For GitHub Pages, add the same `VITE_*` variables as repository **Secrets** used in your build step, or build locally with `.env.local` before committing `dist/`.
+
+All family devices must use the same `VITE_HOUSEHOLD_ID` (default: `kuleana`).
 
 ## Development
 
@@ -19,6 +36,8 @@ cd apps/kuleana
 npm install
 npm run dev
 ```
+
+Open the URL Vite prints (with `base` set, usually `http://localhost:5173/apps/kuleana/dist/`).
 
 ## Build
 

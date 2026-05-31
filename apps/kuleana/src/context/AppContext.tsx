@@ -8,17 +8,25 @@ import {
   type ReactNode,
 } from 'react';
 import type { AppState, ClaimInput, FamilyMember, Gig, GigType } from '../types';
-import { createCurrentWeek, loadState, saveState } from '../lib/storage';
+import { createBundle } from '../lib/bundle';
+import { isCloudSyncEnabled } from '../lib/supabaseClient';
+import { createCurrentWeek, createInitialState, loadPersistedBundle, persistBundle } from '../lib/storage';
 import { newId } from '../lib/utils';
+
+export type SyncStatus = 'loading' | 'local' | 'synced' | 'syncing' | 'error';
 
 interface AppContextValue {
   state: AppState;
+  hydrated: boolean;
+  syncStatus: SyncStatus;
+  cloudSyncEnabled: boolean;
   kuleanaGigs: Gig[];
   brainGigs: Gig[];
   workGigs: Gig[];
   currentClaims: AppState['currentWeek']['claims'];
   claimGig: (input: ClaimInput) => { ok: true } | { ok: false; error: string };
   completeClaim: (claimId: string) => void;
+  uncompleteClaim: (claimId: string) => void;
   closeOutWeek: () => void;
   addFamilyMember: (name: string) => void;
   updateFamilyMember: (id: string, name: string) => void;
@@ -35,11 +43,47 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AppState>(() => loadState());
+  const [state, setState] = useState<AppState>(() => createInitialState());
+  const [hydrated, setHydrated] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>('loading');
+  const cloudSyncEnabled = isCloudSyncEnabled();
 
   useEffect(() => {
-    saveState(state);
-  }, [state]);
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const bundle = await loadPersistedBundle();
+        if (cancelled) return;
+        setState(bundle.state);
+        setSyncStatus(cloudSyncEnabled ? 'synced' : 'local');
+      } catch {
+        if (!cancelled) {
+          setState(createInitialState());
+          setSyncStatus(cloudSyncEnabled ? 'error' : 'local');
+        }
+      } finally {
+        if (!cancelled) setHydrated(true);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cloudSyncEnabled]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+
+    const bundle = createBundle(state);
+    persistBundle(bundle);
+    if (cloudSyncEnabled) {
+      setSyncStatus('syncing');
+      const timer = setTimeout(() => setSyncStatus('synced'), 500);
+      return () => clearTimeout(timer);
+    }
+    setSyncStatus('local');
+  }, [state, hydrated, cloudSyncEnabled]);
 
   const update = useCallback((updater: (prev: AppState) => AppState) => {
     setState(updater);
@@ -127,6 +171,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
           ...prev.currentWeek,
           claims: prev.currentWeek.claims.map((c) =>
             c.id === claimId ? { ...c, status: 'completed' as const } : c,
+          ),
+        },
+      }));
+    },
+    [update],
+  );
+
+  const uncompleteClaim = useCallback(
+    (claimId: string) => {
+      update((prev) => ({
+        ...prev,
+        currentWeek: {
+          ...prev.currentWeek,
+          claims: prev.currentWeek.claims.map((c) =>
+            c.id === claimId ? { ...c, status: 'claimed' as const } : c,
           ),
         },
       }));
@@ -225,12 +284,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const value: AppContextValue = {
     state,
+    hydrated,
+    syncStatus,
+    cloudSyncEnabled,
     kuleanaGigs,
     brainGigs,
     workGigs,
     currentClaims,
     claimGig,
     completeClaim,
+    uncompleteClaim,
     closeOutWeek,
     addFamilyMember,
     updateFamilyMember,

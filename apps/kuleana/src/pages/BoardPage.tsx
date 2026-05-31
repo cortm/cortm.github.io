@@ -8,7 +8,7 @@ import { Modal } from '../components/Modal';
 import { useState } from 'react';
 
 export function BoardPage() {
-  const { state, kuleanaGigs, currentClaims, closeOutWeek } = useApp();
+  const { state, currentClaims, closeOutWeek } = useApp();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const brainClaims = useMemo(
@@ -41,17 +41,6 @@ export function BoardPage() {
         <h2 className="page-header__title">Board</h2>
         <p className="page-header__subtitle">{weekLabel}</p>
       </div>
-
-      <CollapsibleSection title="Kuleana" icon="🌻" count={kuleanaGigs.length} defaultOpen={false}>
-        <ul className="kuleana-mini-list">
-          {kuleanaGigs.map((item, i) => (
-            <li key={item.id}>
-              <span className="kuleana-mini-list__num">{i + 1}</span>
-              {item.title}
-            </li>
-          ))}
-        </ul>
-      </CollapsibleSection>
 
       <CollapsibleSection title="Brain Gigs (Active)" icon="🧠" count={brainClaims.length}>
         {brainClaims.length === 0 ? (

@@ -8,7 +8,7 @@ interface ClaimRowProps {
 }
 
 export function ClaimRow({ claim }: ClaimRowProps) {
-  const { getGigById, completeClaim } = useApp();
+  const { getGigById, completeClaim, uncompleteClaim } = useApp();
   const gig = getGigById(claim.gigId);
   const completed = claim.status === 'completed';
 
@@ -24,7 +24,15 @@ export function ClaimRow({ claim }: ClaimRowProps) {
       </div>
       <div className="claim-row__actions">
         <StatusPill status={claim.status} />
-        {!completed && (
+        {completed ? (
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm"
+            onClick={() => uncompleteClaim(claim.id)}
+          >
+            Mark Incomplete
+          </button>
+        ) : (
           <button
             type="button"
             className="btn btn--accent btn--sm"
