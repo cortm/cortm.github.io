@@ -27,6 +27,7 @@ interface AppContextValue {
   claimGig: (input: ClaimInput) => { ok: true } | { ok: false; error: string };
   completeClaim: (claimId: string) => void;
   uncompleteClaim: (claimId: string) => void;
+  unclaimClaim: (claimId: string) => void;
   closeOutWeek: () => void;
   addFamilyMember: (name: string) => void;
   updateFamilyMember: (id: string, name: string) => void;
@@ -193,6 +194,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [update],
   );
 
+  const unclaimClaim = useCallback(
+    (claimId: string) => {
+      update((prev) => ({
+        ...prev,
+        currentWeek: {
+          ...prev.currentWeek,
+          claims: prev.currentWeek.claims.filter((c) => c.id !== claimId),
+        },
+      }));
+    },
+    [update],
+  );
+
   const closeOutWeek = useCallback(() => {
     update((prev) => {
       const closedWeek = {
@@ -294,6 +308,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     claimGig,
     completeClaim,
     uncompleteClaim,
+    unclaimClaim,
     closeOutWeek,
     addFamilyMember,
     updateFamilyMember,
