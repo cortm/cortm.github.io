@@ -1,0 +1,42 @@
+export function getWeekBounds(date = new Date()): { start: Date; end: Date } {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+
+  const day = d.getDay();
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+
+  const start = new Date(d);
+  start.setDate(d.getDate() + diffToMonday);
+
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+
+  return { start, end };
+}
+
+export function toDateKey(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
+export function createWeekId(start: Date): string {
+  return `week-${toDateKey(start)}`;
+}
+
+export function formatWeekRange(startDate: string, endDate: string): string {
+  const start = new Date(startDate + 'T12:00:00');
+  const end = new Date(endDate + 'T12:00:00');
+
+  const startMonth = start.toLocaleDateString('en-US', { month: 'short' });
+  const endMonth = end.toLocaleDateString('en-US', { month: 'short' });
+
+  if (startMonth === endMonth) {
+    return `Week of ${startMonth} ${start.getDate()}–${end.getDate()}`;
+  }
+
+  return `Week of ${startMonth} ${start.getDate()} – ${endMonth} ${end.getDate()}`;
+}
+
+export function formatShortDate(dateStr: string): string {
+  const date = new Date(dateStr + 'T12:00:00');
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
