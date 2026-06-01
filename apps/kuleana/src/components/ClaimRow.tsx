@@ -34,10 +34,17 @@ export function ClaimRow({ claim }: ClaimRowProps) {
           </p>
         </div>
         <div className="claim-row__actions">
-          <StatusPill
-            status={claim.status}
-            onClick={claimed ? () => setUnclaimOpen(true) : undefined}
-          />
+          {claimed ? (
+            <button
+              type="button"
+              className="btn btn--sm btn--status-claimed"
+              onClick={() => setUnclaimOpen(true)}
+            >
+              Claimed
+            </button>
+          ) : (
+            <StatusPill status={claim.status} />
+          )}
           {completed ? (
             <button
               type="button"

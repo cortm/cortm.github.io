@@ -160,7 +160,7 @@ button {
 }
 
 .page-header {
-  padding: 0.25rem 0 0.5rem;
+  padding: 0.875rem 0 0.5rem;
 }
 
 .page-header--manifesto {
@@ -238,6 +238,10 @@ button {
   border-top: 1px solid var(--cream-dark);
 }
 
+.section__content .claim-list {
+  padding-top: 0.875rem;
+}
+
 /* Claim rows */
 
 .claim-list {
@@ -307,23 +311,6 @@ button {
 .pill--claimed {
   background: var(--gold-soft);
   color: #7a5a12;
-}
-
-.pill--interactive {
-  border: none;
-  font: inherit;
-  cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
-}
-
-.pill--interactive:hover {
-  transform: scale(1.04);
-  box-shadow: 0 1px 4px rgba(44, 42, 38, 0.12);
-}
-
-.pill--interactive:focus-visible {
-  outline: 2px solid var(--forest);
-  outline-offset: 2px;
 }
 
 .pill--completed {
@@ -437,6 +424,16 @@ button {
 .btn--sm {
   padding: 0.4rem 0.75rem;
   font-size: 0.8125rem;
+}
+
+.btn--status-claimed {
+  background: var(--gold-soft);
+  color: #7a5a12;
+  border: 1px solid transparent;
+}
+
+.btn--status-claimed:hover {
+  background: var(--gold);
 }
 
 .btn--block {

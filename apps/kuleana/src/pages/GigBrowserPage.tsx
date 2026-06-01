@@ -60,7 +60,7 @@ export function GigBrowserPage() {
                 statusLabel={
                   count > 0
                     ? `${count} kid${count !== 1 ? 's' : ''} have claimed this`
-                    : 'Available — anyone can claim'
+                    : undefined
                 }
                 claimCount={count}
                 onClaim={() => setClaimGig(gig)}
@@ -77,7 +77,7 @@ export function GigBrowserPage() {
               gig={gig}
               status={taken ? 'locked' : 'available'}
               statusLabel={
-                assignee ? `Claimed by ${assignee}` : taken ? 'Claimed this week' : 'Available'
+                assignee ? `Claimed by ${assignee}` : taken ? 'Claimed this week' : undefined
               }
               onClaim={() => setClaimGig(gig)}
               disabled={taken}
