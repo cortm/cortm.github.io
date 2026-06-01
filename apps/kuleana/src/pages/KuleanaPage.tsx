@@ -5,7 +5,7 @@ export function KuleanaPage() {
 
   return (
     <div className="page">
-      <div className="page-header page-header--manifesto">
+      <div className="page-header">
         <h2 className="page-header__title">Kuleana</h2>
         <p className="page-header__subtitle">
           Our standing household responsibilities — not for pay, just part of who we are.

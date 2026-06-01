@@ -1,6 +1,11 @@
 import type { AppState, Week } from '../types';
 import { createSeedState } from '../data/seed';
-import { createWeekId, getWeekBounds, toDateKey } from './week';
+import {
+  ACTIVE_WEEK_END,
+  ACTIVE_WEEK_START,
+  createWeekId,
+  getActiveWeekBounds,
+} from './week';
 import { createBundle, pickNewerBundle, type StoredBundle } from './bundle';
 import { isCloudSyncEnabled } from './supabaseClient';
 import { loadRemoteBundle, saveRemoteBundle } from './cloudStorage';
@@ -9,14 +14,26 @@ const STORAGE_KEY = 'kuleana-app-state';
 const BUNDLE_KEY = 'kuleana-app-bundle';
 const LEGACY_STORAGE_KEY = 'kuliana-app-state';
 
-function createCurrentWeek(): Week {
-  const { start, end } = getWeekBounds();
+function createCurrentWeek(claims: Week['claims'] = []): Week {
+  const { start } = getActiveWeekBounds();
   return {
     id: createWeekId(start),
-    startDate: toDateKey(start),
-    endDate: toDateKey(end),
+    startDate: ACTIVE_WEEK_START,
+    endDate: ACTIVE_WEEK_END,
     closed: false,
-    claims: [],
+    claims,
+  };
+}
+
+function normalizeCurrentWeek(state: AppState): AppState {
+  const { currentWeek } = state;
+  if (currentWeek.closed) return state;
+  if (currentWeek.startDate === ACTIVE_WEEK_START && currentWeek.endDate === ACTIVE_WEEK_END) {
+    return state;
+  }
+  return {
+    ...state,
+    currentWeek: createCurrentWeek(currentWeek.claims),
   };
 }
 
@@ -84,7 +101,8 @@ export async function loadPersistedBundle(): Promise<StoredBundle> {
     }
   }
 
-  const merged = pickNewerBundle(local, remote) ?? createBundle(createInitialState());
+  const picked = pickNewerBundle(local, remote) ?? createBundle(createInitialState());
+  const merged = createBundle(normalizeCurrentWeek(picked.state), picked.updatedAt);
   saveLocalBundle(merged);
 
   if (isCloudSyncEnabled() && remote === null && local !== null) {

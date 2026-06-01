@@ -163,10 +163,6 @@ button {
   padding: 0.875rem 0 0.5rem;
 }
 
-.page-header--manifesto {
-  text-align: center;
-}
-
 .page-header__title {
   font-size: 1.625rem;
   color: var(--forest);

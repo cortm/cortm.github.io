@@ -1,3 +1,7 @@
+/** Active household week shown on the board (Mon–Sun). */
+export const ACTIVE_WEEK_START = '2026-06-01';
+export const ACTIVE_WEEK_END = '2026-06-07';
+
 export function getWeekBounds(date = new Date()): { start: Date; end: Date } {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
@@ -20,6 +24,13 @@ export function toDateKey(date: Date): string {
 
 export function createWeekId(start: Date): string {
   return `week-${toDateKey(start)}`;
+}
+
+export function getActiveWeekBounds(): { start: Date; end: Date } {
+  return {
+    start: new Date(`${ACTIVE_WEEK_START}T12:00:00`),
+    end: new Date(`${ACTIVE_WEEK_END}T12:00:00`),
+  };
 }
 
 export function formatWeekRange(startDate: string, endDate: string): string {
