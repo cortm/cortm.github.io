@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import type { GigType } from '../types';
+import { Avatar } from '../components/Avatar';
 import { useApp } from '../context/AppContext';
 
 type SettingsTab = 'family' | 'kuleana' | 'brain' | 'work';
@@ -11,6 +12,7 @@ export function SettingsPage() {
     cloudSyncEnabled,
     addFamilyMember,
     updateFamilyMember,
+    updateFamilyMemberAvatar,
     removeFamilyMember,
     addGig,
     updateGig,
@@ -134,11 +136,19 @@ export function SettingsPage() {
               <li key={member.id} className="settings-item">
                 {editingMemberId === member.id ? (
                   <>
-                    <input
-                      className="form__input"
-                      value={editingMemberName}
-                      onChange={(e) => setEditingMemberName(e.target.value)}
-                    />
+                    <div className="settings-item__identity">
+                      <Avatar
+                        name={editingMemberName || member.name}
+                        avatarUrl={member.avatarUrl}
+                        editable
+                        onUpload={(dataUrl) => updateFamilyMemberAvatar(member.id, dataUrl)}
+                      />
+                      <input
+                        className="form__input"
+                        value={editingMemberName}
+                        onChange={(e) => setEditingMemberName(e.target.value)}
+                      />
+                    </div>
                     <button type="button" className="btn btn--sm btn--primary" onClick={saveEditMember}>
                       Save
                     </button>
@@ -152,7 +162,15 @@ export function SettingsPage() {
                   </>
                 ) : (
                   <>
-                    <span>{member.name}</span>
+                    <div className="settings-item__identity">
+                      <Avatar
+                        name={member.name}
+                        avatarUrl={member.avatarUrl}
+                        editable
+                        onUpload={(dataUrl) => updateFamilyMemberAvatar(member.id, dataUrl)}
+                      />
+                      <span>{member.name}</span>
+                    </div>
                     <div className="settings-item__actions">
                       <button
                         type="button"

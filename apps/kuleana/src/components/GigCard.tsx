@@ -1,39 +1,40 @@
 import type { Gig } from '../types';
-import { StatusPill } from './StatusPill';
+import { Avatar } from './Avatar';
 
 interface GigCardProps {
   gig: Gig;
-  statusLabel?: string;
-  status: 'available' | 'locked' | 'claimed';
-  claimCount?: number;
+  taken?: boolean;
+  assigneeName?: string;
+  assigneeAvatarUrl?: string;
   onClaim?: () => void;
   disabled?: boolean;
 }
 
 export function GigCard({
   gig,
-  statusLabel,
-  status,
-  claimCount,
+  taken = false,
+  assigneeName,
+  assigneeAvatarUrl,
   onClaim,
   disabled,
 }: GigCardProps) {
+  const showAssigneeAvatar = taken && assigneeName;
+
   return (
     <article className="gig-card">
-      <div className="gig-card__body">
+      <div className="gig-card__row">
+        <span
+          className={`gig-card__dot${taken ? ' gig-card__dot--taken' : ' gig-card__dot--available'}`}
+          aria-hidden="true"
+        />
         <h3 className="gig-card__title">{gig.title}</h3>
-        {gig.description && <p className="gig-card__desc">{gig.description}</p>}
-        {statusLabel && <p className="gig-card__status">{statusLabel}</p>}
-        {claimCount !== undefined && claimCount > 0 && (
-          <p className="gig-card__meta">{claimCount} kid{claimCount !== 1 ? 's' : ''} claimed this</p>
+        {showAssigneeAvatar && (
+          <Avatar name={assigneeName} avatarUrl={assigneeAvatarUrl} size="pill" />
         )}
-      </div>
-      <div className="gig-card__footer">
-        <StatusPill status={status === 'available' ? 'available' : status === 'locked' ? 'locked' : 'claimed'} />
         {onClaim && (
           <button
             type="button"
-            className="btn btn--primary btn--sm"
+            className="btn btn--primary btn--sm gig-card__claim"
             onClick={onClaim}
             disabled={disabled}
           >
@@ -41,6 +42,7 @@ export function GigCard({
           </button>
         )}
       </div>
+      {gig.description && <p className="gig-card__desc">{gig.description}</p>}
     </article>
   );
 }

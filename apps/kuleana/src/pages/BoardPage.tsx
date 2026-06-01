@@ -5,6 +5,7 @@ import { formatWeekRange } from '../lib/week';
 import { ClaimRow } from '../components/ClaimRow';
 import { CollapsibleSection } from '../components/CollapsibleSection';
 import { Modal } from '../components/Modal';
+import { TotalsPersonRow } from '../components/TotalsPersonRow';
 import { useState } from 'react';
 
 export function BoardPage() {
@@ -73,10 +74,7 @@ export function BoardPage() {
         ) : (
           <div className="totals-bar__grid">
             {Object.entries(totals.byPerson).map(([name, amount]) => (
-              <div key={name} className="totals-bar__person">
-                <span>{name}</span>
-                <strong>{formatCurrency(amount)}</strong>
-              </div>
+              <TotalsPersonRow key={name} name={name} amount={amount} />
             ))}
             <div className="totals-bar__grand">
               <span>Total owed</span>

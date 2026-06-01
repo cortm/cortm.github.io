@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Claim } from '../types';
 import { useApp } from '../context/AppContext';
 import { formatCurrency } from '../lib/utils';
+import { Avatar } from './Avatar';
 import { StatusPill } from './StatusPill';
 import { Modal } from './Modal';
 
@@ -10,7 +11,8 @@ interface ClaimRowProps {
 }
 
 export function ClaimRow({ claim }: ClaimRowProps) {
-  const { getGigById, completeClaim, uncompleteClaim, unclaimClaim } = useApp();
+  const { getGigById, getAvatarForName, completeClaim, uncompleteClaim, unclaimClaim } = useApp();
+  const assignee = getAvatarForName(claim.assigneeName);
   const [unclaimOpen, setUnclaimOpen] = useState(false);
   const gig = getGigById(claim.gigId);
   const completed = claim.status === 'completed';
@@ -28,8 +30,7 @@ export function ClaimRow({ claim }: ClaimRowProps) {
         <div className="claim-row__main">
           <p className="claim-row__title">{gigTitle}</p>
           <p className="claim-row__meta">
-            <span>{claim.assigneeName}</span>
-            <span className="claim-row__dot">·</span>
+            <Avatar name={assignee.name} avatarUrl={assignee.avatarUrl} size="sm" />
             <span className="claim-row__amount">{formatCurrency(claim.dollarAmount)}</span>
           </p>
         </div>

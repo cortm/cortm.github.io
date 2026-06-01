@@ -11,8 +11,8 @@ export function GigBrowserPage() {
     brainGigs,
     workGigs,
     isWorkGigClaimed,
-    getBrainClaimCount,
     getWorkClaimAssignee,
+    getAvatarForName,
   } = useApp();
 
   const [tab, setTab] = useState<Tab>('brain');
@@ -51,18 +51,10 @@ export function GigBrowserPage() {
       <div className="gig-grid">
         {gigs.map((gig) => {
           if (tab === 'brain') {
-            const count = getBrainClaimCount(gig.id);
             return (
               <GigCard
                 key={gig.id}
                 gig={gig}
-                status="available"
-                statusLabel={
-                  count > 0
-                    ? `${count} kid${count !== 1 ? 's' : ''} have claimed this`
-                    : undefined
-                }
-                claimCount={count}
                 onClaim={() => setClaimGig(gig)}
               />
             );
@@ -70,15 +62,15 @@ export function GigBrowserPage() {
 
           const assignee = getWorkClaimAssignee(gig.id);
           const taken = isWorkGigClaimed(gig.id) || !!assignee;
+          const assigneeAvatar = assignee ? getAvatarForName(assignee) : null;
 
           return (
             <GigCard
               key={gig.id}
               gig={gig}
-              status={taken ? 'locked' : 'available'}
-              statusLabel={
-                assignee ? `Claimed by ${assignee}` : taken ? 'Claimed this week' : undefined
-              }
+              taken={taken}
+              assigneeName={assignee ?? undefined}
+              assigneeAvatarUrl={assigneeAvatar?.avatarUrl}
               onClaim={() => setClaimGig(gig)}
               disabled={taken}
             />

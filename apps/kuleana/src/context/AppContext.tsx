@@ -31,6 +31,8 @@ interface AppContextValue {
   closeOutWeek: () => void;
   addFamilyMember: (name: string) => void;
   updateFamilyMember: (id: string, name: string) => void;
+  updateFamilyMemberAvatar: (id: string, avatarUrl: string | undefined) => void;
+  getAvatarForName: (name: string) => { name: string; avatarUrl?: string };
   removeFamilyMember: (id: string) => void;
   addGig: (title: string, type: GigType, description?: string) => void;
   updateGig: (id: string, title: string, description?: string) => void;
@@ -247,6 +249,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [update],
   );
 
+  const updateFamilyMemberAvatar = useCallback(
+    (id: string, avatarUrl: string | undefined) => {
+      update((prev) => ({
+        ...prev,
+        familyMembers: prev.familyMembers.map((m) =>
+          m.id === id ? { ...m, avatarUrl: avatarUrl || undefined } : m,
+        ),
+      }));
+    },
+    [update],
+  );
+
+  const getAvatarForName = useCallback(
+    (name: string) => {
+      const normalized = name.trim().toLowerCase();
+      const member = state.familyMembers.find((m) => m.name.trim().toLowerCase() === normalized);
+      return {
+        name: member?.name ?? name,
+        avatarUrl: member?.avatarUrl,
+      };
+    },
+    [state.familyMembers],
+  );
+
   const removeFamilyMember = useCallback(
     (id: string) => {
       update((prev) => ({
@@ -312,6 +338,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     closeOutWeek,
     addFamilyMember,
     updateFamilyMember,
+    updateFamilyMemberAvatar,
+    getAvatarForName,
     removeFamilyMember,
     addGig,
     updateGig,

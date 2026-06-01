@@ -3,6 +3,7 @@ export type GigType = 'brain' | 'work' | 'kuleana';
 export interface FamilyMember {
   id: string;
   name: string;
+  avatarUrl?: string;
 }
 
 export interface Gig {
