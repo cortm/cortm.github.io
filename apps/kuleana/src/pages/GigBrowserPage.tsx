@@ -15,7 +15,7 @@ export function GigBrowserPage() {
     getAvatarForName,
   } = useApp();
 
-  const [tab, setTab] = useState<Tab>('brain');
+  const [tab, setTab] = useState<Tab>('work');
   const [claimGig, setClaimGig] = useState<Gig | null>(null);
 
   const gigs = tab === 'brain' ? brainGigs : workGigs;
@@ -31,20 +31,20 @@ export function GigBrowserPage() {
         <button
           type="button"
           role="tab"
-          aria-selected={tab === 'brain'}
-          className={`tabs__btn${tab === 'brain' ? ' tabs__btn--active' : ''}`}
-          onClick={() => setTab('brain')}
-        >
-          🧠 Brain Gigs
-        </button>
-        <button
-          type="button"
-          role="tab"
           aria-selected={tab === 'work'}
           className={`tabs__btn${tab === 'work' ? ' tabs__btn--active' : ''}`}
           onClick={() => setTab('work')}
         >
           🧹 Work Gigs
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'brain'}
+          className={`tabs__btn${tab === 'brain' ? ' tabs__btn--active' : ''}`}
+          onClick={() => setTab('brain')}
+        >
+          🧠 Brain Gigs
         </button>
       </div>
 
@@ -55,6 +55,7 @@ export function GigBrowserPage() {
               <GigCard
                 key={gig.id}
                 gig={gig}
+                isBonus={!!gig.isBonus}
                 onClaim={() => setClaimGig(gig)}
               />
             );
@@ -71,6 +72,7 @@ export function GigBrowserPage() {
               taken={taken}
               assigneeName={assignee ?? undefined}
               assigneeAvatarUrl={assigneeAvatar?.avatarUrl}
+              isBonus={!!gig.isBonus}
               onClaim={() => setClaimGig(gig)}
               disabled={taken}
             />

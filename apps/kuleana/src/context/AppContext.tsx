@@ -36,6 +36,8 @@ interface AppContextValue {
   removeFamilyMember: (id: string) => void;
   addGig: (title: string, type: GigType, description?: string) => void;
   updateGig: (id: string, title: string, description?: string) => void;
+  reorderGigs: (type: Exclude<GigType, 'kuleana'>, fromGigId: string, toGigId: string) => void;
+  toggleGigBonus: (id: string) => void;
   removeGig: (id: string) => void;
   getGigById: (id: string) => Gig | undefined;
   isWorkGigClaimed: (gigId: string) => boolean;
@@ -312,6 +314,49 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [update],
   );
 
+  const reorderGigs = useCallback(
+    (type: Exclude<GigType, 'kuleana'>, fromGigId: string, toGigId: string) => {
+      if (fromGigId === toGigId) return;
+
+      update((prev) => {
+        const targetGigs = prev.gigs.filter((g) => g.type === type);
+        const fromIndex = targetGigs.findIndex((g) => g.id === fromGigId);
+        const toIndex = targetGigs.findIndex((g) => g.id === toGigId);
+        if (fromIndex === -1 || toIndex === -1) return prev;
+
+        const reorderedTypeGigs = [...targetGigs];
+        const [moved] = reorderedTypeGigs.splice(fromIndex, 1);
+        reorderedTypeGigs.splice(toIndex, 0, moved);
+
+        let typeCursor = 0;
+        const rebuiltGigs = prev.gigs.map((gig) => {
+          if (gig.type !== type) return gig;
+          const nextGig = reorderedTypeGigs[typeCursor];
+          typeCursor += 1;
+          return nextGig;
+        });
+
+        return {
+          ...prev,
+          gigs: rebuiltGigs,
+        };
+      });
+    },
+    [update],
+  );
+
+  const toggleGigBonus = useCallback(
+    (id: string) => {
+      update((prev) => ({
+        ...prev,
+        gigs: prev.gigs.map((g) =>
+          g.id === id ? { ...g, isBonus: !g.isBonus } : g,
+        ),
+      }));
+    },
+    [update],
+  );
+
   const removeGig = useCallback(
     (id: string) => {
       update((prev) => ({
@@ -343,6 +388,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     removeFamilyMember,
     addGig,
     updateGig,
+    reorderGigs,
+    toggleGigBonus,
     removeGig,
     getGigById,
     isWorkGigClaimed,

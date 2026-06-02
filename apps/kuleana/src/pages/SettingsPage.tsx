@@ -16,6 +16,8 @@ export function SettingsPage() {
     removeFamilyMember,
     addGig,
     updateGig,
+    reorderGigs,
+    toggleGigBonus,
     removeGig,
     kuleanaGigs,
     brainGigs,
@@ -31,6 +33,7 @@ export function SettingsPage() {
   const [editingGigId, setEditingGigId] = useState<string | null>(null);
   const [editingGigTitle, setEditingGigTitle] = useState('');
   const [editingGigDesc, setEditingGigDesc] = useState('');
+  const [draggingGigId, setDraggingGigId] = useState<string | null>(null);
 
   const tabs: { id: SettingsTab; label: string }[] = [
     { id: 'family', label: 'Family' },
@@ -52,6 +55,8 @@ export function SettingsPage() {
     if (tab === 'work') return workGigs;
     return [];
   };
+
+  const canReorder = tab === 'brain' || tab === 'work';
 
   const handleAddMember = (e: FormEvent) => {
     e.preventDefault();
@@ -91,6 +96,12 @@ export function SettingsPage() {
       updateGig(editingGigId, editingGigTitle, editingGigDesc);
       setEditingGigId(null);
     }
+  };
+
+  const handleGigDrop = (targetGigId: string) => {
+    if (!draggingGigId || !canReorder || draggingGigId === targetGigId) return;
+    reorderGigs(tab as 'brain' | 'work', draggingGigId, targetGigId);
+    setDraggingGigId(null);
   };
 
   return (
@@ -228,7 +239,22 @@ export function SettingsPage() {
 
           <ul className="settings-list settings-list--gigs">
             {gigsForTab().map((gig) => (
-              <li key={gig.id} className="settings-item settings-item--gig">
+              <li
+                key={gig.id}
+                className={`settings-item settings-item--gig${draggingGigId === gig.id ? ' settings-item--dragging' : ''}`}
+                draggable={canReorder && editingGigId !== gig.id}
+                onDragStart={() => setDraggingGigId(gig.id)}
+                onDragEnd={() => setDraggingGigId(null)}
+                onDragOver={(e) => {
+                  if (!canReorder) return;
+                  e.preventDefault();
+                }}
+                onDrop={(e) => {
+                  if (!canReorder) return;
+                  e.preventDefault();
+                  handleGigDrop(gig.id);
+                }}
+              >
                 {editingGigId === gig.id ? (
                   <div className="settings-edit-gig">
                     <input
@@ -259,11 +285,28 @@ export function SettingsPage() {
                   </div>
                 ) : (
                   <>
-                    <div>
-                      <p className="settings-gig-title">{gig.title}</p>
-                      {gig.description && <p className="settings-gig-desc">{gig.description}</p>}
+                    <div className="settings-gig-main">
+                      {canReorder && (
+                        <span className="settings-gig-drag" aria-hidden="true" title="Drag to reorder">
+                          ≡
+                        </span>
+                      )}
+                      <div>
+                        <p className="settings-gig-title">{gig.title}</p>
+                        {gig.description && <p className="settings-gig-desc">{gig.description}</p>}
+                      </div>
                     </div>
                     <div className="settings-item__actions">
+                      {tab !== 'kuleana' && (
+                        <button
+                          type="button"
+                          className={`bonus-badge bonus-badge--toggle${gig.isBonus ? ' bonus-badge--active' : ''}`}
+                          onClick={() => toggleGigBonus(gig.id)}
+                          aria-pressed={!!gig.isBonus}
+                        >
+                          Bonus
+                        </button>
+                      )}
                       <button
                         type="button"
                         className="btn btn--sm btn--ghost"

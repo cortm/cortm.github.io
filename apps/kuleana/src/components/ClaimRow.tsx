@@ -31,6 +31,7 @@ export function ClaimRow({ claim }: ClaimRowProps) {
           <p className="claim-row__title">{gigTitle}</p>
           <p className="claim-row__meta">
             <Avatar name={assignee.name} avatarUrl={assignee.avatarUrl} size="sm" />
+            {gig?.isBonus && <span className="bonus-badge">Bonus</span>}
             <span className="claim-row__amount">{formatCurrency(claim.dollarAmount)}</span>
           </p>
         </div>

@@ -4,6 +4,7 @@ import { Avatar } from './Avatar';
 interface GigCardProps {
   gig: Gig;
   taken?: boolean;
+  isBonus?: boolean;
   assigneeName?: string;
   assigneeAvatarUrl?: string;
   onClaim?: () => void;
@@ -13,6 +14,7 @@ interface GigCardProps {
 export function GigCard({
   gig,
   taken = false,
+  isBonus = false,
   assigneeName,
   assigneeAvatarUrl,
   onClaim,
@@ -31,16 +33,19 @@ export function GigCard({
         {showAssigneeAvatar && (
           <Avatar name={assigneeName} avatarUrl={assigneeAvatarUrl} size="pill" />
         )}
-        {onClaim && (
-          <button
-            type="button"
-            className="btn btn--primary btn--sm gig-card__claim"
-            onClick={onClaim}
-            disabled={disabled}
-          >
-            Claim
-          </button>
-        )}
+        <div className="gig-card__actions">
+          {isBonus && <span className="bonus-badge">Bonus</span>}
+          {onClaim && (
+            <button
+              type="button"
+              className="btn btn--primary btn--sm gig-card__claim"
+              onClick={onClaim}
+              disabled={disabled}
+            >
+              Claim
+            </button>
+          )}
+        </div>
       </div>
       {gig.description && <p className="gig-card__desc">{gig.description}</p>}
     </article>

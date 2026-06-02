@@ -11,6 +11,7 @@ export interface Gig {
   title: string;
   type: GigType;
   description?: string;
+  isBonus?: boolean;
 }
 
 export interface Claim {
