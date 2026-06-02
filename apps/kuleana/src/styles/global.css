@@ -240,6 +240,27 @@ button {
   padding-top: 0.875rem;
 }
 
+.board-claimed-gigs {
+  padding: 1rem 1.125rem 1.125rem;
+}
+
+.board-claimed-gigs__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.875rem;
+}
+
+.board-claimed-gigs__title {
+  font-size: 1.0625rem;
+  color: var(--forest);
+}
+
+.board-claimed-gigs__list {
+  padding-top: 0;
+}
+
 /* Claim rows */
 
 .claim-list {
@@ -345,8 +366,25 @@ button {
 
 .totals-bar__title {
   font-size: 1rem;
-  margin-bottom: 0.75rem;
   color: var(--gold-soft);
+}
+
+.totals-bar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.totals-bar__kpi {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--gold-soft);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
 }
 
 .totals-bar__empty {

@@ -37,6 +37,19 @@ function normalizeCurrentWeek(state: AppState): AppState {
   };
 }
 
+function normalizeState(state: AppState): AppState {
+  const normalizedWeek = normalizeCurrentWeek(state);
+  const weeklyGoal =
+    typeof normalizedWeek.weeklyGoal === 'number' && Number.isFinite(normalizedWeek.weeklyGoal)
+      ? Math.max(1, Math.round(normalizedWeek.weeklyGoal))
+      : 10;
+
+  return {
+    ...normalizedWeek,
+    weeklyGoal,
+  };
+}
+
 export function createInitialState(): AppState {
   const seed = createSeedState();
   return {
@@ -102,7 +115,7 @@ export async function loadPersistedBundle(): Promise<StoredBundle> {
   }
 
   const picked = pickNewerBundle(local, remote) ?? createBundle(createInitialState());
-  const merged = createBundle(normalizeCurrentWeek(picked.state), picked.updatedAt);
+  const merged = createBundle(normalizeState(picked.state), picked.updatedAt);
   saveLocalBundle(merged);
 
   if (isCloudSyncEnabled() && remote === null && local !== null) {

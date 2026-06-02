@@ -13,6 +13,7 @@ export function SettingsPage() {
     addFamilyMember,
     updateFamilyMember,
     updateFamilyMemberAvatar,
+    updateWeeklyGoal,
     removeFamilyMember,
     addGig,
     updateGig,
@@ -128,6 +129,18 @@ export function SettingsPage() {
 
       {tab === 'family' && (
         <section className="settings-section">
+          <label className="form__field">
+            <span className="form__label">Weekly goal (completed gigs)</span>
+            <input
+              className="form__input"
+              type="number"
+              min={1}
+              step={1}
+              value={state.weeklyGoal}
+              onChange={(e) => updateWeeklyGoal(Number(e.target.value) || 1)}
+            />
+          </label>
+
           <form className="form form--inline" onSubmit={handleAddMember}>
             <input
               className="form__input"

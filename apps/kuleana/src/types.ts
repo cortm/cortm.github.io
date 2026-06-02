@@ -35,6 +35,7 @@ export interface Week {
 export interface AppState {
   familyMembers: FamilyMember[];
   gigs: Gig[];
+  weeklyGoal: number;
   currentWeek: Week;
   pastWeeks: Week[];
 }

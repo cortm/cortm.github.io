@@ -8,9 +8,10 @@ import { Modal } from './Modal';
 
 interface ClaimRowProps {
   claim: Claim;
+  titleOverride?: string;
 }
 
-export function ClaimRow({ claim }: ClaimRowProps) {
+export function ClaimRow({ claim, titleOverride }: ClaimRowProps) {
   const { getGigById, getAvatarForName, completeClaim, uncompleteClaim, unclaimClaim } = useApp();
   const assignee = getAvatarForName(claim.assigneeName);
   const [unclaimOpen, setUnclaimOpen] = useState(false);
@@ -18,6 +19,7 @@ export function ClaimRow({ claim }: ClaimRowProps) {
   const completed = claim.status === 'completed';
   const claimed = claim.status === 'claimed';
   const gigTitle = gig?.title ?? 'this gig';
+  const displayTitle = titleOverride ?? gigTitle;
 
   const handleUnclaim = () => {
     unclaimClaim(claim.id);
@@ -28,7 +30,7 @@ export function ClaimRow({ claim }: ClaimRowProps) {
     <>
       <div className={`claim-row${completed ? ' claim-row--completed' : ''}`}>
         <div className="claim-row__main">
-          <p className="claim-row__title">{gigTitle}</p>
+          <p className="claim-row__title">{displayTitle}</p>
           <p className="claim-row__meta">
             <Avatar name={assignee.name} avatarUrl={assignee.avatarUrl} size="sm" />
             {gig?.isBonus && <span className="bonus-badge">Bonus</span>}

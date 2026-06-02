@@ -32,6 +32,7 @@ interface AppContextValue {
   addFamilyMember: (name: string) => void;
   updateFamilyMember: (id: string, name: string) => void;
   updateFamilyMemberAvatar: (id: string, avatarUrl: string | undefined) => void;
+  updateWeeklyGoal: (goal: number) => void;
   getAvatarForName: (name: string) => { name: string; avatarUrl?: string };
   removeFamilyMember: (id: string) => void;
   addGig: (title: string, type: GigType, description?: string) => void;
@@ -263,6 +264,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [update],
   );
 
+  const updateWeeklyGoal = useCallback(
+    (goal: number) => {
+      const normalized = Math.max(1, Math.round(goal));
+      update((prev) => ({
+        ...prev,
+        weeklyGoal: normalized,
+      }));
+    },
+    [update],
+  );
+
   const getAvatarForName = useCallback(
     (name: string) => {
       const normalized = name.trim().toLowerCase();
@@ -384,6 +396,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     addFamilyMember,
     updateFamilyMember,
     updateFamilyMemberAvatar,
+    updateWeeklyGoal,
     getAvatarForName,
     removeFamilyMember,
     addGig,

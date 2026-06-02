@@ -85,9 +85,10 @@ function makeGigs(titles: string[], type: Gig['type'], prefix: string): Gig[] {
   }));
 }
 
-export function createSeedState(): Pick<AppState, 'familyMembers' | 'gigs'> {
+export function createSeedState(): Pick<AppState, 'familyMembers' | 'gigs' | 'weeklyGoal'> {
   return {
     familyMembers: DEFAULT_FAMILY,
+    weeklyGoal: 10,
     gigs: [
       ...makeGigs(KULEANA_ITEMS, 'kuleana', 'kuleana'),
       ...makeGigs(BRAIN_GIGS, 'brain', 'brain'),
