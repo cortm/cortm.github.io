@@ -93,7 +93,9 @@ export function BoardPage() {
               <>
                 <div className="board-claimed-gigs__header board-claimed-gigs__header--subsection">
                   <h3 className="board-claimed-gigs__title">Completed Gigs</h3>
-                  <span className="section__count">{completedGigs.length}</span>
+                  <span className="section__count section__count--completed">
+                    {completedGigs.length}
+                  </span>
                 </div>
                 <div className="claim-list board-claimed-gigs__list">
                   {completedGigs.map(({ claim, displayTitle }) => (

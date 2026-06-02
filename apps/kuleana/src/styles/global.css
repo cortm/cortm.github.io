@@ -220,6 +220,11 @@ button {
   font-weight: 700;
 }
 
+.section__count--completed {
+  background: #e8f2eb;
+  color: var(--forest);
+}
+
 .section__chevron {
   font-size: 1.25rem;
   color: var(--text-muted);
