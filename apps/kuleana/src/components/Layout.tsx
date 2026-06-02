@@ -11,18 +11,6 @@ const navItems = [
 export function Layout() {
   return (
     <div className="app-shell">
-      <header className="app-header">
-        <div className="app-header__brand">
-          <span className="app-header__logo" aria-hidden="true">
-            🏡
-          </span>
-          <div>
-            <h1 className="app-header__title">Kuleana</h1>
-            <p className="app-header__tagline">Family responsibility &amp; gig tracker</p>
-          </div>
-        </div>
-      </header>
-
       <main className="app-main">
         <Outlet />
       </main>
