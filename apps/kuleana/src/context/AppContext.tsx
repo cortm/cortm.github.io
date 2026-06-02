@@ -7,7 +7,8 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { AppState, ClaimInput, FamilyMember, Gig, GigType } from '../types';
+import type { AppState, Claim, ClaimInput, FamilyMember, Gig, GigType } from '../types';
+import { findFamilyMemberByName, findFamilyMemberForClaim, memberMatchesName } from '../lib/family';
 import { createBundle } from '../lib/bundle';
 import { isCloudSyncEnabled } from '../lib/supabaseClient';
 import { createCurrentWeek, createInitialState, loadPersistedBundle, persistBundle } from '../lib/storage';
@@ -34,6 +35,7 @@ interface AppContextValue {
   updateFamilyMemberAvatar: (id: string, avatarUrl: string | undefined) => void;
   updateWeeklyGoal: (goal: number) => void;
   getAvatarForName: (name: string) => { name: string; avatarUrl?: string };
+  getAvatarForClaim: (claim: Claim) => { name: string; avatarUrl?: string };
   removeFamilyMember: (id: string) => void;
   addGig: (title: string, type: GigType, description?: string) => void;
   updateGig: (id: string, title: string, description?: string) => void;
@@ -146,11 +148,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (taken) return { ok: false, error: 'This work gig is already claimed this week.' };
       }
 
+      const trimmedName = input.assigneeName.trim();
+      const member = findFamilyMemberByName(state.familyMembers, trimmedName);
+
       const claim = {
         id: newId('claim'),
         gigId: input.gigId,
         weekId: state.currentWeek.id,
-        assigneeName: input.assigneeName.trim(),
+        assigneeName: member?.name ?? trimmedName,
+        familyMemberId: member?.id,
         dollarAmount: input.dollarAmount,
         status: 'claimed' as const,
         claimedAt: new Date().toISOString(),
@@ -242,12 +248,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
     (id: string, name: string) => {
       const trimmed = name.trim();
       if (!trimmed) return;
-      update((prev) => ({
-        ...prev,
-        familyMembers: prev.familyMembers.map((m) =>
-          m.id === id ? { ...m, name: trimmed } : m,
-        ),
-      }));
+      update((prev) => {
+        const member = prev.familyMembers.find((m) => m.id === id);
+        if (!member) return prev;
+
+        const previousNames =
+          member.name !== trimmed
+            ? [...new Set([...(member.previousNames ?? []), member.name.trim()])]
+            : member.previousNames;
+
+        const syncClaim = (claim: Claim): Claim => {
+          if (claim.familyMemberId === id || memberMatchesName(member, claim.assigneeName)) {
+            return { ...claim, assigneeName: trimmed, familyMemberId: id };
+          }
+          return claim;
+        };
+
+        return {
+          ...prev,
+          familyMembers: prev.familyMembers.map((m) =>
+            m.id === id ? { ...m, name: trimmed, previousNames } : m,
+          ),
+          currentWeek: {
+            ...prev.currentWeek,
+            claims: prev.currentWeek.claims.map(syncClaim),
+          },
+        };
+      });
     },
     [update],
   );
@@ -277,10 +304,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const getAvatarForName = useCallback(
     (name: string) => {
-      const normalized = name.trim().toLowerCase();
-      const member = state.familyMembers.find((m) => m.name.trim().toLowerCase() === normalized);
+      const member = findFamilyMemberByName(state.familyMembers, name);
       return {
         name: member?.name ?? name,
+        avatarUrl: member?.avatarUrl,
+      };
+    },
+    [state.familyMembers],
+  );
+
+  const getAvatarForClaim = useCallback(
+    (claim: Claim) => {
+      const member = findFamilyMemberForClaim(state.familyMembers, claim);
+      return {
+        name: member?.name ?? claim.assigneeName,
         avatarUrl: member?.avatarUrl,
       };
     },
@@ -398,6 +435,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     updateFamilyMemberAvatar,
     updateWeeklyGoal,
     getAvatarForName,
+    getAvatarForClaim,
     removeFamilyMember,
     addGig,
     updateGig,

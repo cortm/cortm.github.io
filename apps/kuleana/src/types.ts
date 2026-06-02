@@ -4,6 +4,8 @@ export interface FamilyMember {
   id: string;
   name: string;
   avatarUrl?: string;
+  /** Prior display names (e.g. after renaming Kid 1 → Elliott) for claim matching */
+  previousNames?: string[];
 }
 
 export interface Gig {
@@ -19,6 +21,7 @@ export interface Claim {
   gigId: string;
   weekId: string;
   assigneeName: string;
+  familyMemberId?: string;
   dollarAmount: number;
   status: 'claimed' | 'completed';
   claimedAt: string;

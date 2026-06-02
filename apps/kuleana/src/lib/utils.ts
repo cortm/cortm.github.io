@@ -1,19 +1,41 @@
 import type { Claim } from '../types';
 
+export interface PersonTotal {
+  key: string;
+  assigneeName: string;
+  familyMemberId?: string;
+  amount: number;
+}
+
+function personTotalKey(claim: Claim): string {
+  return claim.familyMemberId ?? claim.assigneeName.trim();
+}
+
 export function computeTotals(claims: Claim[]): {
-  byPerson: Record<string, number>;
+  byPerson: PersonTotal[];
   grandTotal: number;
 } {
-  const byPerson: Record<string, number> = {};
+  const byPersonMap = new Map<string, PersonTotal>();
   let grandTotal = 0;
 
   for (const claim of claims) {
     if (claim.status !== 'completed') continue;
-    byPerson[claim.assigneeName] = (byPerson[claim.assigneeName] ?? 0) + claim.dollarAmount;
+    const key = personTotalKey(claim);
+    const existing = byPersonMap.get(key);
+    if (existing) {
+      existing.amount += claim.dollarAmount;
+    } else {
+      byPersonMap.set(key, {
+        key,
+        assigneeName: claim.assigneeName,
+        familyMemberId: claim.familyMemberId,
+        amount: claim.dollarAmount,
+      });
+    }
     grandTotal += claim.dollarAmount;
   }
 
-  return { byPerson, grandTotal };
+  return { byPerson: [...byPersonMap.values()], grandTotal };
 }
 
 export function formatCurrency(amount: number): string {

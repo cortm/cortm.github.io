@@ -1,26 +1,35 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import type { Claim } from '../types';
 import { useApp } from '../context/AppContext';
 import { computeTotals, formatCurrency } from '../lib/utils';
 import { formatWeekRange } from '../lib/week';
 import { ClaimRow } from '../components/ClaimRow';
 import { Modal } from '../components/Modal';
 import { TotalsPersonRow } from '../components/TotalsPersonRow';
-import { useState } from 'react';
+interface ClaimedGigItem {
+  claim: Claim;
+  displayTitle: string;
+}
 
 export function BoardPage() {
   const { state, currentClaims, closeOutWeek } = useApp();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const claimedGigs = useMemo(
-    () =>
-      currentClaims.map((claim) => {
-        const gig = state.gigs.find((g) => g.id === claim.gigId);
-        const icon = gig?.type === 'work' ? '🧹' : '🧠';
-        const title = gig?.title ?? 'Unknown gig';
-        return { claim, displayTitle: `${icon} ${title}` };
-      }),
-    [currentClaims, state.gigs],
-  );
+  const { activeGigs, completedGigs } = useMemo(() => {
+    const active: ClaimedGigItem[] = [];
+    const completed: ClaimedGigItem[] = [];
+
+    for (const claim of currentClaims) {
+      const gig = state.gigs.find((g) => g.id === claim.gigId);
+      const icon = gig?.type === 'work' ? '🧹' : '🧠';
+      const title = gig?.title ?? 'Unknown gig';
+      const item = { claim, displayTitle: `${icon} ${title}` };
+      if (claim.status === 'completed') completed.push(item);
+      else active.push(item);
+    }
+
+    return { activeGigs: active, completedGigs: completed };
+  }, [currentClaims, state.gigs]);
 
   const totals = computeTotals(currentClaims);
   const completedCount = useMemo(
@@ -48,12 +57,12 @@ export function BoardPage() {
             {completedCount}/{state.weeklyGoal}
           </div>
         </div>
-        {Object.keys(totals.byPerson).length === 0 ? (
+        {totals.byPerson.length === 0 ? (
           <p className="totals-bar__empty">Complete gigs to see earnings</p>
         ) : (
           <div className="totals-bar__grid">
-            {Object.entries(totals.byPerson).map(([name, amount]) => (
-              <TotalsPersonRow key={name} name={name} amount={amount} />
+            {totals.byPerson.map((entry) => (
+              <TotalsPersonRow key={entry.key} total={entry} />
             ))}
             <div className="totals-bar__grand">
               <span>Total owed</span>
@@ -66,16 +75,34 @@ export function BoardPage() {
       <section className="section board-claimed-gigs">
         <div className="board-claimed-gigs__header">
           <h3 className="board-claimed-gigs__title">Claimed Gigs</h3>
-          <span className="section__count">{claimedGigs.length}</span>
+          <span className="section__count">{activeGigs.length}</span>
         </div>
-        {claimedGigs.length === 0 ? (
+        {currentClaims.length === 0 ? (
           <p className="empty-state">No gigs claimed yet. Browse gigs to get started!</p>
         ) : (
-          <div className="claim-list board-claimed-gigs__list">
-            {claimedGigs.map(({ claim, displayTitle }) => (
-              <ClaimRow key={claim.id} claim={claim} titleOverride={displayTitle} />
-            ))}
-          </div>
+          <>
+            {activeGigs.length > 0 && (
+              <div className="claim-list board-claimed-gigs__list">
+                {activeGigs.map(({ claim, displayTitle }) => (
+                  <ClaimRow key={claim.id} claim={claim} titleOverride={displayTitle} />
+                ))}
+              </div>
+            )}
+
+            {completedGigs.length > 0 && (
+              <>
+                <div className="board-claimed-gigs__header board-claimed-gigs__header--subsection">
+                  <h3 className="board-claimed-gigs__title">Completed Gigs</h3>
+                  <span className="section__count">{completedGigs.length}</span>
+                </div>
+                <div className="claim-list board-claimed-gigs__list">
+                  {completedGigs.map(({ claim, displayTitle }) => (
+                    <ClaimRow key={claim.id} claim={claim} titleOverride={displayTitle} />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
         )}
       </section>
 

@@ -10,9 +10,10 @@ export function GigBrowserPage() {
   const {
     brainGigs,
     workGigs,
+    currentClaims,
     isWorkGigClaimed,
     getWorkClaimAssignee,
-    getAvatarForName,
+    getAvatarForClaim,
   } = useApp();
 
   const [tab, setTab] = useState<Tab>('work');
@@ -61,9 +62,10 @@ export function GigBrowserPage() {
             );
           }
 
+          const claim = currentClaims.find((c) => c.gigId === gig.id);
           const assignee = getWorkClaimAssignee(gig.id);
           const taken = isWorkGigClaimed(gig.id) || !!assignee;
-          const assigneeAvatar = assignee ? getAvatarForName(assignee) : null;
+          const assigneeAvatar = claim ? getAvatarForClaim(claim) : null;
 
           return (
             <GigCard

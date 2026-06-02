@@ -3,7 +3,7 @@ import type { Claim } from '../types';
 import { useApp } from '../context/AppContext';
 import { formatCurrency } from '../lib/utils';
 import { Avatar } from './Avatar';
-import { StatusPill } from './StatusPill';
+import { CompleteCheckButton } from './CompleteCheckButton';
 import { Modal } from './Modal';
 
 interface ClaimRowProps {
@@ -12,8 +12,8 @@ interface ClaimRowProps {
 }
 
 export function ClaimRow({ claim, titleOverride }: ClaimRowProps) {
-  const { getGigById, getAvatarForName, completeClaim, uncompleteClaim, unclaimClaim } = useApp();
-  const assignee = getAvatarForName(claim.assigneeName);
+  const { getGigById, getAvatarForClaim, completeClaim, uncompleteClaim, unclaimClaim } = useApp();
+  const assignee = getAvatarForClaim(claim);
   const [unclaimOpen, setUnclaimOpen] = useState(false);
   const gig = getGigById(claim.gigId);
   const completed = claim.status === 'completed';
@@ -39,32 +39,24 @@ export function ClaimRow({ claim, titleOverride }: ClaimRowProps) {
         </div>
         <div className="claim-row__actions">
           {claimed ? (
-            <button
-              type="button"
-              className="btn btn--sm btn--status-claimed"
-              onClick={() => setUnclaimOpen(true)}
-            >
-              Claimed
-            </button>
+            <>
+              <button
+                type="button"
+                className="btn btn--sm btn--status-claimed"
+                onClick={() => setUnclaimOpen(true)}
+              >
+                Claimed
+              </button>
+              <button
+                type="button"
+                className="btn btn--accent btn--sm"
+                onClick={() => completeClaim(claim.id)}
+              >
+                Mark Complete
+              </button>
+            </>
           ) : (
-            <StatusPill status={claim.status} />
-          )}
-          {completed ? (
-            <button
-              type="button"
-              className="btn btn--ghost btn--sm"
-              onClick={() => uncompleteClaim(claim.id)}
-            >
-              Mark Incomplete
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn--accent btn--sm"
-              onClick={() => completeClaim(claim.id)}
-            >
-              Mark Complete
-            </button>
+            <CompleteCheckButton onClick={() => uncompleteClaim(claim.id)} />
           )}
         </div>
       </div>

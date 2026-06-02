@@ -1,23 +1,32 @@
+import type { PersonTotal } from '../lib/utils';
 import { useApp } from '../context/AppContext';
 import { formatCurrency } from '../lib/utils';
 import { Avatar } from './Avatar';
 
 interface TotalsPersonRowProps {
-  name: string;
-  amount: number;
+  total: PersonTotal;
 }
 
-export function TotalsPersonRow({ name, amount }: TotalsPersonRowProps) {
-  const { getAvatarForName } = useApp();
-  const person = getAvatarForName(name);
+export function TotalsPersonRow({ total }: TotalsPersonRowProps) {
+  const { getAvatarForClaim } = useApp();
+  const person = getAvatarForClaim({
+    id: '',
+    gigId: '',
+    weekId: '',
+    assigneeName: total.assigneeName,
+    familyMemberId: total.familyMemberId,
+    dollarAmount: 0,
+    status: 'completed',
+    claimedAt: '',
+  });
 
   return (
     <div className="totals-bar__person">
       <span className="totals-bar__person-label">
-        <Avatar name={person.name} avatarUrl={person.avatarUrl} size="pill" />
-        <span>{name}</span>
+        <Avatar name={person.name} avatarUrl={person.avatarUrl} size="sm" />
+        <span>{person.name}</span>
       </span>
-      <strong>{formatCurrency(amount)}</strong>
+      <strong>{formatCurrency(total.amount)}</strong>
     </div>
   );
 }

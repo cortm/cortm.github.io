@@ -1,4 +1,5 @@
 import type { AppState, Week } from '../types';
+import { backfillClaimMemberId, enrichFamilyPreviousNames } from './family';
 import { createSeedState } from '../data/seed';
 import {
   ACTIVE_WEEK_END,
@@ -37,6 +38,13 @@ function normalizeCurrentWeek(state: AppState): AppState {
   };
 }
 
+function migrateWeekClaims(week: Week, state: AppState): Week {
+  return {
+    ...week,
+    claims: week.claims.map((claim) => backfillClaimMemberId(claim, state.familyMembers)),
+  };
+}
+
 function normalizeState(state: AppState): AppState {
   const normalizedWeek = normalizeCurrentWeek(state);
   const weeklyGoal =
@@ -44,9 +52,17 @@ function normalizeState(state: AppState): AppState {
       ? Math.max(1, Math.round(normalizedWeek.weeklyGoal))
       : 10;
 
-  return {
+  const withGoal = {
     ...normalizedWeek,
     weeklyGoal,
+  };
+
+  const withAliases = enrichFamilyPreviousNames(withGoal);
+
+  return {
+    ...withAliases,
+    currentWeek: migrateWeekClaims(withAliases.currentWeek, withAliases),
+    pastWeeks: withAliases.pastWeeks.map((week) => migrateWeekClaims(week, withAliases)),
   };
 }
 
