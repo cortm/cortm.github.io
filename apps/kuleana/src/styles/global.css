@@ -316,8 +316,39 @@ button {
 }
 
 .claim-row__amount {
+  margin: 0;
+  padding: 0.1rem 0.35rem;
+  border: none;
+  border-radius: 6px;
+  font: inherit;
   font-weight: 700;
+  font-size: inherit;
   color: var(--forest);
+  background: transparent;
+  cursor: pointer;
+  text-decoration: underline transparent;
+  text-underline-offset: 2px;
+  transition: background 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.claim-row__amount:hover {
+  background: rgba(45, 90, 61, 0.1);
+  text-decoration-color: var(--forest);
+}
+
+.claim-row__amount:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
+}
+
+.claim-row--completed .claim-row__amount:hover {
+  background: rgba(45, 90, 61, 0.12);
+}
+
+.modal__subtitle {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
 }
 
 .claim-row__actions {

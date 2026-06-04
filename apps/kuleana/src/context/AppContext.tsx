@@ -29,6 +29,10 @@ interface AppContextValue {
   completeClaim: (claimId: string) => void;
   uncompleteClaim: (claimId: string) => void;
   unclaimClaim: (claimId: string) => void;
+  updateClaimAmount: (
+    claimId: string,
+    dollarAmount: number,
+  ) => { ok: true } | { ok: false; error: string };
   closeOutWeek: () => void;
   addFamilyMember: (name: string) => void;
   updateFamilyMember: (id: string, name: string) => void;
@@ -216,6 +220,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }));
     },
     [update],
+  );
+
+  const updateClaimAmount = useCallback(
+    (claimId: string, dollarAmount: number): { ok: true } | { ok: false; error: string } => {
+      if (dollarAmount <= 0) return { ok: false, error: 'Enter an amount greater than $0.' };
+      const exists = state.currentWeek.claims.some((c) => c.id === claimId);
+      if (!exists) return { ok: false, error: 'Claim not found.' };
+
+      update((prev) => ({
+        ...prev,
+        currentWeek: {
+          ...prev.currentWeek,
+          claims: prev.currentWeek.claims.map((c) =>
+            c.id === claimId ? { ...c, dollarAmount } : c,
+          ),
+        },
+      }));
+
+      return { ok: true };
+    },
+    [state.currentWeek.claims, update],
   );
 
   const closeOutWeek = useCallback(() => {
@@ -429,6 +454,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     completeClaim,
     uncompleteClaim,
     unclaimClaim,
+    updateClaimAmount,
     closeOutWeek,
     addFamilyMember,
     updateFamilyMember,

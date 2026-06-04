@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext';
 import { formatCurrency } from '../lib/utils';
 import { Avatar } from './Avatar';
 import { CompleteCheckButton } from './CompleteCheckButton';
+import { EditClaimAmountModal } from './EditClaimAmountModal';
 import { Modal } from './Modal';
 
 interface ClaimRowProps {
@@ -15,6 +16,7 @@ export function ClaimRow({ claim, titleOverride }: ClaimRowProps) {
   const { getGigById, getAvatarForClaim, completeClaim, uncompleteClaim, unclaimClaim } = useApp();
   const assignee = getAvatarForClaim(claim);
   const [unclaimOpen, setUnclaimOpen] = useState(false);
+  const [editAmountOpen, setEditAmountOpen] = useState(false);
   const gig = getGigById(claim.gigId);
   const completed = claim.status === 'completed';
   const claimed = claim.status === 'claimed';
@@ -34,7 +36,14 @@ export function ClaimRow({ claim, titleOverride }: ClaimRowProps) {
           <p className="claim-row__meta">
             <Avatar name={assignee.name} avatarUrl={assignee.avatarUrl} size="sm" />
             {gig?.isBonus && <span className="bonus-badge">Bonus</span>}
-            <span className="claim-row__amount">{formatCurrency(claim.dollarAmount)}</span>
+            <button
+              type="button"
+              className="claim-row__amount"
+              onClick={() => setEditAmountOpen(true)}
+              aria-label={`Edit amount: ${formatCurrency(claim.dollarAmount)}`}
+            >
+              {formatCurrency(claim.dollarAmount)}
+            </button>
           </p>
         </div>
         <div className="claim-row__actions">
@@ -60,6 +69,13 @@ export function ClaimRow({ claim, titleOverride }: ClaimRowProps) {
           )}
         </div>
       </div>
+
+      <EditClaimAmountModal
+        claim={claim}
+        gigTitle={displayTitle}
+        open={editAmountOpen}
+        onClose={() => setEditAmountOpen(false)}
+      />
 
       <Modal open={unclaimOpen} title="Unclaim this gig?" onClose={() => setUnclaimOpen(false)}>
         <p className="confirm-text">
