@@ -19,14 +19,22 @@ export function TotalsPersonRow({ total }: TotalsPersonRowProps) {
     status: 'completed',
     claimedAt: '',
   });
+  const amountLabel = formatCurrency(total.amount);
 
   return (
-    <div className="totals-bar__person">
-      <span className="totals-bar__person-label">
-        <Avatar name={person.name} avatarUrl={person.avatarUrl} size="sm" />
-        <span>{person.name}</span>
+    <div className="totals-squircle" title={`${person.name}: ${amountLabel}`}>
+      <Avatar
+        name={person.name}
+        avatarUrl={person.avatarUrl}
+        size="totals"
+        squircle
+      />
+      <span className="totals-squircle__amount" aria-hidden="true">
+        {amountLabel}
       </span>
-      <strong>{formatCurrency(total.amount)}</strong>
+      <span className="visually-hidden">
+        {person.name}: {amountLabel}
+      </span>
     </div>
   );
 }

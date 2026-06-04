@@ -60,10 +60,12 @@ export function BoardPage() {
         {totals.byPerson.length === 0 ? (
           <p className="totals-bar__empty">Complete gigs to see earnings</p>
         ) : (
-          <div className="totals-bar__grid">
-            {totals.byPerson.map((entry) => (
-              <TotalsPersonRow key={entry.key} total={entry} />
-            ))}
+          <div className="totals-bar__body">
+            <div className="totals-bar__people">
+              {totals.byPerson.map((entry) => (
+                <TotalsPersonRow key={entry.key} total={entry} />
+              ))}
+            </div>
             <div className="totals-bar__grand">
               <span>Total owed</span>
               <strong>{formatCurrency(totals.grandTotal)}</strong>

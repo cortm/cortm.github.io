@@ -78,10 +78,12 @@ export function PastWeeksPage() {
                   {totals.byPerson.length > 0 && (
                     <div className="history-totals">
                       <h4>Total earned</h4>
-                      <div className="totals-bar__grid">
-                        {totals.byPerson.map((entry) => (
-                          <TotalsPersonRow key={entry.key} total={entry} />
-                        ))}
+                      <div className="totals-bar__body totals-bar__body--history">
+                        <div className="totals-bar__people">
+                          {totals.byPerson.map((entry) => (
+                            <TotalsPersonRow key={entry.key} total={entry} />
+                          ))}
+                        </div>
                         <div className="totals-bar__grand">
                           <span>Week total</span>
                           <strong>{formatCurrency(totals.grandTotal)}</strong>

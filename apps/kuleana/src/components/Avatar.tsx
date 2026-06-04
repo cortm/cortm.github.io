@@ -4,12 +4,20 @@ import { getNameInitial, processAvatarFile } from '../lib/avatar';
 interface AvatarProps {
   name: string;
   avatarUrl?: string;
-  size?: 'pill' | 'sm' | 'md';
+  size?: 'pill' | 'sm' | 'md' | 'totals';
+  squircle?: boolean;
   editable?: boolean;
   onUpload?: (dataUrl: string) => void;
 }
 
-export function Avatar({ name, avatarUrl, size = 'md', editable = false, onUpload }: AvatarProps) {
+export function Avatar({
+  name,
+  avatarUrl,
+  size = 'md',
+  squircle = false,
+  editable = false,
+  onUpload,
+}: AvatarProps) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const initial = getNameInitial(name);
@@ -31,7 +39,7 @@ export function Avatar({ name, avatarUrl, size = 'md', editable = false, onUploa
 
   const circle = (
     <span
-      className={`avatar avatar--${size}${editable ? ' avatar--editable' : ''}`}
+      className={`avatar avatar--${size}${squircle ? ' avatar--squircle' : ''}${editable ? ' avatar--editable' : ''}`}
       title={name}
       aria-hidden={editable ? true : undefined}
     >
