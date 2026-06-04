@@ -1,4 +1,4 @@
-import type { Claim } from '../types';
+import type { Claim, FamilyMember } from '../types';
 
 export interface PersonTotal {
   key: string;
@@ -36,6 +36,37 @@ export function computeTotals(claims: Claim[]): {
   }
 
   return { byPerson: [...byPersonMap.values()], grandTotal };
+}
+
+/** Weekly board totals: every family member shown, $0 if no completed earnings */
+export function computeBoardTotals(
+  claims: Claim[],
+  familyMembers: FamilyMember[],
+): { byPerson: PersonTotal[]; grandTotal: number } {
+  const { byPerson: earned, grandTotal } = computeTotals(claims);
+
+  if (familyMembers.length === 0) {
+    return {
+      byPerson: [...earned].sort((a, b) => b.amount - a.amount),
+      grandTotal,
+    };
+  }
+
+  const amountByMemberId = new Map<string, number>();
+  for (const entry of earned) {
+    if (entry.familyMemberId) amountByMemberId.set(entry.familyMemberId, entry.amount);
+  }
+
+  const byPerson = familyMembers
+    .map((member) => ({
+      key: member.id,
+      assigneeName: member.name,
+      familyMemberId: member.id,
+      amount: amountByMemberId.get(member.id) ?? 0,
+    }))
+    .sort((a, b) => b.amount - a.amount);
+
+  return { byPerson, grandTotal };
 }
 
 export function formatCurrency(amount: number): string {

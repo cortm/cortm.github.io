@@ -404,26 +404,11 @@ button {
 }
 
 .totals-bar__title {
-  font-size: 1rem;
+  margin: 0 0 2rem;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
   color: var(--gold-soft);
-}
-
-.totals-bar__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.totals-bar__kpi {
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  color: var(--gold-soft);
-  font-weight: 700;
-  font-size: 0.8125rem;
-  letter-spacing: 0.01em;
 }
 
 .totals-bar__empty {
@@ -432,20 +417,60 @@ button {
   font-size: 0.9375rem;
 }
 
-.totals-bar__body {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .totals-bar__people {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 1.5rem 1.75rem;
-  padding: 0.25rem 0.25rem 0.75rem;
+  gap: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.totals-bar__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.totals-bar__percent {
+  margin: 0 0 0.2rem;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--gold-soft);
+}
+
+.totals-bar__footer-mid {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gold-soft);
+}
+
+.totals-bar__owed {
+  flex-shrink: 0;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.totals-bar__progress {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+
+.totals-bar__progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--gold);
+  transition: width 0.25s ease;
 }
 
 .totals-squircle {
@@ -474,12 +499,12 @@ button {
   border-radius: 999px;
   background: var(--gold);
   color: var(--forest);
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   line-height: 1;
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
-  border: 2px solid var(--forest);
+  border: 2px solid rgba(255, 255, 255, 0.35);
 }
 
 .totals-bar .avatar--totals {
@@ -502,13 +527,6 @@ button {
   background: var(--gold-soft);
   color: var(--forest);
   font-size: 2rem;
-}
-
-.totals-bar__grand {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1.0625rem;
 }
 
 .visually-hidden {
@@ -555,17 +573,6 @@ button {
 .complete-check__icon {
   width: 1rem;
   height: 1rem;
-}
-
-.totals-bar__body .totals-bar__grand {
-  margin-top: 0;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.totals-bar__grand strong {
-  color: var(--gold);
-  font-size: 1.25rem;
 }
 
 /* Buttons */
@@ -1018,18 +1025,31 @@ button {
 }
 
 .history-totals .totals-bar__body--history {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   background: var(--cream-dark);
   padding: 0.875rem;
   border-radius: var(--radius-sm);
 }
 
+.history-totals .totals-bar__people {
+  margin-bottom: 0;
+}
+
 .history-totals .totals-bar__grand {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(44, 42, 38, 0.12);
+  font-size: 0.9375rem;
   color: var(--text);
-  border-top-color: rgba(44, 42, 38, 0.12);
 }
 
 .history-totals .totals-bar__grand strong {
   color: var(--forest);
+  font-size: 1.125rem;
 }
 
 .history-totals .avatar--totals {

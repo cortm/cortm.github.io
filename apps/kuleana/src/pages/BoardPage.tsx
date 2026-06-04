@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { Claim } from '../types';
 import { useApp } from '../context/AppContext';
-import { computeTotals, formatCurrency } from '../lib/utils';
+import { computeBoardTotals, formatCurrency } from '../lib/utils';
 import { formatWeekRange } from '../lib/week';
 import { ClaimRow } from '../components/ClaimRow';
 import { Modal } from '../components/Modal';
@@ -31,11 +31,18 @@ export function BoardPage() {
     return { activeGigs: active, completedGigs: completed };
   }, [currentClaims, state.gigs]);
 
-  const totals = computeTotals(currentClaims);
+  const totals = useMemo(
+    () => computeBoardTotals(currentClaims, state.familyMembers),
+    [currentClaims, state.familyMembers],
+  );
   const completedCount = useMemo(
     () => currentClaims.filter((claim) => claim.status === 'completed').length,
     [currentClaims],
   );
+  const goalPercent = useMemo(() => {
+    if (state.weeklyGoal <= 0) return 0;
+    return Math.min(100, Math.round((completedCount / state.weeklyGoal) * 100));
+  }, [completedCount, state.weeklyGoal]);
   const weekLabel = formatWeekRange(state.currentWeek.startDate, state.currentWeek.endDate);
 
   const handleCloseOut = () => {
@@ -51,26 +58,47 @@ export function BoardPage() {
       </div>
 
       <div className="totals-bar">
-        <div className="totals-bar__header">
-          <h3 className="totals-bar__title">Weekly Totals</h3>
-          <div className="totals-bar__kpi" aria-label="Completed goal KPI">
-            {completedCount}/{state.weeklyGoal}
-          </div>
-        </div>
-        {totals.byPerson.length === 0 ? (
-          <p className="totals-bar__empty">Complete gigs to see earnings</p>
+        <h3 className="totals-bar__title">Weekly Totals</h3>
+        {state.familyMembers.length === 0 ? (
+          <p className="totals-bar__empty">Add family members in Settings to track weekly totals.</p>
         ) : (
-          <div className="totals-bar__body">
+          <>
             <div className="totals-bar__people">
               {totals.byPerson.map((entry) => (
                 <TotalsPersonRow key={entry.key} total={entry} />
               ))}
             </div>
-            <div className="totals-bar__grand">
-              <span>Total owed</span>
-              <strong>{formatCurrency(totals.grandTotal)}</strong>
+            <div className="totals-bar__footer">
+              <p className="totals-bar__percent" aria-hidden="true">
+                {goalPercent}%
+              </p>
+              <div className="totals-bar__footer-mid">
+                <span>
+                  {completedCount} / {state.weeklyGoal} completed
+                </span>
+                <span className="totals-bar__owed">
+                  Total owed: {formatCurrency(totals.grandTotal)}
+                </span>
+              </div>
+              <div
+                className="totals-bar__progress"
+                role="progressbar"
+                aria-valuenow={goalPercent}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`Weekly goal progress: ${completedCount} of ${state.weeklyGoal} gigs completed`}
+              >
+                <div
+                  className="totals-bar__progress-fill"
+                  style={{ width: `${goalPercent}%` }}
+                />
+              </div>
+              <span className="visually-hidden">
+                {goalPercent}% of weekly goal · {completedCount} of {state.weeklyGoal} gigs completed
+                · Total owed {formatCurrency(totals.grandTotal)}
+              </span>
             </div>
-          </div>
+          </>
         )}
       </div>
 

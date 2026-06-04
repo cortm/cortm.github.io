@@ -17,7 +17,7 @@ export function KuleanaPage() {
           🌻
         </span>
         <p>
-          These aren&apos;t gigs to claim. They&apos;re values we live by — every day, together.
+          These aren&apos;t gigs to claim. They&apos;re standards we live by.
         </p>
       </div>
 
