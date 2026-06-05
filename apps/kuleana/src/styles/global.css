@@ -404,13 +404,13 @@ button {
 }
 
 .pill--claimed {
-  background: var(--gold-soft);
-  color: #7a5a12;
+  background: var(--terracotta-soft);
+  color: var(--terracotta);
 }
 
 .pill--completed {
   background: var(--terracotta-soft);
-  color: #8b4a38;
+  color: var(--terracotta);
 }
 
 .pill--available {
@@ -704,6 +704,17 @@ button {
   box-shadow: var(--shadow);
 }
 
+.gigs-page__sticky-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  padding-top: 1rem;
+}
+
+.gigs-page__sticky-tabs .tabs {
+  box-shadow: 0 4px 12px rgba(44, 42, 38, 0.06);
+}
+
 /* Gig cards */
 
 .gig-grid {
@@ -741,7 +752,7 @@ button {
 }
 
 .gig-card__dot--taken {
-  background: #9a6b4f;
+  background: var(--terracotta);
 }
 
 .gig-card__title {
@@ -1174,9 +1185,9 @@ button {
   height: 1.5rem;
   padding: 0 0.55rem;
   border-radius: 999px;
-  background: rgba(232, 184, 74, 0.18);
-  border: 1px solid rgba(232, 184, 74, 0.45);
-  color: #7a5a12;
+  background: rgba(201, 123, 99, 0.18);
+  border: 1px solid rgba(201, 123, 99, 0.45);
+  color: var(--terracotta);
   font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1191,9 +1202,9 @@ button {
 }
 
 .bonus-badge--toggle.bonus-badge--active {
-  background: rgba(232, 184, 74, 0.18);
-  border-color: rgba(232, 184, 74, 0.45);
-  color: #7a5a12;
+  background: rgba(201, 123, 99, 0.18);
+  border-color: rgba(201, 123, 99, 0.45);
+  color: var(--terracotta);
 }
 
 .settings-edit-gig {
@@ -1487,5 +1498,5 @@ button {
 }
 
 .sync-status__text--warn {
-  color: #8b5a12;
+  color: var(--terracotta);
 }

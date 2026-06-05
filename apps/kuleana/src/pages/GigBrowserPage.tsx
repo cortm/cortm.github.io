@@ -22,31 +22,33 @@ export function GigBrowserPage() {
   const gigs = tab === 'brain' ? brainGigs : workGigs;
 
   return (
-    <div className="page">
+    <div className="page gigs-page">
       <div className="page-header">
         <h2 className="page-header__title">Gig Browser</h2>
         <p className="page-header__subtitle">Find and claim gigs for this week</p>
       </div>
 
-      <div className="tabs" role="tablist">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === 'work'}
-          className={`tabs__btn${tab === 'work' ? ' tabs__btn--active' : ''}`}
-          onClick={() => setTab('work')}
-        >
-          🧹 Work Gigs
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === 'brain'}
-          className={`tabs__btn${tab === 'brain' ? ' tabs__btn--active' : ''}`}
-          onClick={() => setTab('brain')}
-        >
-          🧠 Brain Gigs
-        </button>
+      <div className="gigs-page__sticky-tabs">
+        <div className="tabs" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === 'work'}
+            className={`tabs__btn${tab === 'work' ? ' tabs__btn--active' : ''}`}
+            onClick={() => setTab('work')}
+          >
+            🧹 Work Gigs
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === 'brain'}
+            className={`tabs__btn${tab === 'brain' ? ' tabs__btn--active' : ''}`}
+            onClick={() => setTab('brain')}
+          >
+            🧠 Brain Gigs
+          </button>
+        </div>
       </div>
 
       <div className="gig-grid">
