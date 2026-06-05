@@ -7,7 +7,7 @@ import {
   createWeekId,
   getActiveWeekBounds,
 } from './week';
-import { createBundle, pickNewerBundle, type StoredBundle } from './bundle';
+import { createBundle, pickBestBundle, type StoredBundle } from './bundle';
 import { isCloudSyncEnabled } from './supabaseClient';
 import { loadRemoteBundle, saveRemoteBundle } from './cloudStorage';
 
@@ -130,7 +130,7 @@ export async function loadPersistedBundle(): Promise<StoredBundle> {
     }
   }
 
-  const picked = pickNewerBundle(local, remote) ?? createBundle(createInitialState());
+  const picked = pickBestBundle(local, remote) ?? createBundle(createInitialState());
   const merged = createBundle(normalizeState(picked.state), picked.updatedAt);
   saveLocalBundle(merged);
 

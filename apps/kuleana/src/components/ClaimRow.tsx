@@ -43,9 +43,9 @@ export function ClaimRow({ claim, titleOverride, draggable = false }: ClaimRowPr
         }}
         onDragEnd={() => setIsDragging(false)}
       >
-        <div className="claim-row__main">
-          <p className="claim-row__title">{displayTitle}</p>
-          <p className="claim-row__meta">
+        <p className="claim-row__title">{displayTitle}</p>
+        <div className="claim-row__meta">
+          <div className="claim-row__meta-start">
             <Avatar name={assignee.name} avatarUrl={assignee.avatarUrl} size="sm" />
             {gig?.isBonus && <span className="bonus-badge">Bonus</span>}
             <button
@@ -56,31 +56,31 @@ export function ClaimRow({ claim, titleOverride, draggable = false }: ClaimRowPr
             >
               {formatCurrency(claim.dollarAmount)}
             </button>
-          </p>
-        </div>
-        <div className="claim-row__actions">
-          {claimed ? (
-            <>
-              <button
-                type="button"
-                className="btn btn--sm btn--status-claimed"
-                onClick={() => setUnclaimOpen(true)}
-              >
-                Claimed
-              </button>
-              <button
-                type="button"
-                className="btn btn--accent btn--sm claim-row__mark-complete"
-                onClick={() => completeClaim(claim.id)}
-              >
-                Mark Complete
-              </button>
-            </>
-          ) : (
-            <span className="claim-row__complete-check">
-              <CompleteCheckButton onClick={() => uncompleteClaim(claim.id)} />
-            </span>
-          )}
+          </div>
+          <div className="claim-row__meta-end">
+            {claimed ? (
+              <>
+                <button
+                  type="button"
+                  className="btn btn--sm btn--status-claimed"
+                  onClick={() => setUnclaimOpen(true)}
+                >
+                  Claimed
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--accent btn--sm claim-row__mark-complete"
+                  onClick={() => completeClaim(claim.id)}
+                >
+                  Mark Complete
+                </button>
+              </>
+            ) : (
+              <span className="claim-row__complete-check">
+                <CompleteCheckButton onClick={() => uncompleteClaim(claim.id)} />
+              </span>
+            )}
+          </div>
         </div>
       </div>
 

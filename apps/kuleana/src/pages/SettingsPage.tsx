@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import type { GigType } from '../types';
 import { Avatar } from '../components/Avatar';
 import { useApp } from '../context/AppContext';
@@ -35,6 +35,27 @@ export function SettingsPage() {
   const [editingGigTitle, setEditingGigTitle] = useState('');
   const [editingGigDesc, setEditingGigDesc] = useState('');
   const [draggingGigId, setDraggingGigId] = useState<string | null>(null);
+  const [movedGigId, setMovedGigId] = useState<string | null>(null);
+  const movedGigTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const flashMovedGig = useCallback((id: string) => {
+    if (movedGigTimeoutRef.current) clearTimeout(movedGigTimeoutRef.current);
+    setMovedGigId(null);
+    requestAnimationFrame(() => {
+      setMovedGigId(id);
+      movedGigTimeoutRef.current = setTimeout(() => {
+        setMovedGigId((current) => (current === id ? null : current));
+        movedGigTimeoutRef.current = null;
+      }, 1000);
+    });
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (movedGigTimeoutRef.current) clearTimeout(movedGigTimeoutRef.current);
+    },
+    [],
+  );
 
   const tabs: { id: SettingsTab; label: string }[] = [
     { id: 'family', label: 'Family' },
@@ -101,8 +122,10 @@ export function SettingsPage() {
 
   const handleGigDrop = (targetGigId: string) => {
     if (!draggingGigId || !canReorder || draggingGigId === targetGigId) return;
-    reorderGigs(tab as 'brain' | 'work', draggingGigId, targetGigId);
+    const movedId = draggingGigId;
+    reorderGigs(tab as 'brain' | 'work', movedId, targetGigId);
     setDraggingGigId(null);
+    flashMovedGig(movedId);
   };
 
   return (
@@ -254,7 +277,7 @@ export function SettingsPage() {
             {gigsForTab().map((gig) => (
               <li
                 key={gig.id}
-                className={`settings-item settings-item--gig${draggingGigId === gig.id ? ' settings-item--dragging' : ''}`}
+                className={`settings-item settings-item--gig${draggingGigId === gig.id ? ' settings-item--dragging' : ''}${movedGigId === gig.id ? ' settings-item--moved' : ''}`}
                 draggable={canReorder && editingGigId !== gig.id}
                 onDragStart={() => setDraggingGigId(gig.id)}
                 onDragEnd={() => setDraggingGigId(null)}
@@ -314,7 +337,10 @@ export function SettingsPage() {
                         <button
                           type="button"
                           className={`bonus-badge bonus-badge--toggle${gig.isBonus ? ' bonus-badge--active' : ''}`}
-                          onClick={() => toggleGigBonus(gig.id)}
+                          onClick={() => {
+                            toggleGigBonus(gig.id);
+                            flashMovedGig(gig.id);
+                          }}
                           aria-pressed={!!gig.isBonus}
                         >
                           Bonus

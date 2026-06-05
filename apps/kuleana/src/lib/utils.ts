@@ -1,4 +1,4 @@
-import type { Claim, FamilyMember } from '../types';
+import type { Claim, FamilyMember, Gig } from '../types';
 
 export interface PersonTotal {
   key: string;
@@ -67,6 +67,15 @@ export function computeBoardTotals(
     .sort((a, b) => b.amount - a.amount);
 
   return { byPerson, grandTotal };
+}
+
+/** Bonus gigs first; preserve relative order within each group. */
+export function sortGigsBonusFirst(gigs: Gig[]): Gig[] {
+  return [...gigs.filter((g) => g.isBonus), ...gigs.filter((g) => !g.isBonus)];
+}
+
+export function isGigBonus(gigId: string, gigs: Gig[]): boolean {
+  return !!gigs.find((g) => g.id === gigId)?.isBonus;
 }
 
 export function formatCurrency(amount: number): string {

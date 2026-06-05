@@ -47,6 +47,18 @@ export function formatWeekRange(startDate: string, endDate: string): string {
   return `Week of ${startMonth} ${start.getDate()} – ${endMonth} ${end.getDate()}`;
 }
 
+export function toLocalDateKey(date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/** Close out is allowed on the Sunday that ends the active board week. */
+export function canCloseOutWeekOnDate(weekEndDate: string, date = new Date()): boolean {
+  return toLocalDateKey(date) === weekEndDate;
+}
+
 export function formatShortDate(dateStr: string): string {
   const date = new Date(dateStr + 'T12:00:00');
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });

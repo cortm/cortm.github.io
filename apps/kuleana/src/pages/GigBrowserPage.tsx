@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Gig } from '../types';
 import { useApp } from '../context/AppContext';
 import { ClaimModal } from '../components/ClaimModal';
 import { GigCard } from '../components/GigCard';
+import { sortGigsBonusFirst } from '../lib/utils';
 
 type Tab = 'brain' | 'work';
 
@@ -19,7 +20,10 @@ export function GigBrowserPage() {
   const [tab, setTab] = useState<Tab>('work');
   const [claimGig, setClaimGig] = useState<Gig | null>(null);
 
-  const gigs = tab === 'brain' ? brainGigs : workGigs;
+  const gigs = useMemo(
+    () => sortGigsBonusFirst(tab === 'brain' ? brainGigs : workGigs),
+    [tab, brainGigs, workGigs],
+  );
 
   return (
     <div className="page gigs-page">

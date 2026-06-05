@@ -4,15 +4,18 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
 import type { AppState, Claim, ClaimInput, FamilyMember, Gig, GigType } from '../types';
 import { findFamilyMemberByName, findFamilyMemberForClaim, memberMatchesName } from '../lib/family';
-import { createBundle } from '../lib/bundle';
+import { countClaimHistory, createBundle, type StoredBundle } from '../lib/bundle';
 import { isCloudSyncEnabled } from '../lib/supabaseClient';
 import { CompletionCelebration } from '../components/CompletionCelebration';
 import { createCurrentWeek, createInitialState, loadPersistedBundle, persistBundle } from '../lib/storage';
+import { canCloseOutWeekOnDate } from '../lib/week';
+import { findReopenableWeek } from '../lib/weekRecovery';
 import { newId } from '../lib/utils';
 
 export type SyncStatus = 'loading' | 'local' | 'synced' | 'syncing' | 'error';
@@ -35,6 +38,8 @@ interface AppContextValue {
     dollarAmount: number,
   ) => { ok: true } | { ok: false; error: string };
   closeOutWeek: () => void;
+  reopenLastClosedWeek: () => boolean;
+  reopenableWeek: ReturnType<typeof findReopenableWeek>;
   addFamilyMember: (name: string) => void;
   updateFamilyMember: (id: string, name: string) => void;
   updateFamilyMemberAvatar: (id: string, avatarUrl: string | undefined) => void;
@@ -60,6 +65,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('loading');
   const [completionCelebrationTick, setCompletionCelebrationTick] = useState(0);
+  const loadedBundleRef = useRef<StoredBundle | null>(null);
   const cloudSyncEnabled = isCloudSyncEnabled();
 
   useEffect(() => {
@@ -69,10 +75,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       try {
         const bundle = await loadPersistedBundle();
         if (cancelled) return;
+        loadedBundleRef.current = bundle;
         setState(bundle.state);
         setSyncStatus(cloudSyncEnabled ? 'synced' : 'local');
       } catch {
         if (!cancelled) {
+          loadedBundleRef.current = null;
           setState(createInitialState());
           setSyncStatus(cloudSyncEnabled ? 'error' : 'local');
         }
@@ -88,6 +96,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydrated) return;
+
+    const loadedClaims = loadedBundleRef.current
+      ? countClaimHistory(loadedBundleRef.current.state)
+      : 0;
+    const nextClaims = countClaimHistory(state);
+    if (loadedClaims > 0 && nextClaims === 0) return;
 
     const bundle = createBundle(state);
     persistBundle(bundle);
@@ -254,6 +268,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const closeOutWeek = useCallback(() => {
     update((prev) => {
+      if (!canCloseOutWeekOnDate(prev.currentWeek.endDate)) return prev;
+
       const closedWeek = {
         ...prev.currentWeek,
         closed: true,
@@ -265,6 +281,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
       };
     });
   }, [update]);
+
+  const reopenLastClosedWeek = useCallback(() => {
+    let reopened = false;
+    update((prev) => {
+      const week = findReopenableWeek(prev);
+      if (!week) return prev;
+
+      reopened = true;
+      return {
+        ...prev,
+        currentWeek: { ...week, closed: false },
+        pastWeeks: prev.pastWeeks.slice(1),
+      };
+    });
+    return reopened;
+  }, [update]);
+
+  const reopenableWeek = useMemo(() => findReopenableWeek(state), [state]);
 
   const addFamilyMember = useCallback(
     (name: string) => {
@@ -430,12 +464,39 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const toggleGigBonus = useCallback(
     (id: string) => {
-      update((prev) => ({
-        ...prev,
-        gigs: prev.gigs.map((g) =>
-          g.id === id ? { ...g, isBonus: !g.isBonus } : g,
-        ),
-      }));
+      update((prev) => {
+        const gig = prev.gigs.find((g) => g.id === id);
+        if (!gig || gig.type === 'kuleana') return prev;
+
+        const nextIsBonus = !gig.isBonus;
+        const gigsWithToggle = prev.gigs.map((g) =>
+          g.id === id ? { ...g, isBonus: nextIsBonus } : g,
+        );
+
+        const type = gig.type;
+        const typeGigs = gigsWithToggle.filter((g) => g.type === type);
+        const target = typeGigs.find((g) => g.id === id);
+        if (!target) return prev;
+
+        const others = typeGigs.filter((g) => g.id !== id);
+        const reorderedTypeGigs = nextIsBonus
+          ? [target, ...others]
+          : [
+              ...others.filter((g) => g.isBonus),
+              target,
+              ...others.filter((g) => !g.isBonus),
+            ];
+
+        let typeCursor = 0;
+        const rebuiltGigs = gigsWithToggle.map((g) => {
+          if (g.type !== type) return g;
+          const nextGig = reorderedTypeGigs[typeCursor];
+          typeCursor += 1;
+          return nextGig;
+        });
+
+        return { ...prev, gigs: rebuiltGigs };
+      });
     },
     [update],
   );
@@ -465,6 +526,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     unclaimClaim,
     updateClaimAmount,
     closeOutWeek,
+    reopenLastClosedWeek,
+    reopenableWeek,
     addFamilyMember,
     updateFamilyMember,
     updateFamilyMemberAvatar,

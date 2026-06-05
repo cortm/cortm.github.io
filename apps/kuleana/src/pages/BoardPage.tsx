@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import type { Claim } from '../types';
 import { useApp } from '../context/AppContext';
-import { computeBoardTotals, formatCurrency } from '../lib/utils';
-import { formatWeekRange } from '../lib/week';
+import { computeBoardTotals, formatCurrency, isGigBonus } from '../lib/utils';
+import { canCloseOutWeekOnDate, formatWeekRange } from '../lib/week';
 import { ClaimRow } from '../components/ClaimRow';
 import { Modal } from '../components/Modal';
 import { TotalsPersonRow } from '../components/TotalsPersonRow';
@@ -31,7 +31,15 @@ function useMediaQuery(query: string): boolean {
 }
 
 export function BoardPage() {
-  const { state, currentClaims, closeOutWeek, completeClaim, uncompleteClaim } = useApp();
+  const {
+    state,
+    currentClaims,
+    closeOutWeek,
+    completeClaim,
+    uncompleteClaim,
+    reopenLastClosedWeek,
+    reopenableWeek,
+  } = useApp();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [dragOverColumn, setDragOverColumn] = useState<BoardColumn | null>(null);
   const isWideBoard = useMediaQuery('(min-width: 960px)');
@@ -49,10 +57,17 @@ export function BoardPage() {
       else active.push(item);
     }
 
-    const byClaimedAt = (a: ClaimedGigItem, b: ClaimedGigItem) =>
-      new Date(b.claim.claimedAt).getTime() - new Date(a.claim.claimedAt).getTime();
+    const byClaimedAt = (a: ClaimedGigItem, b: ClaimedGigItem) => {
+      const aBonus = isGigBonus(a.claim.gigId, state.gigs);
+      const bBonus = isGigBonus(b.claim.gigId, state.gigs);
+      if (aBonus !== bBonus) return aBonus ? -1 : 1;
+      return new Date(b.claim.claimedAt).getTime() - new Date(a.claim.claimedAt).getTime();
+    };
 
     const byCompletedAt = (a: ClaimedGigItem, b: ClaimedGigItem) => {
+      const aBonus = isGigBonus(a.claim.gigId, state.gigs);
+      const bBonus = isGigBonus(b.claim.gigId, state.gigs);
+      if (aBonus !== bBonus) return aBonus ? -1 : 1;
       const aTime = a.claim.completedAt ?? a.claim.claimedAt;
       const bTime = b.claim.completedAt ?? b.claim.claimedAt;
       return new Date(bTime).getTime() - new Date(aTime).getTime();
@@ -77,6 +92,7 @@ export function BoardPage() {
     return Math.min(100, Math.round((completedCount / state.weeklyGoal) * 100));
   }, [completedCount, state.weeklyGoal]);
   const weekLabel = formatWeekRange(state.currentWeek.startDate, state.currentWeek.endDate);
+  const canCloseOutWeek = canCloseOutWeekOnDate(state.currentWeek.endDate);
 
   const handleCloseOut = () => {
     closeOutWeek();
@@ -119,6 +135,22 @@ export function BoardPage() {
         <h2 className="page-header__title">Board</h2>
         <p className="page-header__subtitle">{weekLabel}</p>
       </div>
+
+      {reopenableWeek && (
+        <div className="board-recovery" role="status">
+          <p className="board-recovery__text">
+            This week was closed early. {reopenableWeek.claims.length} gig
+            {reopenableWeek.claims.length === 1 ? '' : 's'} can be restored to the board.
+          </p>
+          <button
+            type="button"
+            className="btn btn--primary btn--sm board-recovery__action"
+            onClick={() => reopenLastClosedWeek()}
+          >
+            Restore this week
+          </button>
+        </div>
+      )}
 
       <div className="board-grid">
         <div className="board-grid__sidebar">
@@ -168,8 +200,14 @@ export function BoardPage() {
           </div>
           <button
             type="button"
-            className="btn btn--danger btn--block board-grid__close-week"
-            onClick={() => setConfirmOpen(true)}
+            className={`btn btn--block board-grid__close-week${canCloseOutWeek ? ' btn--danger' : ' board-grid__close-week--locked'}`}
+            disabled={!canCloseOutWeek}
+            aria-disabled={!canCloseOutWeek}
+            title={canCloseOutWeek ? undefined : 'Close out is available on Sundays only'}
+            onClick={() => {
+              if (!canCloseOutWeek) return;
+              setConfirmOpen(true);
+            }}
           >
             Close Out Week
           </button>
