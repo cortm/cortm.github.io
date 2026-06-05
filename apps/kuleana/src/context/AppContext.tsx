@@ -11,6 +11,7 @@ import type { AppState, Claim, ClaimInput, FamilyMember, Gig, GigType } from '..
 import { findFamilyMemberByName, findFamilyMemberForClaim, memberMatchesName } from '../lib/family';
 import { createBundle } from '../lib/bundle';
 import { isCloudSyncEnabled } from '../lib/supabaseClient';
+import { CompletionCelebration } from '../components/CompletionCelebration';
 import { createCurrentWeek, createInitialState, loadPersistedBundle, persistBundle } from '../lib/storage';
 import { newId } from '../lib/utils';
 
@@ -58,6 +59,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>(() => createInitialState());
   const [hydrated, setHydrated] = useState(false);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('loading');
+  const [completionCelebrationTick, setCompletionCelebrationTick] = useState(0);
   const cloudSyncEnabled = isCloudSyncEnabled();
 
   useEffect(() => {
@@ -181,6 +183,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const completeClaim = useCallback(
     (claimId: string) => {
+      const claim = state.currentWeek.claims.find((c) => c.id === claimId);
+      if (!claim || claim.status === 'completed') return;
+
       update((prev) => ({
         ...prev,
         currentWeek: {
@@ -190,8 +195,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
           ),
         },
       }));
+
+      setCompletionCelebrationTick((tick) => tick + 1);
     },
-    [update],
+    [state.currentWeek.claims, update],
   );
 
   const uncompleteClaim = useCallback(
@@ -474,7 +481,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     getWorkClaimAssignee,
   };
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={value}>
+      <CompletionCelebration tick={completionCelebrationTick} />
+      {children}
+    </AppContext.Provider>
+  );
 }
 
 export function useApp(): AppContextValue {
