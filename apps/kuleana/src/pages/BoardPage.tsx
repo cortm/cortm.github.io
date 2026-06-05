@@ -49,7 +49,19 @@ export function BoardPage() {
       else active.push(item);
     }
 
-    return { activeGigs: active, completedGigs: completed };
+    const byClaimedAt = (a: ClaimedGigItem, b: ClaimedGigItem) =>
+      new Date(b.claim.claimedAt).getTime() - new Date(a.claim.claimedAt).getTime();
+
+    const byCompletedAt = (a: ClaimedGigItem, b: ClaimedGigItem) => {
+      const aTime = a.claim.completedAt ?? a.claim.claimedAt;
+      const bTime = b.claim.completedAt ?? b.claim.claimedAt;
+      return new Date(bTime).getTime() - new Date(aTime).getTime();
+    };
+
+    return {
+      activeGigs: active.sort(byClaimedAt),
+      completedGigs: completed.sort(byCompletedAt),
+    };
   }, [currentClaims, state.gigs]);
 
   const totals = useMemo(

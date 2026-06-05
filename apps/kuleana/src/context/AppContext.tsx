@@ -191,7 +191,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         currentWeek: {
           ...prev.currentWeek,
           claims: prev.currentWeek.claims.map((c) =>
-            c.id === claimId ? { ...c, status: 'completed' as const } : c,
+            c.id === claimId
+              ? { ...c, status: 'completed' as const, completedAt: new Date().toISOString() }
+              : c,
           ),
         },
       }));
@@ -208,7 +210,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         currentWeek: {
           ...prev.currentWeek,
           claims: prev.currentWeek.claims.map((c) =>
-            c.id === claimId ? { ...c, status: 'claimed' as const } : c,
+            c.id === claimId ? { ...c, status: 'claimed' as const, completedAt: undefined } : c,
           ),
         },
       }));

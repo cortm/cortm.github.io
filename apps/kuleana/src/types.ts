@@ -25,6 +25,7 @@ export interface Claim {
   dollarAmount: number;
   status: 'claimed' | 'completed';
   claimedAt: string;
+  completedAt?: string;
 }
 
 export interface Week {
