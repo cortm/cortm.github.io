@@ -10,13 +10,15 @@ import { Modal } from './Modal';
 interface ClaimRowProps {
   claim: Claim;
   titleOverride?: string;
+  draggable?: boolean;
 }
 
-export function ClaimRow({ claim, titleOverride }: ClaimRowProps) {
+export function ClaimRow({ claim, titleOverride, draggable = false }: ClaimRowProps) {
   const { getGigById, getAvatarForClaim, completeClaim, uncompleteClaim, unclaimClaim } = useApp();
   const assignee = getAvatarForClaim(claim);
   const [unclaimOpen, setUnclaimOpen] = useState(false);
   const [editAmountOpen, setEditAmountOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const gig = getGigById(claim.gigId);
   const completed = claim.status === 'completed';
   const claimed = claim.status === 'claimed';
@@ -30,7 +32,17 @@ export function ClaimRow({ claim, titleOverride }: ClaimRowProps) {
 
   return (
     <>
-      <div className={`claim-row${completed ? ' claim-row--completed' : ''}`}>
+      <div
+        className={`claim-row${completed ? ' claim-row--completed' : ''}${isDragging ? ' claim-row--dragging' : ''}`}
+        draggable={draggable}
+        onDragStart={(e) => {
+          if (!draggable) return;
+          e.dataTransfer.setData('text/claim-id', claim.id);
+          e.dataTransfer.effectAllowed = 'move';
+          setIsDragging(true);
+        }}
+        onDragEnd={() => setIsDragging(false)}
+      >
         <div className="claim-row__main">
           <p className="claim-row__title">{displayTitle}</p>
           <p className="claim-row__meta">
@@ -58,14 +70,16 @@ export function ClaimRow({ claim, titleOverride }: ClaimRowProps) {
               </button>
               <button
                 type="button"
-                className="btn btn--accent btn--sm"
+                className="btn btn--accent btn--sm claim-row__mark-complete"
                 onClick={() => completeClaim(claim.id)}
               >
                 Mark Complete
               </button>
             </>
           ) : (
-            <CompleteCheckButton onClick={() => uncompleteClaim(claim.id)} />
+            <span className="claim-row__complete-check">
+              <CompleteCheckButton onClick={() => uncompleteClaim(claim.id)} />
+            </span>
           )}
         </div>
       </div>

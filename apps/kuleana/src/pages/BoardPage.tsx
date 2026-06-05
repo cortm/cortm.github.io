@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import type { Claim } from '../types';
 import { useApp } from '../context/AppContext';
 import { computeBoardTotals, formatCurrency } from '../lib/utils';
@@ -6,14 +6,35 @@ import { formatWeekRange } from '../lib/week';
 import { ClaimRow } from '../components/ClaimRow';
 import { Modal } from '../components/Modal';
 import { TotalsPersonRow } from '../components/TotalsPersonRow';
+
 interface ClaimedGigItem {
   claim: Claim;
   displayTitle: string;
 }
 
+type BoardColumn = 'claimed' | 'completed';
+
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(query).matches,
+  );
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const onChange = () => setMatches(media.matches);
+    onChange();
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, [query]);
+
+  return matches;
+}
+
 export function BoardPage() {
-  const { state, currentClaims, closeOutWeek } = useApp();
+  const { state, currentClaims, closeOutWeek, completeClaim, uncompleteClaim } = useApp();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [dragOverColumn, setDragOverColumn] = useState<BoardColumn | null>(null);
+  const isWideBoard = useMediaQuery('(min-width: 960px)');
 
   const { activeGigs, completedGigs } = useMemo(() => {
     const active: ClaimedGigItem[] = [];
@@ -50,101 +71,160 @@ export function BoardPage() {
     setConfirmOpen(false);
   };
 
+  const handleColumnDragOver = (e: DragEvent<HTMLElement>, column: BoardColumn) => {
+    if (!isWideBoard) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverColumn(column);
+  };
+
+  const handleColumnDragLeave = (e: DragEvent<HTMLElement>, column: BoardColumn) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+    setDragOverColumn((prev) => (prev === column ? null : prev));
+  };
+
+  const handleColumnDrop = (e: DragEvent<HTMLElement>, column: BoardColumn) => {
+    if (!isWideBoard) return;
+    e.preventDefault();
+    setDragOverColumn(null);
+
+    const claimId = e.dataTransfer.getData('text/claim-id');
+    if (!claimId) return;
+
+    const claim = currentClaims.find((c) => c.id === claimId);
+    if (!claim) return;
+
+    if (column === 'completed' && claim.status === 'claimed') {
+      completeClaim(claimId);
+    } else if (column === 'claimed' && claim.status === 'completed') {
+      uncompleteClaim(claimId);
+    }
+  };
+
   return (
-    <div className="page">
+    <div className="page board-page">
       <div className="page-header">
         <h2 className="page-header__title">Board</h2>
         <p className="page-header__subtitle">{weekLabel}</p>
       </div>
 
-      <div className="totals-bar">
-        <h3 className="totals-bar__title">Weekly Totals</h3>
-        {state.familyMembers.length === 0 ? (
-          <p className="totals-bar__empty">Add family members in Settings to track weekly totals.</p>
-        ) : (
-          <>
-            <div className="totals-bar__people">
-              {totals.byPerson.map((entry) => (
-                <TotalsPersonRow key={entry.key} total={entry} />
-              ))}
-            </div>
-            <div className="totals-bar__footer">
-              <p className="totals-bar__percent" aria-hidden="true">
-                {goalPercent}%
-              </p>
-              <div className="totals-bar__footer-mid">
-                <span>
-                  {completedCount} / {state.weeklyGoal} completed
-                </span>
-                <span className="totals-bar__owed">
-                  Total owed: {formatCurrency(totals.grandTotal)}
-                </span>
-              </div>
-              <div
-                className="totals-bar__progress"
-                role="progressbar"
-                aria-valuenow={goalPercent}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-label={`Weekly goal progress: ${completedCount} of ${state.weeklyGoal} gigs completed`}
-              >
-                <div
-                  className="totals-bar__progress-fill"
-                  style={{ width: `${goalPercent}%` }}
-                />
-              </div>
-              <span className="visually-hidden">
-                {goalPercent}% of weekly goal · {completedCount} of {state.weeklyGoal} gigs completed
-                · Total owed {formatCurrency(totals.grandTotal)}
-              </span>
-            </div>
-          </>
-        )}
-      </div>
-
-      <section className="section board-claimed-gigs">
-        <div className="board-claimed-gigs__header">
-          <h3 className="board-claimed-gigs__title">Claimed Gigs</h3>
-          <span className="section__count">{activeGigs.length}</span>
-        </div>
-        {currentClaims.length === 0 ? (
-          <p className="empty-state">No gigs claimed yet. Browse gigs to get started!</p>
-        ) : (
-          <>
-            {activeGigs.length > 0 && (
-              <div className="claim-list board-claimed-gigs__list">
-                {activeGigs.map(({ claim, displayTitle }) => (
-                  <ClaimRow key={claim.id} claim={claim} titleOverride={displayTitle} />
-                ))}
-              </div>
-            )}
-
-            {completedGigs.length > 0 && (
+      <div className="board-grid">
+        <div className="board-grid__sidebar">
+          <div className="totals-bar">
+            <h3 className="totals-bar__title">Weekly Totals</h3>
+            {state.familyMembers.length === 0 ? (
+              <p className="totals-bar__empty">Add family members in Settings to track weekly totals.</p>
+            ) : (
               <>
-                <div className="board-claimed-gigs__header board-claimed-gigs__header--subsection">
-                  <h3 className="board-claimed-gigs__title">Completed Gigs</h3>
-                  <span className="section__count section__count--completed">
-                    {completedGigs.length}
-                  </span>
-                </div>
-                <div className="claim-list board-claimed-gigs__list">
-                  {completedGigs.map(({ claim, displayTitle }) => (
-                    <ClaimRow key={claim.id} claim={claim} titleOverride={displayTitle} />
+                <div className="totals-bar__people">
+                  {totals.byPerson.map((entry) => (
+                    <TotalsPersonRow key={entry.key} total={entry} />
                   ))}
+                </div>
+                <div className="totals-bar__footer">
+                  <p className="totals-bar__percent" aria-hidden="true">
+                    {goalPercent}%
+                  </p>
+                  <div className="totals-bar__footer-mid">
+                    <span>
+                      {completedCount} / {state.weeklyGoal} completed
+                    </span>
+                    <span className="totals-bar__owed">
+                      Total owed: {formatCurrency(totals.grandTotal)}
+                    </span>
+                  </div>
+                  <div
+                    className="totals-bar__progress"
+                    role="progressbar"
+                    aria-valuenow={goalPercent}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-label={`Weekly goal progress: ${completedCount} of ${state.weeklyGoal} gigs completed`}
+                  >
+                    <div
+                      className="totals-bar__progress-fill"
+                      style={{ width: `${goalPercent}%` }}
+                    />
+                  </div>
+                  <span className="visually-hidden">
+                    {goalPercent}% of weekly goal · {completedCount} of {state.weeklyGoal} gigs
+                    completed · Total owed {formatCurrency(totals.grandTotal)}
+                  </span>
                 </div>
               </>
             )}
-          </>
-        )}
-      </section>
+          </div>
+          <button
+            type="button"
+            className="btn btn--danger btn--block board-grid__close-week"
+            onClick={() => setConfirmOpen(true)}
+          >
+            Close Out Week
+          </button>
+        </div>
 
-      <button
-        type="button"
-        className="btn btn--danger btn--block"
-        onClick={() => setConfirmOpen(true)}
-      >
-        Close Out Week
-      </button>
+        <section
+          className={`section board-claimed-gigs board-grid__claimed${dragOverColumn === 'claimed' ? ' board-drop-zone--over' : ''}`}
+          onDragOver={(e) => handleColumnDragOver(e, 'claimed')}
+          onDragLeave={(e) => handleColumnDragLeave(e, 'claimed')}
+          onDrop={(e) => handleColumnDrop(e, 'claimed')}
+        >
+          <div className="board-claimed-gigs__header">
+            <h3 className="board-claimed-gigs__title">Claimed Gigs</h3>
+            <span className="section__count">{activeGigs.length}</span>
+          </div>
+          {activeGigs.length === 0 ? (
+            <p className="empty-state board-drop-zone__empty">
+              {currentClaims.length === 0
+                ? 'No gigs claimed yet. Browse gigs to get started!'
+                : isWideBoard
+                  ? 'Drag completed gigs here to mark incomplete.'
+                  : 'No gigs in progress.'}
+            </p>
+          ) : (
+            <div className="claim-list board-claimed-gigs__list">
+              {activeGigs.map(({ claim, displayTitle }) => (
+                <ClaimRow
+                  key={claim.id}
+                  claim={claim}
+                  titleOverride={displayTitle}
+                  draggable={isWideBoard}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section
+          className={`section board-completed-gigs board-grid__completed${dragOverColumn === 'completed' ? ' board-drop-zone--over' : ''}`}
+          onDragOver={(e) => handleColumnDragOver(e, 'completed')}
+          onDragLeave={(e) => handleColumnDragLeave(e, 'completed')}
+          onDrop={(e) => handleColumnDrop(e, 'completed')}
+        >
+          <div className="board-claimed-gigs__header">
+            <h3 className="board-claimed-gigs__title">Completed Gigs</h3>
+            <span className="section__count section__count--completed">
+              {completedGigs.length}
+            </span>
+          </div>
+          {completedGigs.length === 0 ? (
+            <p className="empty-state board-drop-zone__empty">
+              {isWideBoard ? 'Drag claimed gigs here to mark complete.' : 'No gigs completed yet.'}
+            </p>
+          ) : (
+            <div className="claim-list board-claimed-gigs__list">
+              {completedGigs.map(({ claim, displayTitle }) => (
+                <ClaimRow
+                  key={claim.id}
+                  claim={claim}
+                  titleOverride={displayTitle}
+                  draggable={isWideBoard}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
 
       <Modal open={confirmOpen} title="Close out this week?" onClose={() => setConfirmOpen(false)}>
         <p className="confirm-text">
