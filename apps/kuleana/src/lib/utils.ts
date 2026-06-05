@@ -7,8 +7,12 @@ export interface PersonTotal {
   amount: number;
 }
 
-function personTotalKey(claim: Claim): string {
+export function getClaimPersonKey(claim: Claim): string {
   return claim.familyMemberId ?? claim.assigneeName.trim();
+}
+
+function personTotalKey(claim: Claim): string {
+  return getClaimPersonKey(claim);
 }
 
 export function computeTotals(claims: Claim[]): {

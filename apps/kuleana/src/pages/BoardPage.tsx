@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import type { Claim } from '../types';
 import { useApp } from '../context/AppContext';
-import { computeBoardTotals, formatCurrency, isGigBonus } from '../lib/utils';
+import { computeBoardTotals, formatCurrency, getClaimPersonKey, isGigBonus } from '../lib/utils';
 import { canCloseOutWeekOnDate, formatWeekRange } from '../lib/week';
 import { ClaimRow } from '../components/ClaimRow';
 import { Modal } from '../components/Modal';
@@ -41,6 +41,7 @@ export function BoardPage() {
     reopenableWeek,
   } = useApp();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [filterPersonKey, setFilterPersonKey] = useState<string | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<BoardColumn | null>(null);
   const isWideBoard = useMediaQuery('(min-width: 960px)');
 
@@ -49,6 +50,8 @@ export function BoardPage() {
     const completed: ClaimedGigItem[] = [];
 
     for (const claim of currentClaims) {
+      if (filterPersonKey && getClaimPersonKey(claim) !== filterPersonKey) continue;
+
       const gig = state.gigs.find((g) => g.id === claim.gigId);
       const icon = gig?.type === 'work' ? '🧹' : '🧠';
       const title = gig?.title ?? 'Unknown gig';
@@ -77,12 +80,21 @@ export function BoardPage() {
       activeGigs: active.sort(byClaimedAt),
       completedGigs: completed.sort(byCompletedAt),
     };
-  }, [currentClaims, state.gigs]);
+  }, [currentClaims, filterPersonKey, state.gigs]);
 
   const totals = useMemo(
     () => computeBoardTotals(currentClaims, state.familyMembers),
     [currentClaims, state.familyMembers],
   );
+
+  const filteredPersonName = useMemo(() => {
+    if (!filterPersonKey) return null;
+    return (
+      state.familyMembers.find((m) => m.id === filterPersonKey)?.name ??
+      totals.byPerson.find((entry) => entry.key === filterPersonKey)?.assigneeName ??
+      null
+    );
+  }, [filterPersonKey, state.familyMembers, totals.byPerson]);
   const completedCount = useMemo(
     () => currentClaims.filter((claim) => claim.status === 'completed').length,
     [currentClaims],
@@ -162,7 +174,14 @@ export function BoardPage() {
               <>
                 <div className="totals-bar__people">
                   {totals.byPerson.map((entry) => (
-                    <TotalsPersonRow key={entry.key} total={entry} />
+                    <TotalsPersonRow
+                      key={entry.key}
+                      total={entry}
+                      selected={filterPersonKey === entry.key}
+                      onSelect={() =>
+                        setFilterPersonKey((prev) => (prev === entry.key ? null : entry.key))
+                      }
+                    />
                   ))}
                 </div>
                 <div className="totals-bar__footer">
@@ -225,11 +244,13 @@ export function BoardPage() {
           </div>
           {activeGigs.length === 0 ? (
             <p className="empty-state board-drop-zone__empty">
-              {currentClaims.length === 0
-                ? 'No gigs claimed yet. Browse gigs to get started!'
-                : isWideBoard
-                  ? 'Drag completed gigs here to mark incomplete.'
-                  : 'No gigs in progress.'}
+              {filterPersonKey && filteredPersonName
+                ? `No gigs in progress for ${filteredPersonName}.`
+                : currentClaims.length === 0
+                  ? 'No gigs claimed yet. Browse gigs to get started!'
+                  : isWideBoard
+                    ? 'Drag completed gigs here to mark incomplete.'
+                    : 'No gigs in progress.'}
             </p>
           ) : (
             <div className="claim-list board-claimed-gigs__list">
@@ -259,7 +280,11 @@ export function BoardPage() {
           </div>
           {completedGigs.length === 0 ? (
             <p className="empty-state board-drop-zone__empty">
-              {isWideBoard ? 'Drag claimed gigs here to mark complete.' : 'No gigs completed yet.'}
+              {filterPersonKey && filteredPersonName
+                ? `No completed gigs for ${filteredPersonName}.`
+                : isWideBoard
+                  ? 'Drag claimed gigs here to mark complete.'
+                  : 'No gigs completed yet.'}
             </p>
           ) : (
             <div className="claim-list board-claimed-gigs__list">

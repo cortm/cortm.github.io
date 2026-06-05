@@ -5,9 +5,11 @@ import { Avatar } from './Avatar';
 
 interface TotalsPersonRowProps {
   total: PersonTotal;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
-export function TotalsPersonRow({ total }: TotalsPersonRowProps) {
+export function TotalsPersonRow({ total, selected = false, onSelect }: TotalsPersonRowProps) {
   const { getAvatarForClaim } = useApp();
   const person = getAvatarForClaim({
     id: '',
@@ -21,8 +23,8 @@ export function TotalsPersonRow({ total }: TotalsPersonRowProps) {
   });
   const amountLabel = formatCurrency(total.amount);
 
-  return (
-    <div className="totals-squircle" title={`${person.name}: ${amountLabel}`}>
+  const content = (
+    <>
       <Avatar
         name={person.name}
         avatarUrl={person.avatarUrl}
@@ -34,7 +36,28 @@ export function TotalsPersonRow({ total }: TotalsPersonRowProps) {
       </span>
       <span className="visually-hidden">
         {person.name}: {amountLabel}
+        {selected ? ' · filtering board to this person' : ''}
       </span>
+    </>
+  );
+
+  if (onSelect) {
+    return (
+      <button
+        type="button"
+        className={`totals-squircle totals-squircle--interactive${selected ? ' totals-squircle--selected' : ''}`}
+        title={`${person.name}: ${amountLabel}`}
+        aria-pressed={selected}
+        onClick={onSelect}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <div className="totals-squircle" title={`${person.name}: ${amountLabel}`}>
+      {content}
     </div>
   );
 }

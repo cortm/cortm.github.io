@@ -544,6 +544,27 @@ button {
   width: 90px;
 }
 
+.totals-squircle--interactive {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.totals-squircle--interactive:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.totals-bar .totals-squircle--selected .avatar--totals {
+  box-shadow: none;
+  border: 4px solid var(--white);
+}
+
 .totals-squircle .avatar-wrap {
   display: block;
   width: 90px;
