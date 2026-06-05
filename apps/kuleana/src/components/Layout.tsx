@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 
 const navItems = [
   { to: '/', label: 'Board', icon: '📋' },
@@ -9,8 +9,10 @@ const navItems = [
 ];
 
 export function Layout() {
+  const isBoard = useLocation().pathname === '/';
+
   return (
-    <div className="app-shell">
+    <div className={`app-shell${isBoard ? ' app-shell--board' : ''}`}>
       <main className="app-main">
         <Outlet />
       </main>
