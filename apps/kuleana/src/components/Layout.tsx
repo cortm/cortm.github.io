@@ -18,21 +18,23 @@ export function Layout() {
       </main>
 
       <nav className="bottom-nav" aria-label="Main navigation">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.to === '/'}
-            className={({ isActive }) =>
-              `bottom-nav__link${isActive ? ' bottom-nav__link--active' : ''}`
-            }
-          >
-            <span className="bottom-nav__icon" aria-hidden="true">
-              {item.icon}
-            </span>
-            <span className="bottom-nav__label">{item.label}</span>
-          </NavLink>
-        ))}
+        <div className="bottom-nav__inner">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === '/'}
+              className={({ isActive }) =>
+                `bottom-nav__link${isActive ? ' bottom-nav__link--active' : ''}`
+              }
+            >
+              <span className="bottom-nav__icon" aria-hidden="true">
+                {item.icon}
+              </span>
+              <span className="bottom-nav__label">{item.label}</span>
+            </NavLink>
+          ))}
+        </div>
       </nav>
     </div>
   );

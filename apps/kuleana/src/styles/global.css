@@ -120,13 +120,18 @@ button {
   left: 0;
   right: 0;
   width: 100%;
-  padding: 0 max(1rem, calc((100vw - 700px) / 2 + 1rem));
-  height: var(--nav-height);
-  display: flex;
   background: var(--white);
   border-top: 1px solid var(--cream-dark);
   box-shadow: 0 -4px 20px rgba(44, 42, 38, 0.06);
   z-index: 20;
+}
+
+.bottom-nav__inner {
+  display: flex;
+  max-width: 700px;
+  height: var(--nav-height);
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .bottom-nav__link {
@@ -1382,10 +1387,6 @@ button {
 @media (min-width: 960px) {
   .app-shell--board {
     max-width: 1200px;
-  }
-
-  .app-shell--board .bottom-nav {
-    padding: 0 max(1rem, calc((100vw - 1200px) / 2 + 1rem));
   }
 
   .board-page .claim-row[draggable='true'] {
