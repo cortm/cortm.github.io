@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Claim } from '../types';
 import { useApp } from '../context/AppContext';
 import { computeBoardTotals, formatCurrency, getClaimPersonKey, isGigBonus } from '../lib/utils';
-import { canCloseOutWeekOnDate, formatWeekRange } from '../lib/week';
+import { canCloseOutWeekOnDate, formatWeekDatesInline, formatWeekRange, getNextWeekRange } from '../lib/week';
 import { ClaimRow } from '../components/ClaimRow';
 import { Modal } from '../components/Modal';
 import { TotalsPersonRow } from '../components/TotalsPersonRow';
@@ -104,10 +104,19 @@ export function BoardPage() {
     if (state.weeklyGoal <= 0) return 0;
     return Math.min(100, Math.round((completedCount / state.weeklyGoal) * 100));
   }, [completedCount, state.weeklyGoal]);
-  const weekLabel = formatWeekRange(state.currentWeek.startDate, state.currentWeek.endDate);
+  const closedOutWeek = reopenableWeek;
+  const totalsWeekLabel = useMemo(() => {
+    if (closedOutWeek) {
+      const { startDate, endDate } = getNextWeekRange(
+        closedOutWeek.startDate,
+        closedOutWeek.endDate,
+      );
+      return formatWeekRange(startDate, endDate);
+    }
+    return formatWeekRange(state.currentWeek.startDate, state.currentWeek.endDate);
+  }, [closedOutWeek, state.currentWeek.startDate, state.currentWeek.endDate]);
   const canCloseOutWeek = canCloseOutWeekOnDate(state.currentWeek.endDate);
 
-  const closedOutWeek = reopenableWeek;
   const closedOutCompletedCount = useMemo(
     () => closedOutWeek?.claims.filter((claim) => claim.status === 'completed').length ?? 0,
     [closedOutWeek],
@@ -152,14 +161,15 @@ export function BoardPage() {
     <div className="page board-page">
       <div className="page-header">
         <h2 className="page-header__title">Board</h2>
-        <p className="page-header__subtitle">{weekLabel}</p>
+        <p className="page-header__subtitle">View current gig progress</p>
       </div>
 
       {closedOutWeek && (
         <div className="board-recovery" role="status">
           <p className="board-recovery__text">
-            This week has been closed out. {closedOutCompletedCount}{' '}
-            {closedOutCompletedCount === 1 ? 'gig was' : 'gigs were'} completed.
+            During the week of {formatWeekDatesInline(closedOutWeek.startDate, closedOutWeek.endDate)},{' '}
+            {closedOutCompletedCount} {closedOutCompletedCount === 1 ? 'gig was' : 'gigs were'}{' '}
+            completed.
           </p>
           <button
             type="button"
@@ -174,7 +184,7 @@ export function BoardPage() {
       <div className="board-grid">
         <div className="board-grid__sidebar">
           <div className="totals-bar">
-            <h3 className="totals-bar__title">Weekly Totals</h3>
+            <h3 className="totals-bar__title">{totalsWeekLabel}</h3>
             {state.familyMembers.length === 0 ? (
               <p className="totals-bar__empty">Add family members in Settings to track weekly totals.</p>
             ) : (

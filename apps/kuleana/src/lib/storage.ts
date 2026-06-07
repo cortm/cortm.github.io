@@ -7,6 +7,7 @@ import {
   ACTIVE_WEEK_START,
   createWeekId,
   getActiveWeekBounds,
+  getNextWeekRange,
 } from './week';
 import { createBundle, pickBestBundle, type StoredBundle } from './bundle';
 import { isCloudSyncEnabled } from './supabaseClient';
@@ -27,16 +28,43 @@ function createCurrentWeek(claims: Week['claims'] = []): Week {
   };
 }
 
+export function createWeekAfterClosed(closedWeek: Week, claims: Week['claims'] = []): Week {
+  const { startDate, endDate } = getNextWeekRange(closedWeek.startDate, closedWeek.endDate);
+  const start = new Date(`${startDate}T12:00:00`);
+  return {
+    id: createWeekId(start),
+    startDate,
+    endDate,
+    closed: false,
+    claims,
+  };
+}
+
 function normalizeCurrentWeek(state: AppState): AppState {
   const { currentWeek } = state;
-  if (currentWeek.closed) return state;
-  if (currentWeek.startDate === ACTIVE_WEEK_START && currentWeek.endDate === ACTIVE_WEEK_END) {
-    return state;
+
+  if (currentWeek.closed) {
+    return {
+      ...state,
+      currentWeek: createCurrentWeek(currentWeek.claims),
+    };
   }
-  return {
-    ...state,
-    currentWeek: createCurrentWeek(currentWeek.claims),
-  };
+
+  const lastClosed = state.pastWeeks[0];
+  const isLegacyClosedOut =
+    lastClosed?.closed &&
+    currentWeek.claims.length === 0 &&
+    currentWeek.startDate === lastClosed.startDate &&
+    currentWeek.endDate === lastClosed.endDate;
+
+  if (isLegacyClosedOut) {
+    return {
+      ...state,
+      currentWeek: createWeekAfterClosed(lastClosed),
+    };
+  }
+
+  return state;
 }
 
 function migrateWeekClaims(week: Week, state: AppState): Week {
