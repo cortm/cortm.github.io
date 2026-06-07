@@ -16,6 +16,14 @@ export interface Gig {
   isBonus?: boolean;
 }
 
+export interface GigSnapshot {
+  id: string;
+  title: string;
+  type: GigType;
+  description?: string;
+  isBonus?: boolean;
+}
+
 export interface Claim {
   id: string;
   gigId: string;
@@ -34,6 +42,8 @@ export interface Week {
   endDate: string;
   closed: boolean;
   claims: Claim[];
+  /** Frozen gig details at close-out so history survives catalog edits. */
+  gigSnapshots?: Record<string, GigSnapshot>;
 }
 
 export interface AppState {

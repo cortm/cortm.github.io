@@ -36,7 +36,7 @@ export function TotalsPersonRow({ total, selected = false, onSelect }: TotalsPer
       </span>
       <span className="visually-hidden">
         {person.name}: {amountLabel}
-        {selected ? ' · filtering board to this person' : ''}
+        {selected ? ' · filtering gigs to this person' : ''}
       </span>
     </>
   );

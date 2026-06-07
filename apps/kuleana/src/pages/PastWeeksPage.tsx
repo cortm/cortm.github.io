@@ -1,13 +1,117 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import type { Claim, Week } from '../types';
 import { useApp } from '../context/AppContext';
-import { computeTotals, formatCurrency } from '../lib/utils';
+import { computeBoardTotals, computeTotals, formatCurrency, getClaimPersonKey } from '../lib/utils';
+import { resolveGigForWeek } from '../lib/gigSnapshots';
 import { formatWeekRange } from '../lib/week';
 import { StatusPill } from '../components/StatusPill';
 import { TotalsPersonRow } from '../components/TotalsPersonRow';
 
+function sortHistoryClaims(claims: Claim[]): Claim[] {
+  return [...claims].sort((a, b) => {
+    if (a.status === b.status) return 0;
+    if (a.status === 'completed') return -1;
+    return 1;
+  });
+}
+
+interface PastWeekDetailsProps {
+  week: Week;
+  filterPersonKey: string | null;
+  setFilterPersonKey: Dispatch<SetStateAction<string | null>>;
+}
+
+function PastWeekDetails({ week, filterPersonKey, setFilterPersonKey }: PastWeekDetailsProps) {
+  const { state } = useApp();
+
+  const totals = useMemo(() => {
+    if (state.familyMembers.length > 0) {
+      return computeBoardTotals(week.claims, state.familyMembers);
+    }
+    return computeTotals(week.claims);
+  }, [week.claims, state.familyMembers]);
+
+  const filteredPersonName = useMemo(() => {
+    if (!filterPersonKey) return null;
+    return (
+      state.familyMembers.find((m) => m.id === filterPersonKey)?.name ??
+      totals.byPerson.find((entry) => entry.key === filterPersonKey)?.assigneeName ??
+      null
+    );
+  }, [filterPersonKey, state.familyMembers, totals.byPerson]);
+
+  const visibleClaims = useMemo(() => {
+    const sorted = sortHistoryClaims(week.claims);
+    if (!filterPersonKey) return sorted;
+    return sorted.filter((claim) => getClaimPersonKey(claim) === filterPersonKey);
+  }, [week.claims, filterPersonKey]);
+
+  const showTotals = totals.byPerson.length > 0;
+
+  return (
+    <div className="history-week__details">
+      {showTotals && (
+        <div className="history-totals history-totals--top">
+          <h4>Total earned</h4>
+          <div className="totals-bar__body totals-bar__body--history">
+            <div className="totals-bar__people">
+              {totals.byPerson.map((entry) => (
+                <TotalsPersonRow
+                  key={entry.key}
+                  total={entry}
+                  selected={filterPersonKey === entry.key}
+                  onSelect={() =>
+                    setFilterPersonKey((prev) => (prev === entry.key ? null : entry.key))
+                  }
+                />
+              ))}
+            </div>
+            <div className="totals-bar__grand">
+              <span>Week total</span>
+              <strong>{formatCurrency(totals.grandTotal)}</strong>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {week.claims.length === 0 ? (
+        <p className="empty-state">No gigs were claimed this week.</p>
+      ) : visibleClaims.length === 0 ? (
+        <p className="empty-state">
+          {filterPersonKey && filteredPersonName
+            ? `No gigs for ${filteredPersonName} this week.`
+            : 'No gigs were claimed this week.'}
+        </p>
+      ) : (
+        <ul className="history-claims">
+          {visibleClaims.map((claim) => {
+            const gig = resolveGigForWeek(claim.gigId, week, state.gigs);
+            return (
+              <li key={claim.id} className="history-claim">
+                <div>
+                  <p className="history-claim__title">{gig?.title ?? 'Unknown gig'}</p>
+                  <p className="history-claim__meta">
+                    {claim.assigneeName} · {formatCurrency(claim.dollarAmount)}
+                  </p>
+                </div>
+                <StatusPill status={claim.status} />
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export function PastWeeksPage() {
   const { state } = useApp();
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [filterPersonKey, setFilterPersonKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    setFilterPersonKey(null);
+  }, [expandedId]);
 
   if (state.pastWeeks.length === 0) {
     return (
@@ -33,7 +137,6 @@ export function PastWeeksPage() {
       <div className="history-list">
         {state.pastWeeks.map((week) => {
           const expanded = expandedId === week.id;
-          const totals = computeTotals(week.claims);
           const label = formatWeekRange(week.startDate, week.endDate);
 
           return (
@@ -53,45 +156,11 @@ export function PastWeeksPage() {
               </button>
 
               {expanded && (
-                <div className="history-week__details">
-                  {week.claims.length === 0 ? (
-                    <p className="empty-state">No gigs were claimed this week.</p>
-                  ) : (
-                    <ul className="history-claims">
-                      {week.claims.map((claim) => {
-                        const gig = state.gigs.find((g) => g.id === claim.gigId);
-                        return (
-                          <li key={claim.id} className="history-claim">
-                            <div>
-                              <p className="history-claim__title">{gig?.title ?? 'Unknown gig'}</p>
-                              <p className="history-claim__meta">
-                                {claim.assigneeName} · {formatCurrency(claim.dollarAmount)}
-                              </p>
-                            </div>
-                            <StatusPill status={claim.status} />
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )}
-
-                  {totals.byPerson.length > 0 && (
-                    <div className="history-totals">
-                      <h4>Total earned</h4>
-                      <div className="totals-bar__body totals-bar__body--history">
-                        <div className="totals-bar__people">
-                          {totals.byPerson.map((entry) => (
-                            <TotalsPersonRow key={entry.key} total={entry} />
-                          ))}
-                        </div>
-                        <div className="totals-bar__grand">
-                          <span>Week total</span>
-                          <strong>{formatCurrency(totals.grandTotal)}</strong>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <PastWeekDetails
+                  week={week}
+                  filterPersonKey={filterPersonKey}
+                  setFilterPersonKey={setFilterPersonKey}
+                />
               )}
             </article>
           );

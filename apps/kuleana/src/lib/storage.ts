@@ -1,5 +1,6 @@
 import type { AppState, Week } from '../types';
 import { backfillClaimMemberId, enrichFamilyPreviousNames } from './family';
+import { buildGigSnapshotsForClaims } from './gigSnapshots';
 import { createSeedState } from '../data/seed';
 import {
   ACTIVE_WEEK_END,
@@ -45,6 +46,18 @@ function migrateWeekClaims(week: Week, state: AppState): Week {
   };
 }
 
+function migrateWeek(week: Week, state: AppState): Week {
+  const withClaims = migrateWeekClaims(week, state);
+  if (withClaims.claims.length === 0) return withClaims;
+
+  const fromGigs = buildGigSnapshotsForClaims(withClaims.claims, state.gigs);
+  const gigSnapshots = { ...fromGigs, ...withClaims.gigSnapshots };
+
+  if (Object.keys(gigSnapshots).length === 0) return withClaims;
+
+  return { ...withClaims, gigSnapshots };
+}
+
 function normalizeState(state: AppState): AppState {
   const normalizedWeek = normalizeCurrentWeek(state);
   const weeklyGoal =
@@ -61,8 +74,8 @@ function normalizeState(state: AppState): AppState {
 
   return {
     ...withAliases,
-    currentWeek: migrateWeekClaims(withAliases.currentWeek, withAliases),
-    pastWeeks: withAliases.pastWeeks.map((week) => migrateWeekClaims(week, withAliases)),
+    currentWeek: migrateWeek(withAliases.currentWeek, withAliases),
+    pastWeeks: withAliases.pastWeeks.map((week) => migrateWeek(week, withAliases)),
   };
 }
 
