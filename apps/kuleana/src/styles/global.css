@@ -1127,10 +1127,34 @@ button {
   color: var(--text-muted);
 }
 
-.history-totals h4 {
-  margin: 0 0 0.625rem;
+.history-week__restore {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cream-dark);
+}
+
+.history-week__restore-btn {
+  color: var(--text-muted);
+}
+
+.history-totals__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.625rem;
+}
+
+.history-totals__title {
+  margin: 0;
   font-size: 0.875rem;
   color: var(--text-muted);
+}
+
+.history-totals__amount {
+  color: var(--forest);
+  font-size: 1.125rem;
+  font-weight: 700;
 }
 
 .history-totals .totals-bar__body--history {
@@ -1144,21 +1168,7 @@ button {
 
 .history-totals .totals-bar__people {
   margin-bottom: 0;
-}
-
-.history-totals .totals-bar__grand {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(44, 42, 38, 0.12);
-  font-size: 0.9375rem;
-  color: var(--text);
-}
-
-.history-totals .totals-bar__grand strong {
-  color: var(--forest);
-  font-size: 1.125rem;
+  padding: 0.625rem 0 0.875rem;
 }
 
 .history-totals .avatar--totals {

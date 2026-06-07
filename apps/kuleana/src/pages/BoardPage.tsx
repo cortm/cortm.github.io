@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Claim } from '../types';
 import { useApp } from '../context/AppContext';
 import { computeBoardTotals, formatCurrency, getClaimPersonKey, isGigBonus } from '../lib/utils';
@@ -37,9 +38,9 @@ export function BoardPage() {
     closeOutWeek,
     completeClaim,
     uncompleteClaim,
-    reopenLastClosedWeek,
     reopenableWeek,
   } = useApp();
+  const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [filterPersonKey, setFilterPersonKey] = useState<string | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<BoardColumn | null>(null);
@@ -106,6 +107,12 @@ export function BoardPage() {
   const weekLabel = formatWeekRange(state.currentWeek.startDate, state.currentWeek.endDate);
   const canCloseOutWeek = canCloseOutWeekOnDate(state.currentWeek.endDate);
 
+  const closedOutWeek = reopenableWeek;
+  const closedOutCompletedCount = useMemo(
+    () => closedOutWeek?.claims.filter((claim) => claim.status === 'completed').length ?? 0,
+    [closedOutWeek],
+  );
+
   const handleCloseOut = () => {
     closeOutWeek();
     setConfirmOpen(false);
@@ -148,18 +155,18 @@ export function BoardPage() {
         <p className="page-header__subtitle">{weekLabel}</p>
       </div>
 
-      {reopenableWeek && (
+      {closedOutWeek && (
         <div className="board-recovery" role="status">
           <p className="board-recovery__text">
-            This week was closed early. {reopenableWeek.claims.length} gig
-            {reopenableWeek.claims.length === 1 ? '' : 's'} can be restored to the board.
+            This week has been closed out. {closedOutCompletedCount}{' '}
+            {closedOutCompletedCount === 1 ? 'gig was' : 'gigs were'} completed.
           </p>
           <button
             type="button"
             className="btn btn--primary btn--sm board-recovery__action"
-            onClick={() => reopenLastClosedWeek()}
+            onClick={() => navigate('/history')}
           >
-            Restore this week
+            View results
           </button>
         </div>
       )}

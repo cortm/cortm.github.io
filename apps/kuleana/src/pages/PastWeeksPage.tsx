@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Claim, Week } from '../types';
 import { useApp } from '../context/AppContext';
 import { computeBoardTotals, computeTotals, formatCurrency, getClaimPersonKey } from '../lib/utils';
 import { resolveGigForWeek } from '../lib/gigSnapshots';
+import { canRestoreWeek } from '../lib/weekRecovery';
 import { formatWeekRange } from '../lib/week';
 import { StatusPill } from '../components/StatusPill';
 import { TotalsPersonRow } from '../components/TotalsPersonRow';
@@ -22,7 +24,9 @@ interface PastWeekDetailsProps {
 }
 
 function PastWeekDetails({ week, filterPersonKey, setFilterPersonKey }: PastWeekDetailsProps) {
-  const { state } = useApp();
+  const { state, reopenLastClosedWeek } = useApp();
+  const navigate = useNavigate();
+  const canRestore = canRestoreWeek(week, state);
 
   const totals = useMemo(() => {
     if (state.familyMembers.length > 0) {
@@ -52,7 +56,10 @@ function PastWeekDetails({ week, filterPersonKey, setFilterPersonKey }: PastWeek
     <div className="history-week__details">
       {showTotals && (
         <div className="history-totals history-totals--top">
-          <h4>Total earned</h4>
+          <div className="history-totals__header">
+            <h4 className="history-totals__title">Total earned</h4>
+            <strong className="history-totals__amount">{formatCurrency(totals.grandTotal)}</strong>
+          </div>
           <div className="totals-bar__body totals-bar__body--history">
             <div className="totals-bar__people">
               {totals.byPerson.map((entry) => (
@@ -65,10 +72,6 @@ function PastWeekDetails({ week, filterPersonKey, setFilterPersonKey }: PastWeek
                   }
                 />
               ))}
-            </div>
-            <div className="totals-bar__grand">
-              <span>Week total</span>
-              <strong>{formatCurrency(totals.grandTotal)}</strong>
             </div>
           </div>
         </div>
@@ -99,6 +102,20 @@ function PastWeekDetails({ week, filterPersonKey, setFilterPersonKey }: PastWeek
             );
           })}
         </ul>
+      )}
+
+      {canRestore && (
+        <div className="history-week__restore">
+          <button
+            type="button"
+            className="btn btn--ghost btn--block history-week__restore-btn"
+            onClick={() => {
+              if (reopenLastClosedWeek()) navigate('/');
+            }}
+          >
+            Restore
+          </button>
+        </div>
       )}
     </div>
   );

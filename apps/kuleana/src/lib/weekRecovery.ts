@@ -1,6 +1,6 @@
 import type { AppState, Week } from '../types';
 
-/** Week closed early for the same date range as the open board week. */
+/** Most recent closed week that matches the open board week and can be restored. */
 export function findReopenableWeek(state: AppState): Week | null {
   if (state.currentWeek.claims.length > 0) return null;
 
@@ -14,4 +14,9 @@ export function findReopenableWeek(state: AppState): Week | null {
   }
 
   return lastClosed;
+}
+
+export function canRestoreWeek(week: Week, state: AppState): boolean {
+  const reopenable = findReopenableWeek(state);
+  return reopenable?.id === week.id;
 }
