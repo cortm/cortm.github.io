@@ -20,10 +20,6 @@
           <span id="xp-badge" class="badge badge-xp">⭐ 0 XP</span>
         </div>
       </header>
-      <div class="names-bar">
-        <div id="names-list" class="names-list"></div>
-        <button type="button" id="add-name-btn" class="add-name-btn" aria-label="Add name">+</button>
-      </div>
       <div class="daily-progress">
         <div class="daily-progress-label">
           <span>Today's training</span>
@@ -333,22 +329,6 @@
       </div>
     </div>
 
-    <!-- Name modal -->
-    <div id="name-modal" class="modal">
-      <div id="name-modal-backdrop" class="modal-backdrop"></div>
-      <div class="modal-panel">
-        <h3 class="modal-title">Add name</h3>
-        <div class="drill-field">
-          <label for="name-input">Name</label>
-          <input type="text" id="name-input" class="text-input" placeholder="Enter a name" maxlength="24">
-        </div>
-        <div class="modal-actions">
-          <button id="name-modal-cancel" class="btn btn-secondary">Cancel</button>
-          <button id="name-modal-save" class="btn btn-primary">Add</button>
-        </div>
-      </div>
-    </div>
-
     <!-- Duration modal -->
     <div id="duration-modal" class="modal">
       <div id="duration-modal-backdrop" class="modal-backdrop"></div>
@@ -379,7 +359,10 @@
 
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script src="drills.js"></script>
+  <script src="video-seeds.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

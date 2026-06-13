@@ -14,8 +14,6 @@ const DEFAULT_PROFILE = {
   completedDrillIds: [],
   weeklyHistory: {},
   completionLog: {},
-  names: [],
-  activeName: null,
   bonusAwardedDate: null,
   drillDurations: {},
   drillOverrides: {},
@@ -46,6 +44,189 @@ let calendarView = {
 let selectedCalendarDate = null;
 let pendingRemoveBonusDrillId = null;
 
+let drillPool = DRILL_POOL.map((d) => ({ ...d, equipment: [...d.equipment] }));
+let supabaseClient = null;
+let drillsLoadedFromSupabase = false;
+
+// ── Supabase ──
+
+function initSupabase() {
+  if (!window.supabase || !SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
+  return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+function mapRowToDrill(row) {
+  const drill = {
+    id: row.id,
+    name: row.name,
+    category: row.category,
+    type: row.type,
+    equipment: row.equipment || [],
+    xp: row.xp,
+    description: row.description,
+    videoUrl: row.video_url || VIDEO_SEEDS[row.id] || '',
+  };
+
+  if (row.type === 'timer') {
+    drill.duration = row.duration;
+  } else {
+    drill.reps = row.reps;
+  }
+
+  return drill;
+}
+
+function mapDrillToRow(drill) {
+  const row = {
+    id: drill.id,
+    name: drill.name,
+    category: drill.category,
+    type: drill.type,
+    equipment: drill.equipment,
+    xp: drill.xp,
+    description: drill.description,
+    video_url: drill.videoUrl?.trim() || null,
+    duration: null,
+    reps: null,
+  };
+
+  if (drill.type === 'timer') {
+    row.duration = drill.duration;
+  } else {
+    row.reps = drill.reps;
+  }
+
+  return row;
+}
+
+async function loadDrillsFromSupabase() {
+  if (!supabaseClient) return false;
+
+  const bundled = DRILL_POOL.map((d) => ({
+    ...d,
+    equipment: [...d.equipment],
+    videoUrl: VIDEO_SEEDS[d.id] || d.videoUrl || '',
+  }));
+  const byId = new Map(bundled.map((d) => [d.id, d]));
+
+  const { data, error } = await supabaseClient
+    .from('drills')
+    .select('*')
+    .order('name');
+
+  if (error) {
+    console.warn('Supabase drill load failed, using bundled drills.', error);
+    drillPool = bundled;
+    return false;
+  }
+
+  if (data?.length) {
+    data.forEach((row) => {
+      byId.set(row.id, mapRowToDrill(row));
+    });
+    drillsLoadedFromSupabase = true;
+  }
+
+  drillPool = [...byId.values()];
+  return Boolean(data?.length);
+}
+
+async function saveDrillToSupabase(id, drill) {
+  if (!supabaseClient) return { error: new Error('Supabase not configured') };
+
+  const payload = mapDrillToRow({ ...drill, id });
+  const { data, error } = await supabaseClient
+    .from('drills')
+    .upsert(payload, { onConflict: 'id' })
+    .select('id');
+
+  if (error) return { error };
+  if (!data?.length) {
+    return { error: new Error('Cloud save blocked by database permissions') };
+  }
+
+  return { error: null };
+}
+
+function saveDrillLocally(id, drill) {
+  profile.drillOverrides[id] = { ...drill };
+  upsertLocalDrill(drill);
+  saveState();
+}
+
+async function syncLocalOverridesToSupabase() {
+  if (!supabaseClient) return 0;
+
+  const overrides = Object.entries(profile.drillOverrides || {});
+  if (!overrides.length) return 0;
+
+  let synced = 0;
+
+  for (const [id, override] of overrides) {
+    const base = getBundledDrill(id) || getBaseDrill(id);
+    if (!base) continue;
+
+    const merged = {
+      ...base,
+      ...override,
+      id,
+      equipment: override.equipment ? [...override.equipment] : [...base.equipment],
+    };
+
+    if (merged.videoUrl) {
+      merged.videoUrl = merged.videoUrl.trim();
+    }
+
+    const { error } = await saveDrillToSupabase(id, merged);
+    if (error) {
+      console.warn(`Could not sync override for ${id}`, error);
+    }
+
+    upsertLocalDrill(merged);
+    if (!error) synced += 1;
+  }
+
+  if (synced) {
+    saveState();
+    console.info(`Synced ${synced} local drill override(s) to Supabase.`);
+  }
+
+  return synced;
+}
+
+function getBundledDrill(id) {
+  const base = DRILL_POOL.find((d) => d.id === id);
+  if (!base) return null;
+  return { ...base, equipment: [...base.equipment] };
+}
+
+function drillDiffersFromBundled(drill) {
+  const bundled = getBundledDrill(drill.id);
+  if (!bundled) return true;
+
+  return (
+    drill.name !== bundled.name
+    || drill.category !== bundled.category
+    || drill.type !== bundled.type
+    || drill.xp !== bundled.xp
+    || drill.description !== bundled.description
+    || (drill.videoUrl || '') !== (bundled.videoUrl || '')
+    || JSON.stringify(drill.equipment) !== JSON.stringify(bundled.equipment)
+    || (drill.type === 'timer' ? drill.duration !== bundled.duration : drill.reps !== bundled.reps)
+  );
+}
+
+function upsertLocalDrill(drill) {
+  const index = drillPool.findIndex((d) => d.id === drill.id);
+  const normalized = { ...drill, equipment: [...drill.equipment] };
+
+  if (index === -1) {
+    drillPool.push(normalized);
+  } else {
+    drillPool[index] = normalized;
+  }
+}
+
 // ── Storage ──
 
 function loadState() {
@@ -59,7 +240,6 @@ function loadState() {
       profile.drillDurations = { ...DEFAULT_PROFILE.drillDurations, ...profile.drillDurations };
       profile.drillOverrides = { ...DEFAULT_PROFILE.drillOverrides, ...profile.drillOverrides };
       profile.completionLog = { ...DEFAULT_PROFILE.completionLog, ...profile.completionLog };
-      profile.names = Array.isArray(data.profile?.names) ? data.profile.names : [];
       dailySession = data.dailySession || null;
     }
   } catch {
@@ -102,7 +282,7 @@ function last7Days() {
 // ── Drill helpers ──
 
 function getBaseDrill(id) {
-  return DRILL_POOL.find((d) => d.id === id);
+  return drillPool.find((d) => d.id === id);
 }
 
 function mergeDrill(base) {
@@ -123,7 +303,11 @@ function getDrill(id) {
 }
 
 function getDrillPool() {
-  return DRILL_POOL.map(mergeDrill);
+  return drillPool.map(mergeDrill);
+}
+
+function isYouTubeShortUrl(url) {
+  return /youtube\.com\/shorts\//i.test(url);
 }
 
 function toEmbedUrl(url) {
@@ -137,8 +321,10 @@ function toEmbedUrl(url) {
   const shortMatch = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
   const watchMatch = trimmed.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
   const embedMatch = trimmed.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+  const shortsMatch = trimmed.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
 
   if (shortMatch) videoId = shortMatch[1];
+  else if (shortsMatch) videoId = shortsMatch[1];
   else if (watchMatch) videoId = watchMatch[1];
   else if (embedMatch) videoId = embedMatch[1];
 
@@ -767,65 +953,10 @@ function confirmRemoveBonusDrill() {
   if (currentView === 'stats') renderStats();
 }
 
-// ── Names ──
-
-function renderNamesBar() {
-  const list = document.getElementById('names-list');
-  list.innerHTML = '';
-
-  profile.names.forEach((name) => {
-    const chip = document.createElement('button');
-    chip.type = 'button';
-    chip.className = `name-chip${name === profile.activeName ? ' active' : ''}`;
-    chip.textContent = name;
-    chip.dataset.name = name;
-    list.appendChild(chip);
-  });
-}
-
-function openNameModal() {
-  document.getElementById('name-input').value = '';
-  document.getElementById('name-modal').classList.add('active');
-  document.getElementById('name-input').focus();
-}
-
-function closeNameModal() {
-  document.getElementById('name-modal').classList.remove('active');
-}
-
-function saveName() {
-  const input = document.getElementById('name-input');
-  const name = input.value.trim();
-
-  if (!name) {
-    showToast('Enter a name');
-    return;
-  }
-  if (profile.names.includes(name)) {
-    showToast('Name already added');
-    profile.activeName = name;
-  } else {
-    profile.names.push(name);
-    profile.activeName = name;
-    showToast(`Added ${name}`);
-  }
-
-  saveState();
-  closeNameModal();
-  renderNamesBar();
-}
-
-function selectName(name) {
-  profile.activeName = name;
-  saveState();
-  renderNamesBar();
-}
-
 // ── Render: Home ──
 
 function renderHome() {
   ensureDailySession();
-  renderNamesBar();
 
   document.getElementById('streak-badge').textContent = `🔥 ${profile.streak} day${profile.streak !== 1 ? 's' : ''}`;
   document.getElementById('xp-badge').textContent = `⭐ ${profile.xp} XP`;
@@ -953,9 +1084,11 @@ function renderDetail() {
 
   const videoEl = document.getElementById('video-section');
   const embedUrl = toEmbedUrl(drill.videoUrl);
+  videoEl.classList.toggle('video-section--shorts', isYouTubeShortUrl(drill.videoUrl));
   if (embedUrl) {
     videoEl.innerHTML = `<iframe src="${embedUrl}" title="${drill.name} tutorial" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
   } else {
+    videoEl.classList.remove('video-section--shorts');
     videoEl.innerHTML = '<div class="video-placeholder">No video for this drill yet — add one in Settings → Drills</div>';
   }
 }
@@ -1230,7 +1363,7 @@ function renderDrillEditors() {
   const drills = getDrillPool().sort((a, b) => a.name.localeCompare(b.name));
 
   drills.forEach((drill) => {
-    const hasOverrides = Boolean(profile.drillOverrides[drill.id]);
+    const hasOverrides = Boolean(profile.drillOverrides[drill.id]) || drillDiffersFromBundled(drill);
     const card = document.createElement('div');
     card.className = 'drill-editor-card';
     card.dataset.drillId = drill.id;
@@ -1273,8 +1406,11 @@ function renderDrillEditors() {
           <textarea class="text-input drill-description" rows="3">${escapeHtml(drill.description)}</textarea>
         </div>
         <div class="drill-field">
-          <label>Video link (YouTube)</label>
-          <input type="url" class="text-input drill-video" placeholder="https://youtube.com/watch?v=..." value="${escapeAttr(drill.videoUrl || '')}">
+          <div class="drill-field-label-row">
+            <label>Video link (YouTube)</label>
+            <button type="button" class="drill-video-search-btn btn-hidden" aria-label="Search YouTube for this drill" title="Search YouTube">↗</button>
+          </div>
+          <input type="url" class="text-input drill-video" placeholder="https://youtube.com/watch?v=... or /shorts/..." value="${escapeAttr(drill.videoUrl || '')}">
         </div>
         <div class="drill-field">
           <label>Equipment</label>
@@ -1292,7 +1428,27 @@ function renderDrillEditors() {
     `;
 
     list.appendChild(card);
+    updateDrillVideoSearchBtn(card);
   });
+}
+
+function updateDrillVideoSearchBtn(card) {
+  const input = card.querySelector('.drill-video');
+  const btn = card.querySelector('.drill-video-search-btn');
+  if (!input || !btn) return;
+
+  btn.classList.toggle('btn-hidden', Boolean(input.value.trim()));
+}
+
+function openDrillVideoSearch(card) {
+  const name = card.querySelector('.drill-name')?.value.trim();
+  if (!name) {
+    showToast('Enter a drill name first');
+    return;
+  }
+
+  const query = encodeURIComponent(`${name} soccer drill`);
+  window.open(`https://www.youtube.com/results?search_query=${query}`, '_blank', 'noopener,noreferrer');
 }
 
 function escapeAttr(str) {
@@ -1336,7 +1492,7 @@ function readDrillEditor(card) {
   return { id, drill };
 }
 
-function saveDrillEditor(card) {
+async function saveDrillEditor(card) {
   const { id, drill } = readDrillEditor(card);
 
   if (!drill.name) {
@@ -1348,27 +1504,64 @@ function saveDrillEditor(card) {
     return;
   }
 
-  profile.drillOverrides[id] = { ...drill };
-  if (profile.drillOverrides[id].videoUrl) {
-    profile.drillOverrides[id].videoUrl = toEmbedUrl(profile.drillOverrides[id].videoUrl);
+  const normalized = { ...drill, id };
+  if (normalized.videoUrl) {
+    normalized.videoUrl = normalized.videoUrl.trim();
   } else {
-    delete profile.drillOverrides[id].videoUrl;
+    normalized.videoUrl = '';
   }
 
+  if (supabaseClient) {
+    const { error } = await saveDrillToSupabase(id, normalized);
+    if (error) {
+      console.error(error);
+      saveDrillLocally(id, normalized);
+      showToast('Saved on this device');
+      renderDrillEditors();
+      if (currentView === 'home') renderHome();
+      if (currentView === 'detail' && activeDrillId === id) renderDetail();
+      return;
+    }
+  }
+
+  delete profile.drillOverrides[id];
+  upsertLocalDrill(normalized);
   saveState();
-  showToast(`Saved ${drill.name}`);
+  showToast(`Saved ${normalized.name}`);
   renderDrillEditors();
   if (currentView === 'home') renderHome();
+  if (currentView === 'detail' && activeDrillId === id) renderDetail();
 }
 
-function resetDrillEditor(card) {
+async function resetDrillEditor(card) {
   const id = card.dataset.drillId;
+  const bundled = getBundledDrill(id);
+  if (!bundled) return;
+
+  if (supabaseClient) {
+    const { error } = await saveDrillToSupabase(id, bundled);
+    if (error) {
+      console.error(error);
+      delete profile.drillOverrides[id];
+      delete profile.drillDurations[id];
+      upsertLocalDrill(bundled);
+      saveState();
+      showToast('Reset on this device');
+      renderDrillEditors();
+      if (currentView === 'home') renderHome();
+      if (currentView === 'detail' && activeDrillId === id) renderDetail();
+      return;
+    }
+  }
+
   delete profile.drillOverrides[id];
   delete profile.drillDurations[id];
+  upsertLocalDrill(bundled);
   saveState();
   showToast('Drill reset to default');
   renderDrillEditors();
   if (currentView === 'home') renderHome();
+  if (currentView === 'detail' && activeDrillId === id) renderDetail();
 }
 
 function onDrillTypeChange(card) {
@@ -1433,15 +1626,6 @@ function bindEvents() {
   document.getElementById('celebration-continue').addEventListener('click', dismissCelebration);
   document.getElementById('celebration-overlay').addEventListener('click', (e) => {
     if (e.target.id === 'celebration-overlay') dismissCelebration();
-  });
-
-  document.getElementById('add-name-btn').addEventListener('click', openNameModal);
-  document.getElementById('name-modal-backdrop').addEventListener('click', closeNameModal);
-  document.getElementById('name-modal-cancel').addEventListener('click', closeNameModal);
-  document.getElementById('name-modal-save').addEventListener('click', saveName);
-  document.getElementById('names-list').addEventListener('click', (e) => {
-    const chip = e.target.closest('.name-chip');
-    if (chip?.dataset.name) selectName(chip.dataset.name);
   });
 
   document.getElementById('cal-prev').addEventListener('click', () => shiftCalendarMonth(-1));
@@ -1512,6 +1696,18 @@ function bindEvents() {
     const resetBtn = e.target.closest('.drill-reset-btn');
     if (resetBtn) {
       resetDrillEditor(resetBtn.closest('.drill-editor-card'));
+      return;
+    }
+
+    const searchBtn = e.target.closest('.drill-video-search-btn');
+    if (searchBtn) {
+      openDrillVideoSearch(searchBtn.closest('.drill-editor-card'));
+    }
+  });
+
+  document.getElementById('drill-editor-list').addEventListener('input', (e) => {
+    if (e.target.classList.contains('drill-video')) {
+      updateDrillVideoSearchBtn(e.target.closest('.drill-editor-card'));
     }
   });
 
@@ -1522,8 +1718,11 @@ function bindEvents() {
   });
 }
 
-function init() {
+async function init() {
+  supabaseClient = initSupabase();
   loadState();
+  await loadDrillsFromSupabase();
+  await syncLocalOverridesToSupabase();
   syncStatsFromLog();
   ensureDailySession();
   bindEvents();
