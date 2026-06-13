@@ -218,14 +218,18 @@ function profileForSync() {
 }
 
 function applyProfileFromCloud(cloudProfile) {
-  profile = { ...DEFAULT_PROFILE, ...cloudProfile };
-  profile.equipment = { ...DEFAULT_PROFILE.equipment, ...profile.equipment };
-  profile.notifications = { ...DEFAULT_PROFILE.notifications, ...profile.notifications };
-  profile.drillDurations = { ...DEFAULT_PROFILE.drillDurations, ...profile.drillDurations };
-  profile.drillOverrides = { ...DEFAULT_PROFILE.drillOverrides, ...profile.drillOverrides };
-  profile.completionLog = { ...DEFAULT_PROFILE.completionLog, ...profile.completionLog };
-  profile.completedDrillIds = Array.isArray(profile.completedDrillIds) ? profile.completedDrillIds : [];
-  profile.weeklyHistory = profile.weeklyHistory || {};
+  profile = {
+    ...DEFAULT_PROFILE,
+    ...cloudProfile,
+    equipment: { ...DEFAULT_PROFILE.equipment, ...cloudProfile.equipment },
+    notifications: { ...DEFAULT_PROFILE.notifications, ...cloudProfile.notifications },
+    drillDurations: { ...DEFAULT_PROFILE.drillDurations, ...cloudProfile.drillDurations },
+    drillOverrides: { ...DEFAULT_PROFILE.drillOverrides },
+    completionLog: { ...DEFAULT_PROFILE.completionLog, ...cloudProfile.completionLog },
+    completedDrillIds: Array.isArray(cloudProfile.completedDrillIds) ? [...cloudProfile.completedDrillIds] : [],
+    weeklyHistory: { ...(cloudProfile.weeklyHistory || {}) },
+    settingsTab: profile.settingsTab || 'general',
+  };
 }
 
 function applyCloudProgress(row) {
@@ -266,8 +270,8 @@ function scheduleProgressPush() {
   }, 500);
 }
 
-async function loadProgressFromSupabase({ forceCloud = false } = {}) {
-  if (!supabaseClient || !syncId) return;
+async function loadProgressFromSupabase({ forceCloud = false, allowCreate = true } = {}) {
+  if (!supabaseClient || !syncId) return false;
 
   const { data, error } = await supabaseClient
     .from('user_progress')
@@ -277,12 +281,14 @@ async function loadProgressFromSupabase({ forceCloud = false } = {}) {
 
   if (error) {
     console.warn('Could not load progress from cloud', error);
-    return;
+    return false;
   }
 
   if (!data) {
-    await pushProgressToSupabase();
-    return;
+    if (allowCreate) {
+      await pushProgressToSupabase();
+    }
+    return false;
   }
 
   const localUpdated = progressUpdatedAt ? new Date(progressUpdatedAt) : new Date(0);
@@ -290,9 +296,14 @@ async function loadProgressFromSupabase({ forceCloud = false } = {}) {
 
   if (forceCloud || cloudUpdated > localUpdated) {
     applyCloudProgress(data);
-  } else if (localUpdated > cloudUpdated) {
+    return true;
+  }
+
+  if (localUpdated > cloudUpdated) {
     await pushProgressToSupabase();
   }
+
+  return true;
 }
 
 async function linkSyncDevice(code) {
@@ -308,21 +319,48 @@ async function linkSyncDevice(code) {
     return;
   }
 
-  if (!window.confirm('Replace progress on this device with the synced cloud data?')) {
+  if (!supabaseClient) {
+    showToast('Cloud sync unavailable');
     return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from('user_progress')
+    .select('*')
+    .eq('sync_id', trimmed)
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+    showToast('Could not load synced progress');
+    return;
+  }
+
+  if (!data) {
+    showToast('No progress found for this code — open the app on the other device first');
+    return;
+  }
+
+  if (!window.confirm('Replace all progress on this device with data from the other device?')) {
+    return;
+  }
+
+  if (pushProgressTimer) {
+    clearTimeout(pushProgressTimer);
+    pushProgressTimer = null;
   }
 
   syncId = trimmed;
   localStorage.setItem(SYNC_ID_KEY, syncId);
   document.getElementById('sync-id-link').value = '';
 
-  await loadProgressFromSupabase({ forceCloud: true });
+  applyCloudProgress(data);
   syncStatsFromLog();
   ensureDailySession();
   renderGeneralSettings();
   if (currentView === 'home') renderHome();
   if (currentView === 'stats') renderStats();
-  showToast('Device linked');
+  showToast('Progress synced from other device');
 }
 
 function getBundledDrill(id) {
@@ -1829,6 +1867,12 @@ function bindEvents() {
 
   document.getElementById('sync-link-btn').addEventListener('click', () => {
     linkSyncDevice(document.getElementById('sync-id-link').value);
+  });
+
+  document.getElementById('sync-id-link').addEventListener('paste', (e) => {
+    const pasted = (e.clipboardData?.getData('text') || '').trim();
+    if (!isValidSyncId(pasted)) return;
+    setTimeout(() => linkSyncDevice(pasted), 0);
   });
 
   document.querySelectorAll('.settings-tab-btn').forEach((btn) => {
