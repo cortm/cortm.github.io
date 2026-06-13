@@ -44,6 +44,7 @@ let calendarView = {
   month: new Date().getMonth(),
 };
 let selectedCalendarDate = null;
+let pendingRemoveBonusDrillId = null;
 
 // ── Storage ──
 
@@ -283,6 +284,35 @@ function generateDailySession() {
     date: todayStr(),
     drills: drills.map((d) => ({ drillId: d.id, completed: false })),
   };
+  saveState();
+}
+
+function refreshDailySessionCount() {
+  if (!dailySession || dailySession.date !== todayStr()) {
+    generateDailySession();
+    return;
+  }
+
+  const filtered = getDrillPool().filter(drillMatchesEquipment);
+  const targetCount = Math.min(profile.challengesPerDay, filtered.length);
+  const bonusDrills = dailySession.drills.filter((d) => d.bonus);
+  let regularDrills = dailySession.drills.filter((d) => !d.bonus);
+
+  if (regularDrills.length > targetCount) {
+    while (regularDrills.length > targetCount) {
+      const removeIdx = regularDrills.findLastIndex((d) => !d.completed);
+      if (removeIdx === -1) break;
+      regularDrills.splice(removeIdx, 1);
+    }
+  } else if (regularDrills.length < targetCount) {
+    const existingIds = new Set(dailySession.drills.map((d) => d.drillId));
+    const available = filtered.filter((d) => !existingIds.has(d.id));
+    const toAdd = targetCount - regularDrills.length;
+    const picked = pickWeightedDrills(available, toAdd);
+    regularDrills = regularDrills.concat(picked.map((d) => ({ drillId: d.id, completed: false })));
+  }
+
+  dailySession.drills = [...regularDrills, ...bonusDrills];
   saveState();
 }
 
@@ -632,6 +662,111 @@ function goBack() {
   navigate('home');
 }
 
+function openBonusDrillPicker() {
+  ensureDailySession();
+  currentView = 'bonus-picker';
+  document.querySelectorAll('.view').forEach((v) => v.classList.remove('active'));
+  document.getElementById('view-bonus-picker').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach((n) => {
+    n.classList.toggle('active', n.dataset.view === 'home');
+  });
+  renderBonusDrillList();
+}
+
+function goBackFromBonusPicker() {
+  navigate('home');
+}
+
+function renderBonusDrillList() {
+  const list = document.getElementById('bonus-drill-list');
+  const inSession = new Set(dailySession.drills.map((d) => d.drillId));
+  const drills = getDrillPool().sort((a, b) => a.name.localeCompare(b.name));
+
+  list.innerHTML = '';
+
+  if (!drills.length) {
+    list.innerHTML = '<div class="empty-state">No drills available</div>';
+    return;
+  }
+
+  drills.forEach((drill) => {
+    const inToday = inSession.has(drill.id);
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = `bonus-drill-card${inToday ? ' in-session' : ''}`;
+    card.disabled = inToday;
+
+    card.innerHTML = `
+      <div class="bonus-drill-body">
+        <span class="category-pill ${drill.category}">${CATEGORY_LABELS[drill.category]}</span>
+        <div class="challenge-name">${drill.name}</div>
+        <div class="challenge-meta">${metaLine(drill)}</div>
+        <div class="challenge-xp">+${drill.xp} XP</div>
+      </div>
+      <span class="bonus-drill-action">${inToday ? 'Added' : 'Add'}</span>
+    `;
+
+    if (!inToday) {
+      card.addEventListener('click', () => addBonusDrill(drill.id));
+    }
+
+    list.appendChild(card);
+  });
+}
+
+function addBonusDrill(drillId) {
+  ensureDailySession();
+
+  if (dailySession.drills.some((d) => d.drillId === drillId)) {
+    showToast('Drill already in today\'s session');
+    return;
+  }
+
+  dailySession.drills.push({ drillId, completed: false, bonus: true });
+  saveState();
+  showToast('Bonus drill added!');
+  navigate('home');
+}
+
+function openRemoveBonusModal(drillId) {
+  const drill = getDrill(drillId);
+  if (!drill) return;
+
+  pendingRemoveBonusDrillId = drillId;
+  document.getElementById('remove-bonus-message').textContent =
+    `Remove ${drill.name} from today's session?`;
+  document.getElementById('remove-bonus-modal').classList.add('active');
+}
+
+function closeRemoveBonusModal() {
+  pendingRemoveBonusDrillId = null;
+  document.getElementById('remove-bonus-modal').classList.remove('active');
+}
+
+function confirmRemoveBonusDrill() {
+  const drillId = pendingRemoveBonusDrillId;
+  if (!drillId || !dailySession) {
+    closeRemoveBonusModal();
+    return;
+  }
+
+  const idx = dailySession.drills.findIndex((d) => d.drillId === drillId && d.bonus);
+  if (idx === -1) {
+    closeRemoveBonusModal();
+    return;
+  }
+
+  const entry = dailySession.drills[idx];
+  if (entry.completed) incompleteDrill(drillId);
+
+  dailySession.drills.splice(idx, 1);
+  saveState();
+  closeRemoveBonusModal();
+  showToast('Bonus drill removed');
+  renderHome();
+  if (currentView === 'stats') renderStats();
+}
+
 // ── Names ──
 
 function renderNamesBar() {
@@ -716,13 +851,24 @@ function renderHome() {
     card.className = `challenge-card${entry.completed ? ' done' : ''}`;
     card.innerHTML = `
       <div class="challenge-body">
-        <span class="category-pill ${drill.category}">${CATEGORY_LABELS[drill.category]}</span>
+        <div class="challenge-pills">
+          <span class="category-pill ${drill.category}">${CATEGORY_LABELS[drill.category]}</span>
+          ${entry.bonus ? '<button type="button" class="bonus-badge" aria-label="Remove bonus drill">Bonus</button>' : ''}
+        </div>
         <div class="challenge-name">${drill.name}</div>
         <div class="challenge-meta">${metaLine(drill)}</div>
         <div class="challenge-xp">+${drill.xp} XP</div>
       </div>
       <button type="button" class="check-circle${entry.completed ? ' done' : ''}" aria-label="${entry.completed ? 'Mark incomplete' : 'Mark complete'}" data-drill-id="${entry.drillId}">${entry.completed ? '✓' : ''}</button>
     `;
+
+    const bonusBadge = card.querySelector('.bonus-badge');
+    if (bonusBadge) {
+      bonusBadge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openRemoveBonusModal(entry.drillId);
+      });
+    }
 
     const checkBtn = card.querySelector('.check-circle');
     checkBtn.addEventListener('click', (e) => {
@@ -1256,6 +1402,13 @@ function bindEvents() {
   });
 
   document.getElementById('back-btn').addEventListener('click', goBack);
+  document.getElementById('bonus-picker-back-btn').addEventListener('click', goBackFromBonusPicker);
+  document.getElementById('add-bonus-drill-btn').addEventListener('click', openBonusDrillPicker);
+
+  document.getElementById('remove-bonus-modal-backdrop').addEventListener('click', closeRemoveBonusModal);
+  document.getElementById('remove-bonus-cancel').addEventListener('click', closeRemoveBonusModal);
+  document.getElementById('remove-bonus-confirm').addEventListener('click', confirmRemoveBonusDrill);
+
   document.getElementById('day-detail-back-btn').addEventListener('click', goBackFromDayDetail);
   document.getElementById('timer-start-btn').addEventListener('click', toggleTimer);
   document.getElementById('timer-reset-btn').addEventListener('click', resetTimerBtn);
@@ -1308,6 +1461,7 @@ function bindEvents() {
 
   document.getElementById('challenges-select').addEventListener('change', (e) => {
     profile.challengesPerDay = parseInt(e.target.value, 10);
+    refreshDailySessionCount();
     onSettingChange();
   });
 

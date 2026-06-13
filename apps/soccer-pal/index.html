@@ -35,6 +35,20 @@
       </div>
       <div class="view-scroll">
         <div id="challenge-list" class="challenge-list"></div>
+        <div class="home-footer">
+          <button type="button" id="add-bonus-drill-btn" class="btn btn-secondary add-bonus-btn">Add bonus drill</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bonus drill picker -->
+    <div id="view-bonus-picker" class="view">
+      <header class="detail-header">
+        <button id="bonus-picker-back-btn" class="back-btn" aria-label="Back">←</button>
+        <div class="detail-title">Add bonus drill</div>
+      </header>
+      <div class="view-scroll">
+        <div id="bonus-drill-list" class="bonus-drill-list"></div>
       </div>
     </div>
 
@@ -304,6 +318,19 @@
       <div class="rest-label">Rest up!</div>
       <div id="rest-count" class="rest-count">30</div>
       <button id="skip-rest" class="btn btn-secondary">Skip</button>
+    </div>
+
+    <!-- Remove bonus modal -->
+    <div id="remove-bonus-modal" class="modal">
+      <div id="remove-bonus-modal-backdrop" class="modal-backdrop"></div>
+      <div class="modal-panel">
+        <h3 class="modal-title">Remove bonus drill?</h3>
+        <p id="remove-bonus-message" class="remove-bonus-message"></p>
+        <div class="modal-actions">
+          <button id="remove-bonus-cancel" class="btn btn-secondary">Cancel</button>
+          <button id="remove-bonus-confirm" class="btn btn-primary">Remove</button>
+        </div>
+      </div>
     </div>
 
     <!-- Name modal -->

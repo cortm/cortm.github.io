@@ -268,6 +268,66 @@ body::after {
   gap: 10px;
 }
 
+.home-footer {
+  padding: 4px 18px 20px;
+}
+
+.add-bonus-btn {
+  width: 100%;
+  font-size: 14px;
+}
+
+.bonus-drill-list {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bonus-drill-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.bonus-drill-card:active:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.bonus-drill-card.in-session {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.bonus-drill-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.bonus-drill-action {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--wc-blue);
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(30, 77, 140, 0.12);
+}
+
+.bonus-drill-card.in-session .bonus-drill-action {
+  color: var(--text-muted);
+  background: var(--surface-2);
+}
+
 .challenge-card {
   display: flex;
   align-items: center;
@@ -294,6 +354,41 @@ body::after {
   min-width: 0;
 }
 
+.challenge-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.bonus-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(180, 83, 9, 0.2);
+  color: #b45309;
+  border: 1px solid rgba(180, 83, 9, 0.35);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.bonus-badge:active {
+  opacity: 0.75;
+}
+
+.remove-bonus-message {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 18px;
+}
+
 .category-pill {
   display: inline-block;
   font-size: 10px;
@@ -302,7 +397,10 @@ body::after {
   letter-spacing: 0.5px;
   padding: 3px 8px;
   border-radius: 6px;
-  margin-bottom: 6px;
+}
+
+.challenge-body .category-pill {
+  margin-bottom: 0;
 }
 
 .category-pill.footwork { background: rgba(37, 99, 235, 0.15); color: #1d4ed8; }
