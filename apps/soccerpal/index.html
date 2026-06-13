@@ -255,6 +255,23 @@
             </div>
           </div>
 
+          <div class="settings-accordion" id="sync-accordion">
+            <button type="button" class="settings-accordion-header" id="sync-accordion-toggle">
+              <span class="group-label">Sync across devices</span>
+              <span class="settings-accordion-chevron">›</span>
+            </button>
+            <div class="settings-accordion-body">
+              <p class="sync-hint">Use the same code on each phone or tablet to keep XP, streaks, and daily progress in sync.</p>
+              <div class="sync-code-row">
+                <input type="text" id="sync-id-display" class="text-input sync-id-input" readonly>
+                <button type="button" id="sync-copy-btn" class="btn btn-secondary btn-sm">Copy</button>
+              </div>
+              <label class="sync-link-label" for="sync-id-link">Link this device</label>
+              <input type="text" id="sync-id-link" class="text-input" placeholder="Paste sync code from another device" autocapitalize="none" autocorrect="off" spellcheck="false">
+              <button type="button" id="sync-link-btn" class="btn btn-primary btn-sm sync-link-btn">Link device</button>
+            </div>
+          </div>
+
           </div>
         </div>
 

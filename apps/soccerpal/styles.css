@@ -1081,6 +1081,89 @@ textarea.text-input {
   cursor: pointer;
 }
 
+.settings-accordion {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.settings-accordion-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.settings-accordion-header .group-label {
+  margin: 0;
+}
+
+.settings-accordion-chevron {
+  font-size: 22px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.settings-accordion.expanded .settings-accordion-chevron {
+  transform: rotate(90deg);
+}
+
+.settings-accordion-body {
+  display: none;
+  padding: 0 14px 14px;
+  flex-direction: column;
+  gap: 0;
+}
+
+.settings-accordion.expanded .settings-accordion-body {
+  display: flex;
+}
+
+.sync-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0 0 10px;
+}
+
+.sync-code-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sync-id-input {
+  flex: 1;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+
+.sync-link-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.sync-link-btn {
+  width: 100%;
+  margin-top: 8px;
+}
+
 .drill-editor-actions {
   display: flex;
   gap: 8px;
