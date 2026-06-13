@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#f5d76e">
+  <title>SoccerPal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Home -->
+    <div id="view-home" class="view active">
+      <header class="top-bar">
+        <div class="app-title">Soccer<span>Pal</span></div>
+        <div class="badges">
+          <span id="streak-badge" class="badge badge-streak">🔥 0 days</span>
+          <span id="xp-badge" class="badge badge-xp">⭐ 0 XP</span>
+        </div>
+      </header>
+      <div class="names-bar">
+        <div id="names-list" class="names-list"></div>
+        <button type="button" id="add-name-btn" class="add-name-btn" aria-label="Add name">+</button>
+      </div>
+      <div class="daily-progress">
+        <div class="daily-progress-label">
+          <span>Today's training</span>
+          <span id="progress-label">0 of 0 done</span>
+        </div>
+        <div class="progress-track">
+          <div id="progress-fill" class="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="view-scroll">
+        <div id="challenge-list" class="challenge-list"></div>
+      </div>
+    </div>
+
+    <!-- Detail -->
+    <div id="view-detail" class="view">
+      <header class="detail-header">
+        <button id="back-btn" class="back-btn" aria-label="Back">←</button>
+        <div id="detail-title" class="detail-title"></div>
+      </header>
+      <div class="view-scroll">
+        <div class="detail-content">
+
+          <div id="timer-section" class="timer-section" style="display:none">
+            <div class="timer-ring-wrap">
+              <svg viewBox="0 0 200 200">
+                <circle class="timer-ring-bg" cx="100" cy="100" r="90"></circle>
+                <circle id="timer-ring-fg" class="timer-ring-fg" cx="100" cy="100" r="90"></circle>
+              </svg>
+              <div id="timer-display" class="timer-display">0:00</div>
+            </div>
+            <div class="timer-controls">
+              <button id="timer-start-btn" class="btn btn-primary">Start</button>
+              <button id="timer-reset-btn" class="btn btn-secondary">Reset</button>
+            </div>
+            <button id="edit-duration-btn" class="btn btn-secondary edit-duration-btn">Edit time</button>
+            <button id="timer-complete-btn" class="btn btn-complete">Mark complete</button>
+          </div>
+
+          <div id="rep-section" class="rep-section" style="display:none">
+            <div id="rep-count" class="rep-display">0</div>
+            <div id="rep-target" class="rep-target">Target: 0 reps</div>
+            <div class="rep-controls">
+              <button id="rep-minus-10" class="btn btn-secondary btn-sm">−10</button>
+              <button id="rep-minus-1" class="btn btn-secondary btn-sm">−1</button>
+              <button id="rep-plus-1" class="btn btn-secondary btn-sm">+1</button>
+              <button id="rep-plus-10" class="btn btn-secondary btn-sm">+10</button>
+            </div>
+            <button id="rep-complete-btn" class="btn btn-complete">Mark complete</button>
+          </div>
+
+          <div class="info-card">
+            <h3>How to do it</h3>
+            <p id="drill-description"></p>
+          </div>
+
+          <div id="video-section" class="video-section"></div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div id="view-stats" class="view">
+      <header class="top-bar">
+        <div class="app-title">Your <span>Stats</span></div>
+      </header>
+      <div class="view-scroll">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div id="stat-streak" class="stat-value">0</div>
+            <div class="stat-label">Day streak</div>
+          </div>
+          <div class="stat-card">
+            <div id="stat-drills" class="stat-value">0</div>
+            <div class="stat-label">Drills done</div>
+          </div>
+          <div class="stat-card">
+            <div id="stat-xp" class="stat-value">0</div>
+            <div class="stat-label">Total XP</div>
+          </div>
+          <div class="stat-card">
+            <div id="stat-time" class="stat-value">0m</div>
+            <div class="stat-label">Training time</div>
+          </div>
+        </div>
+        <div class="section-block">
+          <h2>This week</h2>
+          <div id="weekly-chart" class="chart"></div>
+        </div>
+        <div class="section-block">
+          <h2>Skill breakdown</h2>
+          <div id="skill-breakdown"></div>
+        </div>
+        <div class="section-block">
+          <h2>Training calendar</h2>
+          <div class="calendar">
+            <div class="calendar-header">
+              <button type="button" id="cal-prev" class="calendar-nav-btn" aria-label="Previous month">‹</button>
+              <span id="cal-month-label" class="calendar-month-label"></span>
+              <button type="button" id="cal-next" class="calendar-nav-btn" aria-label="Next month">›</button>
+            </div>
+            <div class="calendar-weekdays">
+              <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div id="calendar-grid" class="calendar-grid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day detail -->
+    <div id="view-day-detail" class="view">
+      <header class="detail-header">
+        <button id="day-detail-back-btn" class="back-btn" aria-label="Back">←</button>
+        <div id="day-detail-title" class="detail-title"></div>
+      </header>
+      <div class="view-scroll">
+        <div class="day-detail-content">
+          <ul id="day-detail-list" class="calendar-day-list"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div id="view-settings" class="view">
+      <header class="top-bar">
+        <div class="app-title">Your <span>Settings</span></div>
+      </header>
+      <div class="view-scroll">
+        <div class="settings-tabs">
+          <button type="button" class="settings-tab-btn active" data-tab="general">General</button>
+          <button type="button" class="settings-tab-btn" data-tab="drills">Drills</button>
+        </div>
+
+        <div id="settings-tab-general" class="settings-tab-panel active">
+          <div class="settings-content">
+
+          <div class="setting-group">
+            <label class="group-label">Skill level</label>
+            <div id="skill-pills" class="pill-toggle">
+              <button data-value="beginner">Beginner</button>
+              <button data-value="mid">Mid</button>
+              <button data-value="advanced">Advanced</button>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <label class="group-label" for="challenges-select">Challenges per day</label>
+            <select id="challenges-select" class="select-input">
+              <option value="3">3 drills</option>
+              <option value="5" selected>5 drills</option>
+              <option value="7">7 drills</option>
+              <option value="10">10 drills</option>
+            </select>
+          </div>
+
+          <div class="setting-group">
+            <label class="group-label" for="focus-select">Focus area</label>
+            <select id="focus-select" class="select-input">
+              <option value="balanced">Balanced</option>
+              <option value="footwork">Footwork</option>
+              <option value="ball-control">Ball control</option>
+              <option value="agility">Agility</option>
+            </select>
+          </div>
+
+          <div class="setting-group">
+            <label class="group-label">Equipment</label>
+            <div class="toggle-row">
+              <span class="toggle-label">I have a ball</span>
+              <label class="toggle">
+                <input type="checkbox" id="eq-ball" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">I have cones</span>
+              <label class="toggle">
+                <input type="checkbox" id="eq-cones">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">I have a ladder</span>
+              <label class="toggle">
+                <input type="checkbox" id="eq-ladder">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <label class="group-label">Notifications</label>
+            <div class="toggle-row">
+              <span class="toggle-label">Daily reminder</span>
+              <label class="toggle">
+                <input type="checkbox" id="notif-daily">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Streak alerts</span>
+              <label class="toggle">
+                <input type="checkbox" id="notif-streak">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <label class="group-label">Training</label>
+            <div class="toggle-row">
+              <span class="toggle-label">30s rest timer between drills</span>
+              <label class="toggle">
+                <input type="checkbox" id="rest-timer">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          </div>
+        </div>
+
+        <div id="settings-tab-drills" class="settings-tab-panel">
+          <div class="settings-content settings-content-drills">
+            <p class="drills-tab-hint">Tap a drill to expand and edit. Paste any YouTube link for the video.</p>
+            <div id="drill-editor-list" class="drill-editor-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom nav -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-view="home">
+        <span class="nav-icon">🏠</span>
+        Home
+      </button>
+      <button class="nav-item" data-view="stats">
+        <span class="nav-icon">📊</span>
+        Stats
+      </button>
+      <button class="nav-item" data-view="settings">
+        <span class="nav-icon">⚙️</span>
+        Settings
+      </button>
+    </nav>
+
+    <!-- Celebration overlay -->
+    <div id="celebration-overlay" class="celebration-overlay">
+      <div id="confetti-container" class="confetti-container"></div>
+      <div class="celebration-content">
+        <svg class="celebration-trophy" viewBox="0 0 120 140" aria-hidden="true">
+          <defs>
+            <linearGradient id="trophy-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f5d76e"/>
+              <stop offset="50%" stop-color="#d4af37"/>
+              <stop offset="100%" stop-color="#a67c00"/>
+            </linearGradient>
+          </defs>
+          <path d="M30 18 H90 V42 C90 58 78 70 60 74 C42 70 30 58 30 42 Z" fill="url(#trophy-gold)" stroke="#8b6914" stroke-width="2"/>
+          <path d="M30 22 H20 C14 22 10 30 12 38 C14 46 22 48 30 44" fill="url(#trophy-gold)" stroke="#8b6914" stroke-width="1.5"/>
+          <path d="M90 22 H100 C106 22 110 30 108 38 C106 46 98 48 90 44" fill="url(#trophy-gold)" stroke="#8b6914" stroke-width="1.5"/>
+          <rect x="48" y="74" width="24" height="14" fill="url(#trophy-gold)" stroke="#8b6914" stroke-width="1.5"/>
+          <rect x="38" y="88" width="44" height="10" rx="2" fill="url(#trophy-gold)" stroke="#8b6914" stroke-width="1.5"/>
+          <rect x="32" y="98" width="56" height="12" rx="3" fill="#1e4d8c" stroke="#8b6914" stroke-width="1.5"/>
+          <polygon points="60,30 64,42 76,42 66,50 70,62 60,54 50,62 54,50 44,42 56,42" fill="#fff8e7" opacity="0.9"/>
+        </svg>
+        <p id="celebration-xp" class="celebration-xp">+0 XP earned!</p>
+        <p id="celebration-bonus" class="celebration-bonus btn-hidden"></p>
+        <button type="button" id="celebration-continue" class="btn btn-primary celebration-continue">Continue</button>
+      </div>
+    </div>
+
+    <!-- Rest overlay -->
+    <div id="rest-overlay" class="rest-overlay">
+      <div class="rest-label">Rest up!</div>
+      <div id="rest-count" class="rest-count">30</div>
+      <button id="skip-rest" class="btn btn-secondary">Skip</button>
+    </div>
+
+    <!-- Name modal -->
+    <div id="name-modal" class="modal">
+      <div id="name-modal-backdrop" class="modal-backdrop"></div>
+      <div class="modal-panel">
+        <h3 class="modal-title">Add name</h3>
+        <div class="drill-field">
+          <label for="name-input">Name</label>
+          <input type="text" id="name-input" class="text-input" placeholder="Enter a name" maxlength="24">
+        </div>
+        <div class="modal-actions">
+          <button id="name-modal-cancel" class="btn btn-secondary">Cancel</button>
+          <button id="name-modal-save" class="btn btn-primary">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Duration modal -->
+    <div id="duration-modal" class="modal">
+      <div id="duration-modal-backdrop" class="modal-backdrop"></div>
+      <div class="modal-panel">
+        <h3 class="modal-title">Edit duration</h3>
+        <div class="time-inputs">
+          <div class="time-input-group">
+            <label for="duration-minutes">Minutes</label>
+            <input type="number" id="duration-minutes" class="time-input" min="0" max="10" inputmode="numeric">
+          </div>
+          <span class="time-separator">:</span>
+          <div class="time-input-group">
+            <label for="duration-seconds">Seconds</label>
+            <input type="number" id="duration-seconds" class="time-input" min="0" max="59" inputmode="numeric">
+          </div>
+        </div>
+        <p id="duration-modal-default" class="duration-modal-default">Default: 0:00</p>
+        <div class="modal-actions">
+          <button id="duration-modal-reset" class="btn btn-secondary btn-hidden">Reset to default</button>
+          <button id="duration-modal-cancel" class="btn btn-secondary">Cancel</button>
+          <button id="duration-modal-save" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+  </div>
+
+  <script src="drills.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
