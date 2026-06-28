@@ -87,11 +87,6 @@ export function toLocalDateKey(date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
-/** Close out is allowed on the Sunday that ends the active board week. */
-export function canCloseOutWeekOnDate(weekEndDate: string, date = new Date()): boolean {
-  return toLocalDateKey(date) === weekEndDate;
-}
-
 export function formatShortDate(dateStr: string): string {
   const date = new Date(dateStr + 'T12:00:00');
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });

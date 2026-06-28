@@ -15,7 +15,6 @@ import { isCloudSyncEnabled } from '../lib/supabaseClient';
 import { CompletionCelebration } from '../components/CompletionCelebration';
 import { buildGigSnapshotsForClaims } from '../lib/gigSnapshots';
 import { createInitialState, createWeekAfterClosed, loadPersistedBundle, persistBundle } from '../lib/storage';
-import { canCloseOutWeekOnDate } from '../lib/week';
 import { findReopenableWeek } from '../lib/weekRecovery';
 import { newId } from '../lib/utils';
 
@@ -269,8 +268,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const closeOutWeek = useCallback(() => {
     update((prev) => {
-      if (!canCloseOutWeekOnDate(prev.currentWeek.endDate)) return prev;
-
       const closedWeek = {
         ...prev.currentWeek,
         closed: true,

@@ -304,14 +304,6 @@ button {
   margin-top: 0;
 }
 
-.board-grid__close-week--locked,
-.board-grid__close-week--locked:disabled {
-  background: var(--cream-dark);
-  color: var(--text-muted);
-  cursor: not-allowed;
-  opacity: 1;
-}
-
 .board-claimed-gigs__header {
   display: flex;
   align-items: center;

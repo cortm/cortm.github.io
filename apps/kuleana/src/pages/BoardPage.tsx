@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Claim } from '../types';
 import { useApp } from '../context/AppContext';
 import { computeBoardTotals, formatCurrency, getClaimPersonKey, isGigBonus } from '../lib/utils';
-import { canCloseOutWeekOnDate, formatWeekDatesInline, formatWeekRange, getNextWeekRange } from '../lib/week';
+import { formatWeekDatesInline, formatWeekRange, getNextWeekRange } from '../lib/week';
 import { ClaimRow } from '../components/ClaimRow';
 import { Modal } from '../components/Modal';
 import { TotalsPersonRow } from '../components/TotalsPersonRow';
@@ -115,7 +115,6 @@ export function BoardPage() {
     }
     return formatWeekRange(state.currentWeek.startDate, state.currentWeek.endDate);
   }, [closedOutWeek, state.currentWeek.startDate, state.currentWeek.endDate]);
-  const canCloseOutWeek = canCloseOutWeekOnDate(state.currentWeek.endDate);
 
   const closedOutCompletedCount = useMemo(
     () => closedOutWeek?.claims.filter((claim) => claim.status === 'completed').length ?? 0,
@@ -236,14 +235,8 @@ export function BoardPage() {
           </div>
           <button
             type="button"
-            className={`btn btn--block board-grid__close-week${canCloseOutWeek ? ' btn--danger' : ' board-grid__close-week--locked'}`}
-            disabled={!canCloseOutWeek}
-            aria-disabled={!canCloseOutWeek}
-            title={canCloseOutWeek ? undefined : 'Close out is available on Sundays only'}
-            onClick={() => {
-              if (!canCloseOutWeek) return;
-              setConfirmOpen(true);
-            }}
+            className="btn btn--block btn--danger board-grid__close-week"
+            onClick={() => setConfirmOpen(true)}
           >
             Close Out Week
           </button>
