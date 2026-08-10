@@ -34,15 +34,24 @@
     .tab-bar {
       order: -1;
       display: flex;
+      justify-content: center;
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      padding: 10px 0;
+      background: #F0E6D8;
+      border-bottom: none;
+    }
+    .tab-bar-inner {
+      display: flex;
       gap: 6px;
-      padding: 10px 14px;
-      background: #FFF8F0;
-      border-bottom: 3px solid #111;
+      width: 100%;
+      max-width: 480px;
+      padding: 0 14px;
     }
     .tab {
       flex: 1; display: flex; flex-direction: column; align-items: center;
       gap: 1px; padding: 7px 4px; border-radius: 7px;
-      border: 2.5px solid #111; background: transparent;
+      border: 2.5px solid #111; background: #fff;
       color: #111; font-size: 10px; font-weight: 800;
       cursor: pointer; -webkit-tap-highlight-color: transparent;
       text-transform: uppercase; letter-spacing: 0.3px;
@@ -94,9 +103,9 @@
       display: flex; flex-direction: column; gap: 2px;
     }
     .stepper button {
-      width: 28px; height: 22px; border-radius: 5px;
+      width: 26px; height: 18px; border-radius: 4px;
       border: 2px solid #111; background: #fff; color: #111;
-      font-size: 11px; font-weight: 800; cursor: pointer;
+      font-size: 9px; font-weight: 800; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       -webkit-tap-highlight-color: transparent; transition: all 0.1s;
     }
@@ -121,13 +130,37 @@
     .maths-box p { font-size: 13px; color: #999; line-height: 1.85; }
     .maths-box p span { color: #111; font-weight: 800; }
 
+    /* ── Ferment toggle ── */
+    .ferment-bar {
+      display: flex; gap: 6px;
+      padding: 10px 14px;
+      border-bottom: 2px solid #111;
+      background: #FFF8F0;
+    }
+    .ferment-opt {
+      flex: 1; padding: 8px 6px; border-radius: 7px;
+      border: 2.5px solid #111; background: transparent;
+      color: #111; font-size: 11px; font-weight: 800;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      text-transform: uppercase; letter-spacing: 0.3px;
+      font-family: inherit; transition: all 0.12s;
+    }
+    .ferment-opt.active { background: #111; color: #fff; }
+
     /* ── Instructions ── */
+    .phase-header {
+      padding: 14px 16px 10px;
+      font-size: 13px; font-weight: 800; color: #D62828;
+      text-transform: uppercase; letter-spacing: 0.4px;
+      border-bottom: 2px solid #111;
+      background: #fff;
+    }
     .instruction-list { list-style: none; }
     .instruction-item {
       display: flex; gap: 12px; align-items: flex-start;
       padding: 12px 16px; border-bottom: 2px solid #111;
     }
-    .instruction-item:last-child { border-bottom: none; }
+    .instruction-list:last-of-type .instruction-item:last-child { border-bottom: none; }
     .step-num {
       flex-shrink: 0; width: 30px; height: 30px; border-radius: 5px;
       border: 2px solid #111; background: #D62828;
@@ -135,6 +168,7 @@
       display: flex; align-items: center; justify-content: center;
     }
     .step-text { font-size: 15px; font-weight: 700; color: #111; line-height: 1.4; padding-top: 4px; }
+    .step-text .amt { color: #D62828; font-weight: 900; }
   </style>
 </head>
 <body>
@@ -172,14 +206,17 @@
       <div class="maths-box">
         <p>🧑 <span>1 pizza</span> per <span>2 adults/teens</span></p>
         <p>👧 <span>1 pizza</span> per <span>3 kids</span></p>
-        <p>➕ <span>+1.5</span> buffer · ⬆️ Rounded <span>up</span></p>
+        <p>➕ <span>1.5</span> buffer and ⬆️ Rounded <span>up</span></p>
       </div>
     </div>
   </div>
 
   <!-- ── Screen 2: Ingredients ── -->
   <div class="screen" id="screen-ing">
-    <!-- <div class="header"><h1>Ingredients 🧪</h1></div> -->
+    <div class="ferment-bar">
+      <button type="button" class="ferment-opt active" data-mode="cold" onclick="setFermentMode('cold')">Cold Ferment</button>
+      <button type="button" class="ferment-opt" data-mode="same" onclick="setFermentMode('same')">Same Day</button>
+    </div>
     <div class="section">
       <div class="label"># of Pizzas</div>
       <div class="input-wrap">
@@ -200,8 +237,8 @@
     <div class="section">
       <div class="label">Water</div>
       <div class="ingredient-row">
-        <div class="value" id="water">780.0 g</div>
-        <div class="ingredient-pill">97.5 g / pizza</div>
+        <div class="value" id="water">810.0 g</div>
+        <div class="ingredient-pill">101.25 g / pizza</div>
       </div>
     </div>
     <div class="section">
@@ -214,14 +251,14 @@
     <div class="section">
       <div class="label">Yeast</div>
       <div class="ingredient-row">
-        <div class="value" id="yeast">18.1 g</div>
-        <div class="ingredient-pill">2.26 g / pizza</div>
+        <div class="value" id="yeast">1.2 g</div>
+        <div class="ingredient-pill" id="yeast-pill">0.15 g / pizza</div>
       </div>
     </div>
     <div class="section">
       <div class="label">Dough Ball Weight</div>
       <div class="ingredient-row">
-        <div class="value" id="dough-balls">232.5 g each</div>
+        <div class="value" id="dough-balls">255.9 g each</div>
         <div class="ingredient-pill">per ball</div>
       </div>
     </div>
@@ -229,58 +266,152 @@
 
   <!-- ── Screen 3: Instructions ── -->
   <div class="screen" id="screen-ins">
-    <!-- <div class="header"><h1>Instructions 📋</h1></div> -->
-    <ul class="instruction-list">
-      <li class="instruction-item">
-        <div class="step-num">1</div>
-        <div class="step-text">Mix all ingredients for 5–10 min</div>
-      </li>
-      <li class="instruction-item">
-        <div class="step-num">2</div>
-        <div class="step-text">Cover in bowl and rise for 1–2 hours</div>
-      </li>
-      <li class="instruction-item">
-        <div class="step-num">3</div>
-        <div class="step-text">Form into balls</div>
-      </li>
-      <li class="instruction-item">
-        <div class="step-num">4</div>
-        <div class="step-text">Cover and rise on sheet for 20 min</div>
-      </li>
-      <li class="instruction-item">
-        <div class="step-num">5</div>
-        <div class="step-text">Stretch → Bake → Enjoy 🎉</div>
-      </li>
-    </ul>
+    <div class="ferment-bar">
+      <button type="button" class="ferment-opt active" data-mode="cold" onclick="setFermentMode('cold')">Cold Ferment</button>
+      <button type="button" class="ferment-opt" data-mode="same" onclick="setFermentMode('same')">Same Day</button>
+    </div>
+
+    <div id="steps-cold">
+      <div class="phase-header">At least 48 hrs ahead of eating…</div>
+      <ul class="instruction-list">
+        <li class="instruction-item">
+          <div class="step-num">1</div>
+          <div class="step-text">Add <span class="amt" id="step-water">810.0 g</span> water to a bowl and stir in <span class="amt" id="step-yeast">1.2 g</span> yeast.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">2</div>
+          <div class="step-text">Add <span class="amt" id="step-flour">1,200.0 g</span> flour and <span class="amt" id="step-salt">36.0 g</span> salt.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">3</div>
+          <div class="step-text">Mix on low until no dry flour remains, about 2–3 minutes.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">4</div>
+          <div class="step-text">Cover in bowl (with baking wrap and towel) for 20 minutes.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">5</div>
+          <div class="step-text">Mix again on low to medium-low for 5–7 minutes, until smoother and elastic.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">6</div>
+          <div class="step-text">Cover in bowl for 20 minutes.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">7</div>
+          <div class="step-text">Do one stretch-and-fold of each corner.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">8</div>
+          <div class="step-text">Place in a lightly oiled covered container and refrigerate.</div>
+        </li>
+      </ul>
+      <div class="phase-header">~5 hours before eating…</div>
+      <ul class="instruction-list">
+        <li class="instruction-item">
+          <div class="step-num">1</div>
+          <div class="step-text">Remove from fridge.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">2</div>
+          <div class="step-text">Separate into equal balls weighing <span class="amt" id="step-dough-ball">255.9 g</span> each.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">3</div>
+          <div class="step-text">Place on parchment paper and cooking sheet (can lightly flour).</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">4</div>
+          <div class="step-text">Cover with baking wrap and towel.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">5</div>
+          <div class="step-text">Stretch – when soft, increased in size, and room temperature.</div>
+        </li>
+      </ul>
+    </div>
+
+    <div id="steps-same" hidden>
+      <ul class="instruction-list">
+        <li class="instruction-item">
+          <div class="step-num">1</div>
+          <div class="step-text">Mix all ingredients for 5–10 min</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">2</div>
+          <div class="step-text">Cover in bowl and rise for 1–2 hours</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">3</div>
+          <div class="step-text">Form into balls</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">4</div>
+          <div class="step-text">Cover and rise on sheet for 20 min</div>
+        </li>
+        <li class="instruction-item">
+          <div class="step-num">5</div>
+          <div class="step-text">Stretch → Bake → Enjoy 🎉</div>
+        </li>
+      </ul>
+    </div>
   </div>
 
   <!-- ── Tab Bar ── -->
   <nav class="tab-bar">
-    <button class="tab active" onclick="switchTab('zac', this)">
-      <span class="tab-icon">🍕</span>
-      Za'culator
-    </button>
-    <button class="tab" onclick="switchTab('ing', this)">
-      <span class="tab-icon">🧪</span>
-      Ingredients
-    </button>
-    <button class="tab" onclick="switchTab('ins', this)">
-      <span class="tab-icon">📋</span>
-      Steps
-    </button>
+    <div class="tab-bar-inner">
+      <button class="tab active" onclick="switchTab('zac', this)">
+        <span class="tab-icon">🍕</span>
+        Za'culator
+      </button>
+      <button class="tab" onclick="switchTab('ing', this)">
+        <span class="tab-icon">🧪</span>
+        Ingredients
+      </button>
+      <button class="tab" onclick="switchTab('ins', this)">
+        <span class="tab-icon">📋</span>
+        Steps
+      </button>
+    </div>
   </nav>
 
 </div>
 
 <script>
-  const PER_PIZZA = { flour:150, water:97.5, salt:4.5, yeast:2.257143, doughBall:232.5 };
+  const YEAST = { coldRate: 0.001, same: 2.26 };
+  let fermentMode = 'cold';
+
+  function perPizza() {
+    const flour = 150;
+    const water = 101.25;
+    const salt = 4.5;
+    const yeast = fermentMode === 'cold' ? flour * YEAST.coldRate : YEAST.same;
+    return {
+      flour,
+      water,
+      salt,
+      yeast,
+      doughBall: flour + water + salt + yeast
+    };
+  }
+
+  function setFermentMode(mode) {
+    fermentMode = mode;
+    document.querySelectorAll('.ferment-opt').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+    document.getElementById('steps-cold').hidden = mode !== 'cold';
+    document.getElementById('steps-same').hidden = mode !== 'same';
+    updateIngredients();
+  }
 
   function switchTab(name, btn) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('screen-' + name).classList.add('active');
     btn.classList.add('active');
-    if (name === 'ing') {
+    if (name === 'ing' || name === 'ins') {
       document.getElementById('ing-pizzas').value =
         parseInt(document.getElementById('pizzas-out').textContent) || 1;
       updateIngredients();
@@ -293,14 +424,28 @@
     document.getElementById('pizzas-out').textContent = Math.ceil((a/2) + (k/3) + 1.5);
   }
 
+  function fmtG(v, d=1) {
+    return v.toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d}) + ' g';
+  }
+
   function updateIngredients() {
     const n = Math.max(1, parseInt(document.getElementById('ing-pizzas').value) || 1);
-    const fmt = (v, d=1) => v.toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d});
-    document.getElementById('flour').textContent       = fmt(n * PER_PIZZA.flour) + ' g';
-    document.getElementById('water').textContent       = fmt(n * PER_PIZZA.water) + ' g';
-    document.getElementById('salt').textContent        = fmt(n * PER_PIZZA.salt) + ' g';
-    document.getElementById('yeast').textContent       = fmt(n * PER_PIZZA.yeast) + ' g';
-    document.getElementById('dough-balls').textContent = fmt(PER_PIZZA.doughBall) + ' g each';
+    const p = perPizza();
+    const flour = n * p.flour;
+    const water = n * p.water;
+    const salt  = n * p.salt;
+    const yeast = n * p.yeast;
+    document.getElementById('flour').textContent       = fmtG(flour);
+    document.getElementById('water').textContent       = fmtG(water);
+    document.getElementById('salt').textContent        = fmtG(salt);
+    document.getElementById('yeast').textContent       = fmtG(yeast);
+    document.getElementById('yeast-pill').textContent  = fmtG(p.yeast, 2) + ' / pizza';
+    document.getElementById('dough-balls').textContent = fmtG(p.doughBall) + ' each';
+    document.getElementById('step-flour').textContent      = fmtG(flour);
+    document.getElementById('step-water').textContent      = fmtG(water);
+    document.getElementById('step-salt').textContent       = fmtG(salt);
+    document.getElementById('step-yeast').textContent      = fmtG(yeast);
+    document.getElementById('step-dough-ball').textContent = fmtG(p.doughBall);
   }
 
   function step(id, delta) {
@@ -311,7 +456,7 @@
   }
 
   calc();
-  updateIngredients();
+  setFermentMode('cold');
 </script>
 </body>
 </html>
