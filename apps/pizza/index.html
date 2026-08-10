@@ -292,7 +292,7 @@
         </li>
         <li class="instruction-item">
           <div class="step-num">5</div>
-          <div class="step-text">Mix again on low to medium-low for 5–7 minutes, until smoother and elastic.</div>
+          <div class="step-text">Mix again on medium-low for 5–7 minutes, until smoother and elastic.</div>
         </li>
         <li class="instruction-item">
           <div class="step-num">6</div>
@@ -411,11 +411,7 @@
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('screen-' + name).classList.add('active');
     btn.classList.add('active');
-    if (name === 'ing' || name === 'ins') {
-      document.getElementById('ing-pizzas').value =
-        parseInt(document.getElementById('pizzas-out').textContent) || 1;
-      updateIngredients();
-    }
+    if (name === 'ing' || name === 'ins') updateIngredients();
   }
 
   function calc() {
